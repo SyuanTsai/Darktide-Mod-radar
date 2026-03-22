@@ -76,6 +76,31 @@ local function _target_color(kind)
     return COLORS[kind] or COLORS.enemy_unknown
 end
 
+local function _safe_player_camera_rotation(self)
+    local parent = self and self._parent
+    if not parent or not parent.player_camera then
+        return nil
+    end
+
+    local ok_camera, camera = pcall(function()
+        return parent:player_camera()
+    end)
+
+    if not ok_camera or not camera then
+        return nil
+    end
+
+    local ok_rotation, rotation = pcall(function()
+        return Camera.local_rotation(camera)
+    end)
+
+    if ok_rotation and rotation then
+        return rotation
+    end
+
+    return nil
+end
+
 HudElementRadarDebug.init = function(self, parent, draw_layer, start_scale, optional_context)
     HudElementRadarDebug.super.init(self, parent, draw_layer, start_scale, Definitions)
 end
@@ -108,13 +133,14 @@ HudElementRadarDebug.draw = function(self, dt, t, ui_renderer, render_settings, 
         if snapshot and snapshot.player_position then
             local player_pos = snapshot.player_position
             local targets = snapshot.targets or {}
+            local live_camera_rotation = _safe_player_camera_rotation(self)
+            local projection_rotation = live_camera_rotation or snapshot.player_rotation
 
             _draw_box(ui_renderer, center_x - 2, center_y - 2, z + 4, 4, 4, _color(255, 0, 255, 0))
 
             for i = 1, #targets do
                 local target = targets[i]
-                local px, py = mod:project_target_to_radar(player_pos, snapshot.player_rotation, target.position,
-                    radius - 6, range)
+                local px, py = mod:project_target_to_radar(player_pos, projection_rotation, target.position, radius - 6, range)
 
                 if px and py then
                     local draw_x = center_x + px - 4

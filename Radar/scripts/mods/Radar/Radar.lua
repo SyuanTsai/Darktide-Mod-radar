@@ -178,17 +178,17 @@ local function _safe_world_rotation(unit, node)
     return nil
 end
 
-local function _safe_forward_xy(rotation)
-    if not rotation then
+local function _safe_flat_direction_xy(vector_getter, rotation)
+    if not rotation or not vector_getter then
         return nil, nil
     end
 
-    local ok, forward = pcall(Quaternion.forward, rotation)
-    if not ok or not forward then
+    local ok, direction = pcall(vector_getter, rotation)
+    if not ok or not direction then
         return nil, nil
     end
 
-    local x, y = _vector3_components(forward)
+    local x, y = _vector3_components(direction)
     if not _is_finite_number(x) or not _is_finite_number(y) then
         return nil, nil
     end
@@ -199,6 +199,14 @@ local function _safe_forward_xy(rotation)
     end
 
     return x / length, y / length
+end
+
+local function _safe_forward_xy(rotation)
+    return _safe_flat_direction_xy(Quaternion.forward, rotation)
+end
+
+local function _safe_right_xy(rotation)
+    return _safe_flat_direction_xy(Quaternion.right, rotation)
 end
 
 local function _safe_mission_name()
@@ -374,6 +382,82 @@ local function _player_unit()
     return local_player and local_player.player_unit
 end
 
+local function _safe_camera_rotation()
+    local local_player = _local_player()
+    if not local_player then
+        return nil
+    end
+
+    local viewport_name = local_player.viewport_name
+    if not viewport_name then
+        return nil
+    end
+
+    local camera_manager = Managers and Managers.state and Managers.state.camera
+    if not camera_manager then
+        return nil
+    end
+
+    if camera_manager.has_camera then
+        local ok_has_camera, has_camera = pcall(function()
+            return camera_manager:has_camera(viewport_name)
+        end)
+
+        if ok_has_camera and not has_camera then
+            return nil
+        end
+    end
+
+    if not camera_manager.camera_rotation then
+        return nil
+    end
+
+    local ok_rotation, rotation = pcall(function()
+        return camera_manager:camera_rotation(viewport_name)
+    end)
+
+    if ok_rotation and rotation then
+        return rotation
+    end
+
+    return nil
+end
+
+local function _safe_player_rotation(player_unit)
+    local camera_rotation = _safe_camera_rotation()
+    if camera_rotation then
+        return camera_rotation
+    end
+
+    if not _safe_unit_alive(player_unit) then
+        return nil
+    end
+
+    local unit_data_extension = ScriptUnit and ScriptUnit.has_extension and ScriptUnit.has_extension(player_unit, "unit_data_system")
+    if unit_data_extension and unit_data_extension.read_component then
+        local ok_component, first_person_component = pcall(function()
+            return unit_data_extension:read_component("first_person")
+        end)
+
+        if ok_component and first_person_component and first_person_component.rotation then
+            return first_person_component.rotation
+        end
+    end
+
+    local first_person_extension = ScriptUnit and ScriptUnit.has_extension and ScriptUnit.has_extension(player_unit, "first_person_system")
+    if first_person_extension and first_person_extension.extrapolated_rotation then
+        local ok_rotation, rotation = pcall(function()
+            return first_person_extension:extrapolated_rotation()
+        end)
+
+        if ok_rotation and rotation then
+            return rotation
+        end
+    end
+
+    return _safe_world_rotation(player_unit, 1)
+end
+
 local function _safe_extension_system(system_name)
     local extension_manager = Managers and Managers.state and Managers.state.extension
     if not extension_manager or not extension_manager.system then
@@ -433,8 +517,7 @@ local function _get_runtime_state()
     end
 
     if mechanism_name == "onboarding" and mission_name ~= "tg_shooting_range" then
-        return false, "onboarding_non_psykhanium", gameplay_t, mission_name, activity, mechanism_name, player_unit,
-            player_pos
+        return false, "onboarding_non_psykhanium", gameplay_t, mission_name, activity, mechanism_name, player_unit, player_pos
     end
 
     if _is_hub_runtime() then
@@ -819,7 +902,7 @@ local function _collect_radar_snapshot()
     return {
         player_unit = player_unit,
         player_position = player_pos,
-        player_rotation = _safe_world_rotation(player_unit, 1),
+        player_rotation = _safe_player_rotation(player_unit),
         targets = mod._radar_targets,
     }
 end
@@ -929,8 +1012,7 @@ local function _update_internal(dt, t)
         return
     end
 
-    local allowed, reason, gameplay_t, mission_name, activity, mechanism_name, player_unit, player_pos =
-    _get_runtime_state()
+    local allowed, reason, gameplay_t, mission_name, activity, mechanism_name, player_unit, player_pos = _get_runtime_state()
     local scan_clock = gameplay_t or t or 0
 
     if mod._last_update_t and scan_clock and scan_clock == mod._last_update_t then
@@ -948,7 +1030,7 @@ local function _update_internal(dt, t)
     mod._radar_snapshot = {
         player_unit = player_unit,
         player_position = player_pos,
-        player_rotation = _safe_world_rotation(player_unit, 1),
+        player_rotation = _safe_player_rotation(player_unit),
         targets = mod._radar_targets,
     }
 
@@ -1084,7 +1166,11 @@ function mod:project_target_to_radar(player_pos, player_rot, target_pos, max_rad
     local local_y = dy
 
     local forward_x, forward_y = _safe_forward_xy(player_rot)
+
     if forward_x and forward_y then
+        -- Derive a flattened right vector from forward instead of relying on
+        -- Quaternion.right. This matches the compass math more closely and keeps
+        -- the radar in the same 2D basis as the live camera facing.
         local right_x = forward_y
         local right_y = -forward_x
 
