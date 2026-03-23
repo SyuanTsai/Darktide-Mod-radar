@@ -25,7 +25,7 @@ return {
                         setting_id = "radar_range",
                         type = "numeric",
                         default_value = 40,
-                        range = { 10, 100 },
+                        range = { 25, 100 },
                     },
                     {
                         setting_id = "highlight_distance",
@@ -36,16 +36,21 @@ return {
                     {
                         setting_id = "debug_mode",
                         type = "checkbox",
-                        default_value = true,
+                        default_value = false,
                     },
                 },
             },
             {
-                setting_id = "pickups_group",
+                setting_id = "other_pickups_group",
                 type = "group",
                 sub_widgets = {
                     {
-                        setting_id = "show_ammo",
+                        setting_id = "show_ammo_small",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_ammo_big",
                         type = "checkbox",
                         default_value = true,
                     },
@@ -77,6 +82,133 @@ return {
                 },
             },
             {
+                setting_id = "pocketables_group",
+                type = "group",
+                sub_widgets = {
+                    {
+                        setting_id = "show_pocketable_ammo_crate",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_breach_charge",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_medical_crate",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_corrupted_auspex_scanner",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_grimoire",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_scripture",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_expedition_loot_crate",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_syringe_ability",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_syringe_corruption",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_syringe_power",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_syringe_speed",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_landmine_explosive",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_landmine_fire",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_landmine_shock",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_void_shield",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_airstrike",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_artillery_strike",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_big_grenade",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_pocketable_valkyrie_hover",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                },
+            },
+            {
+                setting_id = "materials_group",
+                type = "group",
+                sub_widgets = {
+                    {
+                        setting_id = "show_diamantine",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_plasteel",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_expeditions_currency",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_expeditions_loot",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                },
+            },
+            {
                 setting_id = "enemies_group",
                 type = "group",
                 sub_widgets = {
@@ -95,6 +227,12 @@ return {
                         type = "checkbox",
                         default_value = true,
                     },
+                },
+            },
+            {
+                setting_id = "players_group",
+                type = "group",
+                sub_widgets = {
                     {
                         setting_id = "show_teammates",
                         type = "checkbox",

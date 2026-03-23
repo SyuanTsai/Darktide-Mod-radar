@@ -1,4 +1,5 @@
 local mod = get_mod("Radar")
+local Pickups = require("scripts/settings/pickup/pickups")
 
 local SCAN_INTERVAL = 0.25
 
@@ -31,17 +32,89 @@ local TWIN_BREEDS = {
 }
 
 local KIND_TO_SETTING = {
-    pickup_ammo = "show_ammo",
+    pickup_ammo = "show_ammo_small",
+    pickup_ammo_small = "show_ammo_small",
+    pickup_ammo_big = "show_ammo_big",
     pickup_grenade = "show_grenades",
     pickup_medkit = "show_medkits",
     pickup_stimm = "show_stimms",
     pickup_unknown = "show_unknown_pickups",
     crate_unknown = "show_crates",
+    enemy_daemonhost = "show_monstrosities",
     enemy_monstrosity = "show_monstrosities",
     enemy_captain = "show_captains",
     enemy_karnak_twin = "show_karnak_twins",
     player_teammate = "show_teammates",
+    material_diamantine = "show_diamantine",
+    material_plasteel = "show_plasteel",
+    material_expeditions_currency = "show_expeditions_currency",
+    material_expeditions_loot = "show_expeditions_loot",
+    pocketable_ammo_crate = "show_pocketable_ammo_crate",
+    pocketable_breach_charge = "show_pocketable_breach_charge",
+    pocketable_corrupted_auspex_scanner = "show_pocketable_corrupted_auspex_scanner",
+    pocketable_expedition_loot_crate = "show_pocketable_expedition_loot_crate",
+    pocketable_airstrike = "show_pocketable_airstrike",
+    pocketable_artillery_strike = "show_pocketable_artillery_strike",
+    pocketable_big_grenade = "show_pocketable_big_grenade",
+    pocketable_grimoire = "show_pocketable_grimoire",
+    pocketable_landmine_explosive = "show_pocketable_landmine_explosive",
+    pocketable_landmine_fire = "show_pocketable_landmine_fire",
+    pocketable_landmine_shock = "show_pocketable_landmine_shock",
+    pocketable_medical_crate = "show_pocketable_medical_crate",
+    pocketable_scripture = "show_pocketable_scripture",
+    pocketable_syringe_ability = "show_pocketable_syringe_ability",
+    pocketable_syringe_corruption = "show_pocketable_syringe_corruption",
+    pocketable_syringe_power = "show_pocketable_syringe_power",
+    pocketable_syringe_speed = "show_pocketable_syringe_speed",
+    pocketable_valkyrie_hover = "show_pocketable_valkyrie_hover",
+    pocketable_void_shield = "show_pocketable_void_shield",
 }
+
+function mod.on_all_mods_loaded()
+    -- Preload icon packages
+    local function load_package(package_name)
+        local ok, err = pcall(function()
+            if not Managers or not Managers.package then
+                error("Managers.package unavailable")
+            end
+
+            if not Managers.package:has_loaded(package_name) then
+                Managers.package:load(package_name, "Radar", nil, true)
+                if mod:get("debug_mode") then
+                    mod:echo(string.format("[Radar] package load requested | %s", tostring(package_name)))
+                end
+            else
+                if mod:get("debug_mode") then
+                    mod:echo(string.format("[Radar] package already loaded | %s", tostring(package_name)))
+                end
+            end
+        end)
+
+        if not ok then
+            if mod:get("debug_mode") then
+                mod:echo(string.format("[Radar] package load failed | %s | %s", tostring(package_name), tostring(err)))
+            end
+        end
+    end
+
+    load_package("packages/ui/views/inventory_view/inventory_view")
+    load_package("packages/ui/views/inventory_weapons_view/inventory_weapons_view")
+    load_package("packages/ui/hud/player_weapon/player_weapon")
+    load_package("packages/ui/views/inventory_background_view/inventory_background_view")
+    load_package("packages/ui/views/inventory_weapon_details_view/inventory_weapon_details_view")
+    load_package("packages/ui/views/inventory_weapon_marks_view/inventory_weapon_marks_view")
+    load_package("packages/ui/views/main_menu_view/main_menu_view")
+    load_package("packages/ui/views/player_character_options_view/player_character_options_view")
+    load_package("packages/ui/views/talent_builder_view/talent_builder_view")
+    load_package("packages/ui/views/live_events_view/live_events_view")
+    load_package("packages/ui/views/group_finder_view/group_finder_view")
+    load_package("packages/ui/views/mission_board_view/mission_board_view")
+    load_package("packages/ui/material_sets/circumstances")
+
+    if mod:get("debug_mode") then
+        mod:echo("Packages loaded")
+    end
+end
 
 local function _safe_gameplay_time()
     local time_manager = Managers and Managers.time
@@ -120,6 +193,32 @@ local function _safe_lower_string(value)
     end
 
     return string.lower(tostring(value))
+end
+
+local function _string_starts_with(value, prefix)
+    if value == nil or prefix == nil then
+        return false
+    end
+
+    return string.sub(value, 1, string.len(prefix)) == prefix
+end
+
+local function _safe_unit_pickup_name(unit)
+    if not unit or not Unit or not Unit.has_data or not Unit.get_data then
+        return nil
+    end
+
+    local ok_has_data, has_data = pcall(Unit.has_data, unit, "pickup_type")
+    if not ok_has_data or not has_data then
+        return nil
+    end
+
+    local ok_pickup_name, pickup_name = pcall(Unit.get_data, unit, "pickup_type")
+    if ok_pickup_name and pickup_name then
+        return _safe_lower_string(pickup_name)
+    end
+
+    return nil
 end
 
 local function _table_size(t)
@@ -433,7 +532,8 @@ local function _safe_player_rotation(player_unit)
         return nil
     end
 
-    local unit_data_extension = ScriptUnit and ScriptUnit.has_extension and ScriptUnit.has_extension(player_unit, "unit_data_system")
+    local unit_data_extension = ScriptUnit and ScriptUnit.has_extension and
+        ScriptUnit.has_extension(player_unit, "unit_data_system")
     if unit_data_extension and unit_data_extension.read_component then
         local ok_component, first_person_component = pcall(function()
             return unit_data_extension:read_component("first_person")
@@ -444,7 +544,8 @@ local function _safe_player_rotation(player_unit)
         end
     end
 
-    local first_person_extension = ScriptUnit and ScriptUnit.has_extension and ScriptUnit.has_extension(player_unit, "first_person_system")
+    local first_person_extension = ScriptUnit and ScriptUnit.has_extension and
+        ScriptUnit.has_extension(player_unit, "first_person_system")
     if first_person_extension and first_person_extension.extrapolated_rotation then
         local ok_rotation, rotation = pcall(function()
             return first_person_extension:extrapolated_rotation()
@@ -517,7 +618,8 @@ local function _get_runtime_state()
     end
 
     if mechanism_name == "onboarding" and mission_name ~= "tg_shooting_range" then
-        return false, "onboarding_non_psykhanium", gameplay_t, mission_name, activity, mechanism_name, player_unit, player_pos
+        return false, "onboarding_non_psykhanium", gameplay_t, mission_name, activity, mechanism_name, player_unit,
+            player_pos
     end
 
     if _is_hub_runtime() then
@@ -549,20 +651,143 @@ local function _kind_enabled(kind)
     return mod:get(setting_id) ~= false
 end
 
-local function _classify_pickup_like(interaction_type, icon, description, unit_name)
-    local key = string.format("%s|%s|%s|%s",
+local function _pickup_meta(pickup_name, pickup_data, interaction_type, interaction_icon, description, unit_name)
+    return {
+        pickup_name = pickup_name,
+        pickup_group = pickup_data and pickup_data.group or nil,
+        interaction_type = interaction_type,
+        interaction_icon = interaction_icon,
+        description = description,
+        unit_name = unit_name,
+    }
+end
+
+local function _classify_pickup_like(interaction_type, icon, description, unit_name, pickup_name, pickup_data)
+    local meta = _pickup_meta(pickup_name, pickup_data, interaction_type, icon, description, unit_name)
+
+    if interaction_type == "chest" then
+        return "crate_unknown", meta
+    end
+
+    if pickup_name == "small_clip" then
+        return "pickup_ammo_small", meta
+    end
+
+    if pickup_name == "large_clip" or pickup_name == "large_ammunition_crate" or pickup_name == "ammo_cache_deployable" then
+        return "pickup_ammo_big", meta
+    end
+
+    if pickup_name == "small_grenade" then
+        return "pickup_grenade", meta
+    end
+
+    if pickup_name == "small_metal" or pickup_name == "large_metal" then
+        return "material_plasteel", meta
+    end
+
+    if pickup_name == "small_platinum" or pickup_name == "large_platinum" then
+        return "material_diamantine", meta
+    end
+
+    if pickup_name and _string_starts_with(pickup_name, "expedition_currency_") then
+        return "material_expeditions_currency", meta
+    end
+
+    if pickup_name == "expedition_loot_player_drop" or (pickup_name and _string_starts_with(pickup_name, "expedition_loot_small_")) then
+        return "material_expeditions_loot", meta
+    end
+
+    if pickup_name == "ammo_cache_pocketable" then
+        return "pocketable_ammo_crate", meta
+    end
+
+    if pickup_name == "breach_charge_pocketable" then
+        return "pocketable_breach_charge", meta
+    end
+
+    if pickup_name == "medical_crate_pocketable" then
+        return "pocketable_medical_crate", meta
+    end
+
+    if pickup_name == "communications_hack_device" then
+        return "pocketable_corrupted_auspex_scanner", meta
+    end
+
+    if pickup_name == "grimoire" then
+        return "pocketable_grimoire", meta
+    end
+
+    if pickup_name == "tome" then
+        return "pocketable_scripture", meta
+    end
+
+    if pickup_name and _string_starts_with(pickup_name, "expedition_loot_crate_tier_") then
+        return "pocketable_expedition_loot_crate", meta
+    end
+
+    if pickup_name == "expedition_deployable_force_field_pocketable" then
+        return "pocketable_void_shield", meta
+    end
+
+    if pickup_name == "expedition_grenade_airstrike_pocketable" then
+        return "pocketable_airstrike", meta
+    end
+
+    if pickup_name == "expedition_grenade_artillery_strike_pocketable" then
+        return "pocketable_artillery_strike", meta
+    end
+
+    if pickup_name == "expedition_grenade_big_pocketable" then
+        return "pocketable_big_grenade", meta
+    end
+
+    if pickup_name == "expedition_grenade_valkyrie_hover_pocketable" then
+        return "pocketable_valkyrie_hover", meta
+    end
+
+    if pickup_name == "motion_detection_mine_explosive_pocketable" then
+        return "pocketable_landmine_explosive", meta
+    end
+
+    if pickup_name == "motion_detection_mine_fire_pocketable" then
+        return "pocketable_landmine_fire", meta
+    end
+
+    if pickup_name == "motion_detection_mine_shock_pocketable" then
+        return "pocketable_landmine_shock", meta
+    end
+
+    if pickup_name == "syringe_ability_boost_pocketable" then
+        return "pocketable_syringe_ability", meta
+    end
+
+    if pickup_name == "syringe_corruption_pocketable" then
+        return "pocketable_syringe_corruption", meta
+    end
+
+    if pickup_name == "syringe_power_boost_pocketable" then
+        return "pocketable_syringe_power", meta
+    end
+
+    if pickup_name == "syringe_speed_boost_pocketable" then
+        return "pocketable_syringe_speed", meta
+    end
+
+    local key = string.format("%s|%s|%s|%s|%s|%s",
+        tostring(pickup_name or ""),
         tostring(interaction_type or ""),
         tostring(icon or ""),
         tostring(description or ""),
-        tostring(unit_name or ""))
+        tostring(unit_name or ""),
+        tostring(pickup_data and pickup_data.group or ""))
     key = string.lower(key)
 
     if string.find(key, "ammunition", 1, true) or string.find(key, "ammo", 1, true) then
-        return "pickup_ammo"
+        return "pickup_ammo", meta
     end
 
     if string.find(key, "grenade", 1, true) then
-        return "pickup_grenade"
+        return "pickup_grenade", meta
     end
 
     if string.find(key, "medical_crate", 1, true)
@@ -570,14 +795,29 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         or string.find(key, "health_kit", 1, true)
         or string.find(key, "healthkit", 1, true)
         or string.find(key, "health", 1, true) then
-        return "pickup_medkit"
+        return "pickup_medkit", meta
     end
 
     if string.find(key, "stimm", 1, true)
         or string.find(key, "stim", 1, true)
-        or string.find(key, "syringe", 1, true)
-        or string.find(key, "pocketable", 1, true) then
-        return "pickup_stimm"
+        or string.find(key, "syringe", 1, true) then
+        return "pickup_stimm", meta
+    end
+
+    if string.find(key, "diamantine", 1, true) then
+        return "material_diamantine", meta
+    end
+
+    if string.find(key, "plasteel", 1, true) then
+        return "material_plasteel", meta
+    end
+
+    if string.find(key, "expeditions_currency", 1, true) or string.find(key, "salvage", 1, true) then
+        return "material_expeditions_currency", meta
+    end
+
+    if string.find(key, "expeditions_loot", 1, true) or string.find(key, "tech_remnant", 1, true) then
+        return "material_expeditions_loot", meta
     end
 
     if string.find(key, "grimoire", 1, true)
@@ -587,21 +827,19 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         or string.find(key, "objective_pickup", 1, true)
         or string.find(key, "luggable", 1, true)
         or string.find(key, "forge_material", 1, true)
-        or string.find(key, "expeditions_loot", 1, true)
-        or string.find(key, "expeditions_currency", 1, true)
         or string.find(key, "tainted_skull", 1, true)
         or string.find(key, "saints_pickup", 1, true)
         or string.find(key, "stolen_rations", 1, true)
         or string.find(key, "penance_collectible", 1, true) then
-        return "pickup_unknown"
+        return "pickup_unknown", meta
     end
 
-    return nil
+    return nil, meta
 end
 
 local function _classify_interactee(extension, unit)
     if not extension then
-        return nil
+        return nil, nil
     end
 
     local interaction_type = nil
@@ -623,24 +861,25 @@ local function _classify_interactee(extension, unit)
     end
 
     local ok_description, description_value = pcall(function()
-        local value = extension:description()
-        return value
+        return extension:description()
     end)
     if ok_description then
         description = _safe_lower_string(description_value)
     end
 
     local unit_name = _safe_lower_string(_safe_unit_name(unit))
+    local pickup_name = _safe_unit_pickup_name(unit)
+    local pickup_data = pickup_name and Pickups and Pickups.by_name and Pickups.by_name[pickup_name] or nil
 
-    if interaction_type == "chest" then
-        return "crate_unknown"
-    end
-
-    return _classify_pickup_like(interaction_type, icon, description, unit_name)
+    return _classify_pickup_like(interaction_type, icon, description, unit_name, pickup_name, pickup_data)
 end
 
 local function _classify_enemy_from_breed(breed_name)
     local key = string.lower(breed_name or "")
+
+    if key == "chaos_daemonhost" or string.find(key, "daemonhost", 1, true) then
+        return "enemy_daemonhost"
+    end
 
     if TWIN_BREEDS[key] or string.find(key, "twin_captain", 1, true) then
         return "enemy_karnak_twin"
@@ -651,7 +890,6 @@ local function _classify_enemy_from_breed(breed_name)
     end
 
     if MONSTROSITY_BREEDS[key]
-        or string.find(key, "daemonhost", 1, true)
         or string.find(key, "beast_of_nurgle", 1, true)
         or string.find(key, "plague_ogryn", 1, true)
         or string.find(key, "chaos_spawn", 1, true)
@@ -690,6 +928,22 @@ local function _track_unit(unit, kind, source, meta)
     end
 end
 
+local function _safe_player_slot(player)
+    if not player or not player.slot then
+        return nil
+    end
+
+    local ok_slot, slot = pcall(function()
+        return player:slot()
+    end)
+
+    if ok_slot then
+        return slot
+    end
+
+    return nil
+end
+
 local function _refresh_player_units()
     local player_manager = _player_manager()
     if not player_manager or not player_manager.players then
@@ -702,19 +956,36 @@ local function _refresh_player_units()
         local unit = player.player_unit
         if unit and _safe_unit_alive(unit) and player ~= local_player then
             local archetype_name = nil
+            local player_name = nil
+            local player_slot = _safe_player_slot(player)
+
+            local ok_player_name, resolved_player_name = pcall(function()
+                return player:name()
+            end)
+            if ok_player_name then
+                player_name = resolved_player_name
+            end
+
+            local ok_profile, profile = pcall(function()
+                return player:profile()
+            end)
+            if ok_profile and profile and profile.archetype and profile.archetype.name then
+                archetype_name = profile.archetype.name
+            end
 
             local unit_data_extension = ScriptUnit.has_extension(unit, "unit_data_system")
             if unit_data_extension and unit_data_extension.archetype_name then
                 local ok_archetype, value = pcall(function()
                     return unit_data_extension:archetype_name()
                 end)
-                if ok_archetype then
+                if ok_archetype and value ~= nil then
                     archetype_name = value
                 end
             end
 
             _track_unit(unit, "player_teammate", "player_manager", {
-                player = player:name(),
+                player = player_name,
+                player_slot = player_slot,
                 archetype_name = archetype_name,
             })
         end
@@ -763,9 +1034,9 @@ local function _scan_interactees()
             end
 
             if is_active and not is_used and show_marker then
-                local kind = _classify_interactee(extension, unit)
+                local kind, meta = _classify_interactee(extension, unit)
                 if kind then
-                    _track_unit(unit, kind, "interactee_system")
+                    _track_unit(unit, kind, "interactee_system", meta)
                 end
             end
         end
@@ -855,6 +1126,28 @@ local function _distance_squared(a, b)
     return dx * dx + dy * dy + dz * dz
 end
 
+local function _distance_squared_horizontal(a, b)
+    if not a or not b then
+        return math.huge
+    end
+
+    local ax, ay = a.x, a.y
+    local bx, by = b.x, b.y
+
+    if not _is_finite_number(ax) or not _is_finite_number(ay) then
+        return math.huge
+    end
+
+    if not _is_finite_number(bx) or not _is_finite_number(by) then
+        return math.huge
+    end
+
+    local dx = ax - bx
+    local dy = ay - by
+
+    return dx * dx + dy * dy
+end
+
 local function _collect_radar_targets()
     local player_unit = _player_unit()
     if not _safe_unit_alive(player_unit) then
@@ -866,18 +1159,25 @@ local function _collect_radar_targets()
         return {}
     end
 
+    local max_range = mod:get_radar_range()
+    local max_range_sq = max_range * max_range
     local targets = {}
 
     for unit, data in pairs(mod._tracked_units) do
         if _safe_unit_alive(unit) and data.position and data.kind and _kind_enabled(data.kind) then
-            targets[#targets + 1] = {
-                unit = unit,
-                kind = data.kind,
-                position = data.position,
-                source = data.source,
-                meta = data.meta,
-                distance_sq = _distance_squared(player_pos, data.position),
-            }
+            local distance_sq_horizontal = _distance_squared_horizontal(player_pos, data.position)
+
+            if distance_sq_horizontal <= max_range_sq then
+                targets[#targets + 1] = {
+                    unit = unit,
+                    kind = data.kind,
+                    position = data.position,
+                    source = data.source,
+                    meta = data.meta,
+                    distance_sq = distance_sq_horizontal,
+                    distance_sq_3d = _distance_squared(player_pos, data.position),
+                }
+            end
         end
     end
 
@@ -922,17 +1222,46 @@ local function _debug_log_scan()
         return
     end
 
+    local counts = {
+        enemies = 0,
+        players = 0,
+        ammo = 0,
+        crates = 0,
+        pocketables = 0,
+        materials = 0,
+        generic = 0,
+    }
+
+    for unit, data in pairs(mod._tracked_units) do
+        if _safe_unit_alive(unit) and data.kind then
+            local kind = data.kind
+
+            if _string_starts_with(kind, "enemy_") then
+                counts.enemies = counts.enemies + 1
+            elseif kind == "player_teammate" then
+                counts.players = counts.players + 1
+            elseif kind == "crate_unknown" then
+                counts.crates = counts.crates + 1
+            elseif _string_starts_with(kind, "pocketable_") then
+                counts.pocketables = counts.pocketables + 1
+            elseif _string_starts_with(kind, "material_") then
+                counts.materials = counts.materials + 1
+            elseif string.find(kind, "ammo", 1, true) then
+                counts.ammo = counts.ammo + 1
+            else
+                counts.generic = counts.generic + 1
+            end
+        end
+    end
+
     local signature = table.concat({
-        tostring(_count_kind("pickup_ammo")),
-        tostring(_count_kind("pickup_grenade")),
-        tostring(_count_kind("pickup_medkit")),
-        tostring(_count_kind("pickup_stimm")),
-        tostring(_count_kind("pickup_unknown")),
-        tostring(_count_kind("crate_unknown")),
-        tostring(_count_kind("enemy_monstrosity")),
-        tostring(_count_kind("enemy_captain")),
-        tostring(_count_kind("enemy_karnak_twin")),
-        tostring(_count_kind("player_teammate")),
+        tostring(counts.enemies),
+        tostring(counts.players),
+        tostring(counts.ammo),
+        tostring(counts.crates),
+        tostring(counts.pocketables),
+        tostring(counts.materials),
+        tostring(counts.generic),
         tostring(#mod._radar_targets),
         tostring(_safe_mission_name()),
         tostring(_safe_presence_activity()),
@@ -946,17 +1275,14 @@ local function _debug_log_scan()
     mod._last_scan_signature = signature
 
     mod:echo(string.format(
-        "Radar scan | ammo=%d grenades=%d medkits=%d stimms=%d pickup_unknown=%d crates=%d monstrosities=%d captains=%d twins=%d teammates=%d tracked=%d radar_targets=%d mission=%s activity=%s mechanism=%s",
-        _count_kind("pickup_ammo"),
-        _count_kind("pickup_grenade"),
-        _count_kind("pickup_medkit"),
-        _count_kind("pickup_stimm"),
-        _count_kind("pickup_unknown"),
-        _count_kind("crate_unknown"),
-        _count_kind("enemy_monstrosity"),
-        _count_kind("enemy_captain"),
-        _count_kind("enemy_karnak_twin"),
-        _count_kind("player_teammate"),
+        "Radar scan | enemies=%d players=%d ammo=%d crates=%d pocketables=%d materials=%d generic=%d tracked=%d radar_targets=%d mission=%s activity=%s mechanism=%s",
+        counts.enemies,
+        counts.players,
+        counts.ammo,
+        counts.crates,
+        counts.pocketables,
+        counts.materials,
+        counts.generic,
         _table_size(mod._tracked_units),
         #mod._radar_targets,
         tostring(_safe_mission_name()),
@@ -1012,7 +1338,8 @@ local function _update_internal(dt, t)
         return
     end
 
-    local allowed, reason, gameplay_t, mission_name, activity, mechanism_name, player_unit, player_pos = _get_runtime_state()
+    local allowed, reason, gameplay_t, mission_name, activity, mechanism_name, player_unit, player_pos =
+        _get_runtime_state()
     local scan_clock = gameplay_t or t or 0
 
     if mod._last_update_t and scan_clock and scan_clock == mod._last_update_t then
@@ -1085,7 +1412,9 @@ mod:register_hud_element({
     use_hud_scale = true,
 })
 
-_log_once("radar_hook_reg_marker", "Radar registering HudElementWorldMarkers hook")
+if mod:get("debug_mode") then
+    _log_once("radar_hook_reg_marker", "Radar registering HudElementWorldMarkers hook")
+end
 mod:hook_safe("HudElementWorldMarkers", "event_add_world_marker_unit", function(self, unit, template_name, position, ...)
     if mod:get("enable_radar") == false or not _is_allowed_runtime() then
         return
@@ -1134,7 +1463,15 @@ function mod:get_radar_size()
 end
 
 function mod:get_radar_range()
-    return self:get("radar_range") or 35
+    local value = tonumber(self:get("radar_range")) or 40
+
+    if value < 25 then
+        value = 25
+    elseif value > 100 then
+        value = 100
+    end
+
+    return value
 end
 
 function mod:get_radar_origin(size)
@@ -1150,7 +1487,7 @@ function mod:project_target_to_radar(player_pos, player_rot, target_pos, max_rad
         return nil, nil
     end
 
-    range = tonumber(range) or 35
+    range = tonumber(range) or 40
     max_radius = tonumber(max_radius) or 0
     if range <= 0 or max_radius <= 0 then
         return nil, nil
@@ -1159,6 +1496,11 @@ function mod:project_target_to_radar(player_pos, player_rot, target_pos, max_rad
     local dx = target_pos.x - player_pos.x
     local dy = target_pos.y - player_pos.y
     if not _is_finite_number(dx) or not _is_finite_number(dy) then
+        return nil, nil
+    end
+
+    local distance_sq_horizontal = dx * dx + dy * dy
+    if not _is_finite_number(distance_sq_horizontal) or distance_sq_horizontal > range * range then
         return nil, nil
     end
 
@@ -1183,17 +1525,6 @@ function mod:project_target_to_radar(player_pos, player_rot, target_pos, max_rad
     local py = -local_y * radar_scale
     if not _is_finite_number(px) or not _is_finite_number(py) then
         return nil, nil
-    end
-
-    local dist_sq = px * px + py * py
-    local max_sq = max_radius * max_radius
-    if dist_sq > max_sq then
-        local dist = math.sqrt(dist_sq)
-        if dist > 0 then
-            local clamp = max_radius / dist
-            px = px * clamp
-            py = py * clamp
-        end
     end
 
     return px, py
