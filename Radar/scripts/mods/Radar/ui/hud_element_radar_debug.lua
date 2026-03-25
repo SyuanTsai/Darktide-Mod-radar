@@ -29,6 +29,10 @@ local PLAYER_CLASS_ICONS = {
 }
 
 local function _log_once(bucket, key, message)
+    if mod:get("debug_mode") ~= true then
+        return
+    end
+
     if bucket[key] then
         return
     end
@@ -100,7 +104,7 @@ local PRESENTATIONS = {
         size = 16,
     },
     pickup_ammo_small = {
-        icon = "content/ui/materials/hud/communication_wheel/icons/ammo",
+        icon = "content/ui/materials/hud/interactions/icons/ammunition",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
@@ -109,28 +113,108 @@ local PRESENTATIONS = {
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
+    pickup_large_ammunition_crate = {
+        icon = "content/ui/materials/hud/interactions/icons/pocketable_ammo",
+        color = _widget_color(255, 255, 255, 255),
+        size = 14,
+    },
     pickup_grenade = {
         icon = "content/ui/materials/hud/interactions/icons/grenade",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
+    pickup_ammo_cache_deployable = {
+        icon = "content/ui/materials/hud/interactions/icons/pocketable_ammo",
+        color = _widget_color(255, 215, 237, 188),
+        size = 14,
+    },
     pickup_medkit = {
-        icon = "content/ui/materials/hud/interactions/icons/respawn",
+        icon = "content/ui/materials/hud/interactions/icons/pocketable_medkit",
+        color = _widget_color(255, 38, 205, 26),
+        size = 14,
+    },
+    pickup_coordinates_paper = {
+        icon = "content/ui/materials/icons/system/escape/credits",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
-    pickup_stimm = {
-        icon = "content/ui/materials/icons/pocketables/hud/small/party_syringe_power",
-        color = _widget_color(255, 255, 255, 255),
+    luggable_data_reliquary = {
+        icon = "content/ui/materials/icons/player_states/lugged",
+        color = _widget_color(255, 192, 160, 0),
+        size = 20,
+    },
+    luggable_power_cell_teal = {
+        icon = "content/ui/materials/icons/player_states/lugged",
+        color = _widget_color(255, 0, 200, 200),
+        size = 20,
+    },
+    luggable_power_cell_orange = {
+        icon = "content/ui/materials/icons/player_states/lugged",
+        color = _widget_color(255, 255, 140, 0),
+        size = 20,
+    },
+    luggable_cryonic_rod = {
+        icon = "content/ui/materials/icons/player_states/lugged",
+        color = _widget_color(255, 180, 220, 255),
+        size = 20,
+    },
+    luggable_moebian_pox_zetaphyte_13_sample = {
+        icon = "content/ui/materials/icons/player_states/lugged",
+        color = _widget_color(255, 150, 190, 60),
+        size = 20,
+    },
+    luggable_vacuum_capsule = {
+        icon = "content/ui/materials/icons/player_states/lugged",
+        color = _widget_color(255, 80, 85, 90),
+        size = 20,
+    },
+    luggable_special_issue_ammo = {
+        icon = "content/ui/materials/icons/player_states/lugged",
+        color = _widget_color(255, 95, 125, 70),
+        size = 20,
+    },
+    luggable_prismata_crystal_repository = {
+        icon = "content/ui/materials/icons/player_states/lugged",
+        color = _widget_color(255, 255, 70, 90),
+        size = 20,
+    },
+    luggable_promethium_barrel = {
+        icon = "content/ui/materials/hud/interactions/icons/barrel_explosive",
+        color = _widget_color(255, 255, 110, 0),
         size = 14,
     },
     pickup_unknown = {
-        icon = "content/ui/materials/icons/pickups/default",
+        icon = "content/ui/materials/icons/traits/empty",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
-    crate_unknown = {
+    pickup_mortis_relic = {
+        icon = "content/ui/materials/icons/item_types/devices",
+        color = _widget_color(255, 110, 95, 125),
+        size = 14,
+    },
+    pickup_martyr_skull = {
+        icon = "content/ui/materials/hud/interactions/icons/enemy",
+        color = _widget_color(255, 255, 215, 0),
+        size = 14,
+    },
+    pickup_tainted_skull = {
+        icon = "content/ui/materials/hud/interactions/icons/enemy",
+        color = _widget_color(255, 150, 190, 60),
+        size = 14,
+    },
+    pickup_saints = {
+        icon = "content/ui/materials/icons/circumstances/live_event_01",
+        color = _widget_color(255, 192, 160, 0),
+        size = 14,
+    },
+    pickup_stolen_rations = {
         icon = "content/ui/materials/icons/pickups/default",
+        color = _widget_color(255, 150, 190, 60),
+        size = 14,
+    },
+    crate_unknown = {
+        icon = "content/ui/materials/icons/generic/loot",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
@@ -154,38 +238,38 @@ local PRESENTATIONS = {
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
+    material_expeditions_loot_player_drop = {
+        icon = "content/ui/materials/icons/notifications/tech_dropped",
+        color = _widget_color(255, 255, 255, 255),
+        size = 14,
+    },
     pocketable_ammo_crate = {
         icon = "content/ui/materials/icons/pocketables/hud/small/party_ammo_crate",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
-    pocketable_breach_charge = {
-        icon = "content/ui/materials/icons/pocketables/hud/small/party_ammo_crate",
+    pocketable_anti_rad_stimm = {
+        icon = "content/ui/materials/hud/interactions/icons/time_syringe",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
     pocketable_corrupted_auspex_scanner = {
-        icon = "content/ui/materials/icons/pocketables/hud/small/party_corrupted_auspex_scanner",
-        color = _widget_color(255, 255, 255, 255),
-        size = 14,
-    },
-    pocketable_expedition_loot_crate = {
-        icon = "content/ui/materials/icons/pocketables/hud/small/party_scripture",
-        color = _widget_color(255, 255, 255, 255),
+        icon = "content/ui/materials/icons/pocketables/hud/auspex_scanner",
+        color = _widget_color(255, 255, 120, 0),
         size = 14,
     },
     pocketable_airstrike = {
-        icon = "content/ui/materials/icons/throwables/hud/valkyrie_payload",
+        icon = "content/ui/materials/hud/interactions/icons/valkyrie_payload",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
     pocketable_artillery_strike = {
-        icon = "content/ui/materials/icons/throwables/hud/artillery_strike",
+        icon = "content/ui/materials/hud/interactions/icons/artillery_strike",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
     pocketable_big_grenade = {
-        icon = "content/ui/materials/icons/throwables/hud/big_fn_grenade",
+        icon = "content/ui/materials/hud/interactions/icons/big_fn_grenade",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
@@ -195,17 +279,17 @@ local PRESENTATIONS = {
         size = 14,
     },
     pocketable_landmine_explosive = {
-        icon = "content/ui/materials/icons/pocketables/hud/landmine_explosive",
+        icon = "content/ui/materials/hud/interactions/icons/landmine_explosive",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
     pocketable_landmine_fire = {
-        icon = "content/ui/materials/icons/pocketables/hud/landmine_fire",
+        icon = "content/ui/materials/hud/interactions/icons/landmine_fire",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
     pocketable_landmine_shock = {
-        icon = "content/ui/materials/icons/pocketables/hud/landmine_shock",
+        icon = "content/ui/materials/hud/interactions/icons/landmine_shock",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
@@ -221,26 +305,26 @@ local PRESENTATIONS = {
     },
     pocketable_syringe_ability = {
         icon = "content/ui/materials/icons/pocketables/hud/small/party_syringe_ability",
-        color = _widget_color(255, 255, 255, 255),
+        color = _widget_color(255, 230, 192, 13),
         size = 14,
     },
     pocketable_syringe_corruption = {
         icon = "content/ui/materials/icons/pocketables/hud/small/party_syringe_corruption",
-        color = _widget_color(255, 255, 255, 255),
+        color = _widget_color(255, 38, 205, 26),
         size = 14,
     },
     pocketable_syringe_power = {
         icon = "content/ui/materials/icons/pocketables/hud/small/party_syringe_power",
-        color = _widget_color(255, 255, 255, 255),
+        color = _widget_color(255, 205, 51, 26),
         size = 14,
     },
     pocketable_syringe_speed = {
         icon = "content/ui/materials/icons/pocketables/hud/small/party_syringe_speed",
-        color = _widget_color(255, 255, 255, 255),
+        color = _widget_color(255, 0, 127, 218),
         size = 14,
     },
     pocketable_valkyrie_hover = {
-        icon = "content/ui/materials/icons/throwables/hud/valkyrie_hover",
+        icon = "content/ui/materials/hud/interactions/icons/valkyrie_hover",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
@@ -298,7 +382,28 @@ local function _draw_marker_brackets(ui_renderer, x, y, z, size, color)
     _draw_box(ui_renderer, right - thickness, bottom - length, z, thickness, length, bracket_color)
 end
 
-local function _draw_radar_frame(ui_renderer, x, y, z, size)
+local function _draw_circle_fill(ui_renderer, center_x, center_y, z, radius, color)
+    local integer_radius = math.max(1, math.floor(radius))
+
+    for dy = -integer_radius, integer_radius do
+        local span = math.floor(math.sqrt(math.max(0, integer_radius * integer_radius - dy * dy)))
+        _draw_box(ui_renderer, center_x - span, center_y + dy, z, span * 2 + 1, 1, color)
+    end
+end
+
+local function _draw_circle_outline(ui_renderer, center_x, center_y, z, radius, color)
+    local point_size = radius >= 90 and 2 or 1
+    local steps = 64
+
+    for i = 0, steps - 1 do
+        local angle = (math.pi * 2 * i) / steps
+        local px = center_x + math.cos(angle) * radius
+        local py = center_y + math.sin(angle) * radius
+        _draw_box(ui_renderer, px - point_size / 2, py - point_size / 2, z, point_size, point_size, color)
+    end
+end
+
+local function _draw_radar_frame_square(ui_renderer, x, y, z, size)
     local thickness = 2
     local center = size / 2
 
@@ -309,6 +414,26 @@ local function _draw_radar_frame(ui_renderer, x, y, z, size)
     _draw_box(ui_renderer, x + size - thickness, y, z + 1, thickness, size, _color(255, 255, 255, 255))
     _draw_box(ui_renderer, x + center, y, z + 1, 1, size, _color(90, 255, 255, 255))
     _draw_box(ui_renderer, x, y + center, z + 1, size, 1, _color(90, 255, 255, 255))
+end
+
+local function _draw_radar_frame_circle(ui_renderer, x, y, z, size)
+    local center_x = x + size / 2
+    local center_y = y + size / 2
+    local radius = math.max(1, size / 2 - 1)
+
+    _draw_circle_fill(ui_renderer, center_x, center_y, z, radius, _color(90, 0, 0, 0))
+    _draw_circle_outline(ui_renderer, center_x, center_y, z + 1, radius, _color(255, 255, 255, 255))
+    _draw_box(ui_renderer, center_x, y + 1, z + 1, 1, math.max(1, size - 2), _color(90, 255, 255, 255))
+    _draw_box(ui_renderer, x + 1, center_y, z + 1, math.max(1, size - 2), 1, _color(90, 255, 255, 255))
+end
+
+local function _draw_radar_frame(ui_renderer, x, y, z, size)
+    if mod:get_radar_style() == "circle" then
+        _draw_radar_frame_circle(ui_renderer, x, y, z, size)
+        return
+    end
+
+    _draw_radar_frame_square(ui_renderer, x, y, z, size)
 end
 
 local function _marker_definition()
@@ -331,7 +456,7 @@ local function _marker_definition()
     }, "screen")
 end
 
-local MAX_RADAR_MARKERS = 64
+local MAX_RADAR_MARKERS = 100
 
 local function _create_marker_widget(index)
     return UIWidget.init("RadarMarker_" .. index, _marker_definition())
@@ -352,15 +477,74 @@ local function _ensure_marker_widgets(self)
         self._marker_widgets[i] = _create_marker_widget(i)
     end
 
-    if mod:get("debug_mode") then
-        _log_once(_logged_draws, "widget_pool_init",
-            string.format("[Radar] widget pool created | count=%d", MAX_RADAR_MARKERS))
+    _log_once(_logged_draws, "widget_pool_init",
+        string.format("[Radar] widget pool created | count=%d", MAX_RADAR_MARKERS))
+end
+
+local function _icon_scale_factor()
+    if mod:get("scale_icons_with_radar_size") == false then
+        return 1
     end
+
+    local radar_size = tonumber(mod:get("radar_size")) or 180
+    local scale = radar_size / 180
+
+    if scale < 0.6 then
+        scale = 0.6
+    elseif scale > 2.0 then
+        scale = 2.0
+    end
+
+    return scale
+end
+
+local function _scaled_icon_size(base_size)
+    local scaled = math.floor((tonumber(base_size) or 14) * _icon_scale_factor() + 0.5)
+
+    if scaled < 10 then
+        scaled = 10
+    end
+
+    return scaled
+end
+
+local function _is_enemy_kind(kind)
+    return kind ~= nil and string.sub(tostring(kind), 1, 6) == "enemy_"
+end
+
+local function _display_style_for_kind(kind)
+    if kind == "player_teammate" then
+        local value = tostring(mod:get("player_display_style") or "marked_icon")
+        return value == "icon_only" and "icon_only" or "marked_icon"
+    end
+
+    if _is_enemy_kind(kind) then
+        local value = tostring(mod:get("enemy_display_style") or "marked_icon")
+        return value == "icon_only" and "icon_only" or "marked_icon"
+    end
+
+    return "icon_only"
+end
+
+local function _should_draw_marker_brackets(target)
+    return _display_style_for_kind(target and target.kind) == "marked_icon"
+end
+
+local function _center_dot_color(snapshot)
+    local slot_colors = UISettings and UISettings.player_slot_colors
+    local player_slot = snapshot and snapshot.player_slot or nil
+    local player_color = player_slot and slot_colors and slot_colors[player_slot] or nil
+
+    if player_color then
+        return _widget_to_color(_any_to_widget_color(player_color))
+    end
+
+    return _color(255, 0, 255, 0)
 end
 
 local function _apply_marker_widget(widget, visual, x, y, z)
     local style = widget.style.icon
-    local size = visual and visual.size or 14
+    local size = _scaled_icon_size(visual and visual.size or 14)
 
     widget.content.icon = visual and visual.icon or nil
     style.offset[1] = math.floor((x or 0) + 0.5)
@@ -504,6 +688,7 @@ HudElementRadarDebug.draw = function(self, dt, t, ui_renderer, render_settings, 
         _draw_radar_frame(ui_renderer, x, y, z + 1, size)
 
         local next_widget_index = 1
+        local max_markers = mod:get_max_radar_markers()
 
         if snapshot and snapshot.player_position then
             local player_pos = snapshot.player_position
@@ -511,20 +696,20 @@ HudElementRadarDebug.draw = function(self, dt, t, ui_renderer, render_settings, 
             local live_camera_rotation = _safe_player_camera_rotation(self)
             local projection_rotation = live_camera_rotation or snapshot.player_rotation
 
-            _draw_box(ui_renderer, center_x - 2, center_y - 2, z + 4, 4, 4, _color(255, 0, 255, 0))
+            _draw_box(ui_renderer, center_x - 2, center_y - 2, z + 4, 4, 4, _center_dot_color(snapshot))
 
-            if #targets > MAX_RADAR_MARKERS then
-                if mod:get("debug_mode") then
-                    _log_once(
-                        _logged_draws,
-                        "marker_pool_overflow",
-                        string.format("[Radar] marker pool overflow | targets=%d pool=%d", #targets, MAX_RADAR_MARKERS)
-                    )
-                end
+            if #targets > max_markers then
+                _log_once(
+                    _logged_draws,
+                    "marker_pool_overflow:" .. tostring(max_markers),
+                    string.format("[Radar] marker pool overflow | targets=%d configured=%d pool=%d", #targets,
+                        max_markers,
+                        MAX_RADAR_MARKERS)
+                )
             end
 
             for i = 1, #targets do
-                if next_widget_index > MAX_RADAR_MARKERS then
+                if next_widget_index > max_markers or next_widget_index > MAX_RADAR_MARKERS then
                     break
                 end
 
@@ -534,39 +719,35 @@ HudElementRadarDebug.draw = function(self, dt, t, ui_renderer, render_settings, 
 
                 if px and py then
                     local visual = _target_visual(target)
-                    local icon_size = visual and visual.size or 14
+                    local icon_size = _scaled_icon_size(visual and visual.size or 14)
                     local draw_x = center_x + px - icon_size / 2
                     local draw_y = center_y + py - icon_size / 2
                     local widget = self._marker_widgets[next_widget_index]
 
-                    if visual and visual.accent_color then
+                    if visual and visual.accent_color and _should_draw_marker_brackets(target) then
                         _draw_marker_brackets(ui_renderer, draw_x, draw_y, z + 4, icon_size, visual.accent_color)
                     end
 
                     _apply_marker_widget(widget, visual, draw_x, draw_y, z + 5)
 
-                    if mod:get("debug_mode") then
-                        _log_once(
-                            _logged_draws,
-                            "widget_material:" .. tostring(visual and visual.icon),
-                            string.format("[Radar] widget material scheduled | material=%s",
-                                tostring(visual and visual.icon))
-                        )
-                    end
+                    _log_once(
+                        _logged_draws,
+                        "widget_material:" .. tostring(visual and visual.icon),
+                        string.format("[Radar] widget material scheduled | material=%s",
+                            tostring(visual and visual.icon))
+                    )
 
                     local widget_ok, widget_err = pcall(function()
                         UIWidget.draw(widget, ui_renderer)
                     end)
 
                     if not widget_ok then
-                        if mod:get("debug_mode") then
-                            _log_once(
-                                _logged_draws,
-                                "widget_draw_fail:" .. tostring(visual and visual.icon),
-                                string.format("[Radar] widget draw failed | material=%s err=%s",
-                                    tostring(visual and visual.icon), tostring(widget_err))
-                            )
-                        end
+                        _log_once(
+                            _logged_draws,
+                            "widget_draw_fail:" .. tostring(visual and visual.icon),
+                            string.format("[Radar] widget draw failed | material=%s err=%s",
+                                tostring(visual and visual.icon), tostring(widget_err))
+                        )
                         _draw_box(ui_renderer, draw_x, draw_y, z + 5, icon_size, icon_size,
                             _widget_to_color(visual and visual.color or nil))
                     end

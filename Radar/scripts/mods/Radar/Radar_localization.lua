@@ -9,24 +9,6 @@ return {
     general_group = {
         en = "General",
     },
-
-    other_pickups_group = {
-        en = "Other Pickups",
-    },
-
-    pocketables_group = {
-        en = "Pocketables",
-    },
-
-    materials_group = {
-        en = "Collectable Materials",
-    },
-    enemies_group = {
-        en = "Enemies",
-    },
-    players_group = {
-        en = "Players",
-    },
     enable_radar = {
         en = "Enable radar",
     },
@@ -39,113 +21,232 @@ return {
     highlight_distance = {
         en = "Highlight distance",
     },
-    debug_mode = {
-        en = "Debug mode",
+    max_radar_markers = {
+        en = "Max radar markers",
+    },
+    scale_icons_with_radar_size = {
+        en = "Scale icons with radar size",
+    },
+    radar_style = {
+        en = "Radar style",
+    },
+    radar_style_square = {
+        en = "Square",
+    },
+    radar_style_circle = {
+        en = "Circle",
+    },
+    enemy_display_style = {
+        en = "Enemy marker style",
+    },
+    player_display_style = {
+        en = "Player marker style",
+    },
+    display_style_icon_only = {
+        en = "Icon only",
+    },
+    display_style_marked_icon = {
+        en = "Marked icon",
     },
 
+    common_pickups_group = {
+        en = "Common Pickups",
+    },
+    show_crates = {
+        en = "crates",
+    },
     show_ammo_small = {
-        en = "Show ammo small",
+        en = "Ammo Tin",
     },
     show_ammo_big = {
-        en = "Show ammo big",
+        en = "Ammo Stash",
     },
     show_grenades = {
-        en = "Show grenades",
+        en = "Grenade",
     },
-    show_medkits = {
-        en = "Show medkits",
+    show_pocketable_ammo_crate = {
+        en = "Ammo Crate",
     },
-    show_stimms = {
-        en = "Show stimms",
+    show_pocketable_medical_crate = {
+        en = "Medical Crate",
+    },
+    show_pocketable_syringe_ability = {
+        en = "Concentration Stimm",
+    },
+    show_pocketable_syringe_corruption = {
+        en = "Med Stimm",
+    },
+    show_pocketable_syringe_power = {
+        en = "Combat Stimm",
+    },
+    show_pocketable_syringe_speed = {
+        en = "Celerity Stimm",
+    },
+
+    materials_group = {
+        en = "Collectable Materials",
+    },
+    show_diamantine = {
+        en = "Diamantine",
+    },
+    show_plasteel = {
+        en = "Plasteel",
+    },
+
+    primary_objective_group = {
+        en = "Primary Objective Items",
+    },
+    show_power_cell_teal = {
+        en = "Power Cell",
+    },
+    show_cryonic_rod = {
+        en = "Cryonic Rod",
+    },
+    show_moebian_pox_zetaphyte_13_sample = {
+        en = "Moebian Pox Zetaphyte-13 Sample",
+    },
+    show_vacuum_capsule = {
+        en = "Vacuum Capsule",
+    },
+    show_special_issue_ammo = {
+        en = "Special Issue Ammo",
+    },
+    show_prismata_crystal_repository = {
+        en = "Prismata Crystal Repository",
+    },
+    show_mortis_relic = {
+        en = "Mortis Relic",
+    },
+    show_coordinates_paper = {
+        en = "Coordinates",
+    },
+
+    secondary_objective_group = {
+        en = "Secondary Objective Items",
+    },
+    show_pocketable_grimoire = {
+        en = "Grimoire",
+    },
+    show_pocketable_scripture = {
+        en = "Scripture",
+    },
+
+    expeditions_specific_group = {
+        en = "Expeditions Specific Items",
+    },
+    show_expeditions_currency = {
+        en = "Salvage",
+    },
+    show_expeditions_loot = {
+        en = "Tech-Remnants",
+    },
+    show_expeditions_dropped_loot = {
+        en = "Dropped Tech-Remnants",
+    },
+    show_data_reliquaries = {
+        en = "Data Reliquaries",
+    },
+    show_pocketable_landmine_explosive = {
+        en = "Explosive mine",
+    },
+    show_pocketable_landmine_fire = {
+        en = "Fire Mine",
+    },
+    show_pocketable_landmine_shock = {
+        en = "Shock Mine",
+    },
+    show_pocketable_void_shield = {
+        en = "Void Shell",
+    },
+    show_pocketable_airstrike = {
+        en = "Bombing Run Signal Marker",
+    },
+    show_pocketable_artillery_strike = {
+        en = "Artillery Locator Beacon",
+    },
+    show_pocketable_big_grenade = {
+        en = "Modified Grenade",
+    },
+    show_pocketable_valkyrie_hover = {
+        en = "Fire-Support Signal Marker",
+    },
+    show_promethium_barrel = {
+        en = "Promethium Barrel",
+    },
+    show_large_ammunition_crate = {
+        en = "Large Ammunition Crate",
+    },
+    show_anti_rad_stimm = {
+        en = "Anti-Rad Stimms",
+    },
+
+    martyr_s_skull_group = {
+        en = "Martyr's Skull Items",
+    },
+    show_martyr_skull = {
+        en = "Martyr's Skull",
+    },
+    show_power_cell_orange = {
+        en = "Power Cell",
+    },
+
+    deployables_group = {
+        en = "Deployed Items",
+    },
+    show_ammo_crate_deployable = {
+        en = "Ammo Crate",
+    },
+    show_medical_crate_deployable = {
+        en = "Medical Crate",
+    },
+
+    enemies_group = {
+        en = "Enemies",
+    },
+    show_monstrosities = {
+        en = "Monstrosities",
+    },
+    show_captains = {
+        en = "Captains",
+    },
+    show_karnak_twins = {
+        en = "Karnak Twins",
+    },
+
+    players_group = {
+        en = "Players",
+    },
+    show_teammates = {
+        en = "Teammates",
+    },
+
+    event_group = {
+        en = "Event Related Items",
+    },
+    show_tainted_skull = {
+        en = "Tainted Skulls",
+    },
+    show_corrupted_auspex_scanner = {
+        en = "Tainted Communications Device",
+    },
+    show_saints = {
+        en = "Holy Relics",
+    },
+    show_stolen_rations = {
+        en = "Stolen Rations",
+    },
+
+    debug_group = {
+        en = "Debugging",
+    },
+    debug_mode = {
+        en = "Debug logs",
     },
     show_unknown_pickups = {
         en = "Show unknown pickups",
     },
-    show_crates = {
-        en = "Show crates",
-    },
 
-    show_pocketable_ammo_crate = {
-        en = "Show pocketable ammo crate",
-    },
-    show_pocketable_breach_charge = {
-        en = "Show pocketable breach charge",
-    },
-    show_pocketable_medical_crate = {
-        en = "Show pocketable medical crate",
-    },
     show_pocketable_corrupted_auspex_scanner = {
-        en = "Show pocketable corrupted auspex scanner",
-    },
-    show_pocketable_grimoire = {
-        en = "Show pocketable grimoire",
-    },
-    show_pocketable_scripture = {
-        en = "Show pocketable scripture",
-    },
-    show_pocketable_expedition_loot_crate = {
-        en = "Show pocketable expedition loot crate",
-    },
-    show_pocketable_syringe_ability = {
-        en = "Show syringe of ability",
-    },
-    show_pocketable_syringe_corruption = {
-        en = "Show syringe of corruption healing",
-    },
-    show_pocketable_syringe_power = {
-        en = "Show syringe of power",
-    },
-    show_pocketable_syringe_speed = {
-        en = "Show syringe of speed",
-    },
-    show_pocketable_landmine_explosive = {
-        en = "Show explosive mine",
-    },
-    show_pocketable_landmine_fire = {
-        en = "Show fire mine",
-    },
-    show_pocketable_landmine_shock = {
-        en = "Show shock mine",
-    },
-    show_pocketable_void_shield = {
-        en = "Show void shield",
-    },
-    show_pocketable_airstrike = {
-        en = "Show airstrike grenade",
-    },
-    show_pocketable_artillery_strike = {
-        en = "Show artillery strike grenade",
-    },
-    show_pocketable_big_grenade = {
-        en = "Show big grenade",
-    },
-    show_pocketable_valkyrie_hover = {
-        en = "Show valkyrie hover grenade",
-    },
-
-    show_diamantine = {
-        en = "Show diamantine",
-    },
-    show_plasteel = {
-        en = "Show plasteel",
-    },
-    show_expeditions_currency = {
-        en = "Show expeditions currency",
-    },
-    show_expeditions_loot = {
-        en = "Show expeditions loot",
-    },
-
-    show_monstrosities = {
-        en = "Show monstrosities",
-    },
-    show_captains = {
-        en = "Show captains",
-    },
-    show_karnak_twins = {
-        en = "Show Karnak twins",
-    },
-    show_teammates = {
-        en = "Show teammates",
+        en = "pocketable corrupted auspex scanner",
     },
 }

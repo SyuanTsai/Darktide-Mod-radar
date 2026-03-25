@@ -230,6 +230,10 @@ local function _table_size(t)
 end
 
 local function _log_once(key, text)
+    if mod:get("debug_mode") ~= true then
+        return
+    end
+
     if mod._logged_units[key] then
         return
     end
@@ -262,6 +266,67 @@ local function _safe_unit_position(unit)
     end
 
     return nil
+end
+
+local function _is_enemy_kind(kind)
+    return kind ~= nil and _string_starts_with(kind, "enemy_")
+end
+
+local function _safe_health_alive(unit)
+    if not unit or not ScriptUnit or not ScriptUnit.has_extension then
+        return nil
+    end
+
+    local health_extension = ScriptUnit.has_extension(unit, "health_system")
+    if not health_extension or not health_extension.is_alive then
+        return nil
+    end
+
+    local ok_alive, is_alive = pcall(function()
+        return health_extension:is_alive()
+    end)
+
+    if ok_alive then
+        return is_alive
+    end
+
+    return nil
+end
+
+local function _is_owned_by_death_manager(unit)
+    if not unit or not ScriptUnit or not ScriptUnit.has_extension then
+        return false
+    end
+
+    local unit_data_extension = ScriptUnit.has_extension(unit, "unit_data_system")
+    if not unit_data_extension or not unit_data_extension.is_owned_by_death_manager then
+        return false
+    end
+
+    local ok_owned, owned = pcall(function()
+        return unit_data_extension:is_owned_by_death_manager()
+    end)
+
+    return ok_owned and owned or false
+end
+
+local function _is_trackable_unit_alive(unit, kind)
+    if not _safe_unit_alive(unit) then
+        return false
+    end
+
+    if _is_enemy_kind(kind) then
+        if _is_owned_by_death_manager(unit) then
+            return false
+        end
+
+        local health_alive = _safe_health_alive(unit)
+        if health_alive == false then
+            return false
+        end
+    end
+
+    return true
 end
 
 local function _safe_world_rotation(unit, node)
@@ -665,6 +730,7 @@ end
 local function _classify_pickup_like(interaction_type, icon, description, unit_name, pickup_name, pickup_data)
     local meta = _pickup_meta(pickup_name, pickup_data, interaction_type, icon, description, unit_name)
 
+    -- default items
     if interaction_type == "chest" then
         return "crate_unknown", meta
     end
@@ -673,7 +739,7 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         return "pickup_ammo_small", meta
     end
 
-    if pickup_name == "large_clip" or pickup_name == "large_ammunition_crate" or pickup_name == "ammo_cache_deployable" then
+    if pickup_name == "large_clip" then
         return "pickup_ammo_big", meta
     end
 
@@ -689,30 +755,64 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         return "material_diamantine", meta
     end
 
-    if pickup_name and _string_starts_with(pickup_name, "expedition_currency_") then
-        return "material_expeditions_currency", meta
-    end
-
-    if pickup_name == "expedition_loot_player_drop" or (pickup_name and _string_starts_with(pickup_name, "expedition_loot_small_")) then
-        return "material_expeditions_loot", meta
-    end
-
     if pickup_name == "ammo_cache_pocketable" then
         return "pocketable_ammo_crate", meta
-    end
-
-    if pickup_name == "breach_charge_pocketable" then
-        return "pocketable_breach_charge", meta
     end
 
     if pickup_name == "medical_crate_pocketable" then
         return "pocketable_medical_crate", meta
     end
 
-    if pickup_name == "communications_hack_device" then
-        return "pocketable_corrupted_auspex_scanner", meta
+    if pickup_name == "syringe_ability_boost_pocketable" then
+        return "pocketable_syringe_ability", meta
     end
 
+    if pickup_name == "syringe_corruption_pocketable" then
+        return "pocketable_syringe_corruption", meta
+    end
+
+    if pickup_name == "syringe_power_boost_pocketable" then
+        return "pocketable_syringe_power", meta
+    end
+
+    if pickup_name == "syringe_speed_boost_pocketable" then
+        return "pocketable_syringe_speed", meta
+    end
+
+    -- primary objective items
+    if pickup_name == "battery_01_luggable" then
+        return "luggable_power_cell_teal", meta
+    end
+
+    if pickup_name == "control_rod_01_luggable" then
+        return "luggable_cryonic_rod", meta
+    end
+
+    if pickup_name == "container_01_luggable" then
+        return "luggable_moebian_pox_zetaphyte_13_sample", meta
+    end
+
+    if pickup_name == "container_02_luggable" then
+        return "luggable_vacuum_capsule", meta
+    end
+
+    if pickup_name == "container_03_luggable" then
+        return "luggable_special_issue_ammo", meta
+    end
+
+    if pickup_name == "prismata_case_01_luggable" then
+        return "luggable_prismata_crystal_repository", meta
+    end
+
+    if pickup_name == "hordes_mcguffin" then
+        return "pickup_mortis_relic", meta
+    end
+
+    if pickup_name == "paper_pickup" or pickup_name == "paper_pickup_02" or pickup_name == "paper_pickup_03" or pickup_name == "paper_pickup_04" then
+        return "pickup_coordinates_paper", meta
+    end
+
+    -- secondary objective items
     if pickup_name == "grimoire" then
         return "pocketable_grimoire", meta
     end
@@ -721,8 +821,21 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         return "pocketable_scripture", meta
     end
 
-    if pickup_name and _string_starts_with(pickup_name, "expedition_loot_crate_tier_") then
-        return "pocketable_expedition_loot_crate", meta
+    -- expeditions specific items
+    if pickup_name and _string_starts_with(pickup_name, "expedition_currency_") then
+        return "material_expeditions_currency", meta
+    end
+
+    if pickup_name and _string_starts_with(pickup_name, "expedition_loot_small_") then
+        return "material_expeditions_loot", meta
+    end
+
+    if pickup_name == "expedition_loot_player_drop" then
+        return "material_expeditions_loot_player_drop", meta
+    end
+
+    if pickup_name == "large_ammunition_crate" then
+        return "pickup_large_ammunition_crate", meta
     end
 
     if pickup_name == "expedition_deployable_force_field_pocketable" then
@@ -757,20 +870,51 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         return "pocketable_landmine_shock", meta
     end
 
-    if pickup_name == "syringe_ability_boost_pocketable" then
-        return "pocketable_syringe_ability", meta
+    if pickup_name == "expedition_loot_heavy_tier_1" or pickup_name == "expedition_loot_heavy_tier_2" or pickup_name == "expedition_loot_heavy_tier_3" then
+        return "luggable_data_reliquary", meta
     end
 
-    if pickup_name == "syringe_corruption_pocketable" then
-        return "pocketable_syringe_corruption", meta
+    if pickup_name == "expedition_explosive_luggable_01" then
+        return "luggable_promethium_barrel", meta
     end
 
-    if pickup_name == "syringe_power_boost_pocketable" then
-        return "pocketable_syringe_power", meta
+    if pickup_name == "expedition_time_syringe_timed" then
+        return "pocketable_anti_rad_stimm", meta
     end
 
-    if pickup_name == "syringe_speed_boost_pocketable" then
-        return "pocketable_syringe_speed", meta
+    -- Martyr's Skull items
+    if pickup_name == "martyr_skull_pickup" then
+        return "pickup_martyr_skull", meta
+    end
+
+    if pickup_name == "battery_02_luggable" then
+        return "luggable_power_cell_orange", meta
+    end
+
+    -- deployables
+    if pickup_name == "ammo_cache_deployable" then
+        return "pickup_ammo_cache_deployable", meta
+    end
+
+    if pickup_name == "medical_crate_deployable" then
+        return "pickup_medkit", meta
+    end
+
+    -- Event items
+    if pickup_name == "skulls_01_pickup" then
+        return "pickup_tainted_skull", meta
+    end
+
+    if pickup_name == "communications_hack_device" then
+        return "pocketable_corrupted_auspex_scanner", meta
+    end
+
+    if pickup_name == "live_event_saints_01_pickup_small" or pickup_name == "live_event_saints_01_pickup_medium" or pickup_name == "live_event_saints_01_pickup_large" or pickup_name == "consumable" then
+        return "pickup_saints", meta
+    end
+
+    if pickup_name == "stolen_rations_01_pickup_small" or pickup_name == "stolen_rations_01_pickup_medium" then
+        return "pickup_stolen_rations", meta
     end
 
     local key = string.format("%s|%s|%s|%s|%s|%s",
@@ -781,44 +925,6 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         tostring(unit_name or ""),
         tostring(pickup_data and pickup_data.group or ""))
     key = string.lower(key)
-
-    if string.find(key, "ammunition", 1, true) or string.find(key, "ammo", 1, true) then
-        return "pickup_ammo", meta
-    end
-
-    if string.find(key, "grenade", 1, true) then
-        return "pickup_grenade", meta
-    end
-
-    if string.find(key, "medical_crate", 1, true)
-        or string.find(key, "medkit", 1, true)
-        or string.find(key, "health_kit", 1, true)
-        or string.find(key, "healthkit", 1, true)
-        or string.find(key, "health", 1, true) then
-        return "pickup_medkit", meta
-    end
-
-    if string.find(key, "stimm", 1, true)
-        or string.find(key, "stim", 1, true)
-        or string.find(key, "syringe", 1, true) then
-        return "pickup_stimm", meta
-    end
-
-    if string.find(key, "diamantine", 1, true) then
-        return "material_diamantine", meta
-    end
-
-    if string.find(key, "plasteel", 1, true) then
-        return "material_plasteel", meta
-    end
-
-    if string.find(key, "expeditions_currency", 1, true) or string.find(key, "salvage", 1, true) then
-        return "material_expeditions_currency", meta
-    end
-
-    if string.find(key, "expeditions_loot", 1, true) or string.find(key, "tech_remnant", 1, true) then
-        return "material_expeditions_loot", meta
-    end
 
     if string.find(key, "grimoire", 1, true)
         or string.find(key, "scripture", 1, true)
@@ -831,6 +937,7 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         or string.find(key, "saints_pickup", 1, true)
         or string.find(key, "stolen_rations", 1, true)
         or string.find(key, "penance_collectible", 1, true) then
+        _log_once(key, "Unknown pickup: " .. key)
         return "pickup_unknown", meta
     end
 
@@ -901,7 +1008,7 @@ local function _classify_enemy_from_breed(breed_name)
 end
 
 local function _track_unit(unit, kind, source, meta)
-    if not kind or not _safe_unit_alive(unit) then
+    if not kind or not _is_trackable_unit_alive(unit, kind) then
         return
     end
 
@@ -1076,7 +1183,7 @@ local function _scan_minions()
 
             if ok_breed and breed_name then
                 local kind = _classify_enemy_from_breed(breed_name)
-                if kind then
+                if kind and _is_trackable_unit_alive(unit, kind) then
                     _track_unit(unit, kind, "unit_data_system", {
                         breed_name = breed_name,
                     })
@@ -1090,7 +1197,7 @@ local function _prune_units()
     local now = _safe_gameplay_time() or 0
 
     for unit, data in pairs(mod._tracked_units) do
-        if not _safe_unit_alive(unit) then
+        if not _is_trackable_unit_alive(unit, data and data.kind) then
             mod._tracked_units[unit] = nil
         elseif data.last_seen_t and now - data.last_seen_t > 2.5 then
             mod._tracked_units[unit] = nil
@@ -1161,10 +1268,11 @@ local function _collect_radar_targets()
 
     local max_range = mod:get_radar_range()
     local max_range_sq = max_range * max_range
+    local max_markers = mod:get_max_radar_markers()
     local targets = {}
 
     for unit, data in pairs(mod._tracked_units) do
-        if _safe_unit_alive(unit) and data.position and data.kind and _kind_enabled(data.kind) then
+        if _is_trackable_unit_alive(unit, data and data.kind) and data.position and data.kind and _kind_enabled(data.kind) then
             local distance_sq_horizontal = _distance_squared_horizontal(player_pos, data.position)
 
             if distance_sq_horizontal <= max_range_sq then
@@ -1185,6 +1293,12 @@ local function _collect_radar_targets()
         return (a.distance_sq or math.huge) < (b.distance_sq or math.huge)
     end)
 
+    if #targets > max_markers then
+        for i = #targets, max_markers + 1, -1 do
+            targets[i] = nil
+        end
+    end
+
     return targets
 end
 
@@ -1199,10 +1313,13 @@ local function _collect_radar_snapshot()
         return nil
     end
 
+    local local_player = _local_player()
+
     return {
         player_unit = player_unit,
         player_position = player_pos,
         player_rotation = _safe_player_rotation(player_unit),
+        player_slot = _safe_player_slot(local_player),
         targets = mod._radar_targets,
     }
 end
@@ -1358,6 +1475,7 @@ local function _update_internal(dt, t)
         player_unit = player_unit,
         player_position = player_pos,
         player_rotation = _safe_player_rotation(player_unit),
+        player_slot = _safe_player_slot(_local_player()),
         targets = mod._radar_targets,
     }
 
@@ -1469,6 +1587,28 @@ function mod:get_radar_range()
         value = 25
     elseif value > 100 then
         value = 100
+    end
+
+    return value
+end
+
+function mod:get_max_radar_markers()
+    local value = tonumber(self:get("max_radar_markers")) or 64
+
+    if value < 10 then
+        value = 10
+    elseif value > 100 then
+        value = 100
+    end
+
+    return math.floor(value)
+end
+
+function mod:get_radar_style()
+    local value = tostring(self:get("radar_style") or "square")
+
+    if value ~= "circle" then
+        value = "square"
     end
 
     return value
