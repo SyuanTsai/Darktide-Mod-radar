@@ -53,7 +53,7 @@ return {
         en = "Common Pickups",
     },
     show_crates = {
-        en = "crates",
+        en = "Crates",
     },
     show_ammo_small = {
         en = "Ammo Tin",
@@ -147,13 +147,13 @@ return {
         en = "Data Reliquaries",
     },
     show_pocketable_landmine_explosive = {
-        en = "Explosive mine",
+        en = "Servo-Triggered Mine",
     },
     show_pocketable_landmine_fire = {
-        en = "Fire Mine",
+        en = "Purgation Snare",
     },
     show_pocketable_landmine_shock = {
-        en = "Shock Mine",
+        en = "Voltaic Snare",
     },
     show_pocketable_void_shield = {
         en = "Void Shell",
@@ -226,7 +226,7 @@ return {
     show_tainted_skull = {
         en = "Tainted Skulls",
     },
-    show_corrupted_auspex_scanner = {
+    show_pocketable_corrupted_auspex_scanner = {
         en = "Tainted Communications Device",
     },
     show_saints = {
@@ -244,9 +244,5 @@ return {
     },
     show_unknown_pickups = {
         en = "Show unknown pickups",
-    },
-
-    show_pocketable_corrupted_auspex_scanner = {
-        en = "pocketable corrupted auspex scanner",
     },
 }

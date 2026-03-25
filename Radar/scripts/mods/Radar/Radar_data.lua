@@ -207,12 +207,6 @@ return {
                         type = "checkbox",
                         default_value = true,
                     },
-                    --
-                    {
-                        setting_id = "show_pocketable_corrupted_auspex_scanner",
-                        type = "checkbox",
-                        default_value = true,
-                    },
                 },
             },
             {
@@ -386,7 +380,7 @@ return {
                         default_value = true,
                     },
                     {
-                        setting_id = "show_corrupted_auspex_scanner",
+                        setting_id = "show_pocketable_corrupted_auspex_scanner",
                         type = "checkbox",
                         default_value = true,
                     },
@@ -403,7 +397,7 @@ return {
                 },
             },
             {
-                setting_id = "Debugging",
+                setting_id = "debug_group",
                 type = "group",
                 sub_widgets = {
                     {
