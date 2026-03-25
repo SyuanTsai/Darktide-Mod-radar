@@ -32,163 +32,42 @@ local TWIN_BREEDS = {
 }
 
 local KIND_TO_SETTING = {
-    crate_unknown = "show_crates",
+    pickup_ammo = "show_ammo_small",
     pickup_ammo_small = "show_ammo_small",
     pickup_ammo_big = "show_ammo_big",
     pickup_grenade = "show_grenades",
-    pocketable_ammo_crate = "show_pocketable_ammo_crate",
-    pocketable_medical_crate = "show_pocketable_medical_crate",
-    pocketable_syringe_ability = "show_pocketable_syringe_ability",
-    pocketable_syringe_corruption = "show_pocketable_syringe_corruption",
-    pocketable_syringe_power = "show_pocketable_syringe_power",
-    pocketable_syringe_speed = "show_pocketable_syringe_speed",
-    material_diamantine = "show_diamantine",
-    material_plasteel = "show_plasteel",
-    luggable_power_cell_teal = "show_power_cell_teal",
-    luggable_cryonic_rod = "show_cryonic_rod",
-    luggable_moebian_pox_zetaphyte_13_sample = "show_moebian_pox_zetaphyte_13_sample",
-    luggable_vacuum_capsule = "show_vacuum_capsule",
-    luggable_special_issue_ammo = "show_special_issue_ammo",
-    luggable_prismata_crystal_repository = "show_prismata_crystal_repository",
-    pickup_mortis_relic = "show_mortis_relic",
-    pickup_coordinates_paper = "show_coordinates_paper",
-    pocketable_grimoire = "show_pocketable_grimoire",
-    pocketable_scripture = "show_pocketable_scripture",
-    material_expeditions_currency = "show_expeditions_currency",
-    material_expeditions_loot = "show_expeditions_loot",
-    material_expeditions_loot_player_drop = "show_expeditions_dropped_loot",
-    luggable_data_reliquary = "show_data_reliquaries",
-    pocketable_landmine_explosive = "show_pocketable_landmine_explosive",
-    pocketable_landmine_fire = "show_pocketable_landmine_fire",
-    pocketable_landmine_shock = "show_pocketable_landmine_shock",
-    pocketable_void_shield = "show_pocketable_void_shield",
-    pocketable_airstrike = "show_pocketable_airstrike",
-    pocketable_artillery_strike = "show_pocketable_artillery_strike",
-    pocketable_big_grenade = "show_pocketable_big_grenade",
-    pocketable_valkyrie_hover = "show_pocketable_valkyrie_hover",
-    luggable_promethium_barrel = "show_promethium_barrel",
-    pickup_large_ammunition_crate = "show_large_ammunition_crate",
-    pocketable_anti_rad_stimm = "show_anti_rad_stimm",
-    pickup_martyr_skull = "show_martyr_skull",
-    luggable_power_cell_orange = "show_power_cell_orange",
-    pickup_ammo_cache_deployable = "show_ammo_crate_deployable",
-    pickup_medkit = "show_medical_crate_deployable",
-    pickup_tainted_skull = "show_tainted_skull",
-    pocketable_corrupted_auspex_scanner = "show_pocketable_corrupted_auspex_scanner",
-    pickup_saints = "show_saints",
-    pickup_stolen_rations = "show_stolen_rations",
+    pickup_medkit = "show_medkits",
+    pickup_stimm = "show_stimms",
     pickup_unknown = "show_unknown_pickups",
+    crate_unknown = "show_crates",
     enemy_daemonhost = "show_monstrosities",
     enemy_monstrosity = "show_monstrosities",
     enemy_captain = "show_captains",
     enemy_karnak_twin = "show_karnak_twins",
     player_teammate = "show_teammates",
-}
-
-local PICKUP_KIND_EXACT = {
-    small_clip = "pickup_ammo_small",
-    large_clip = "pickup_ammo_big",
-    small_grenade = "pickup_grenade",
-    small_metal = "material_plasteel",
-    large_metal = "material_plasteel",
-    small_platinum = "material_diamantine",
-    large_platinum = "material_diamantine",
-    ammo_cache_pocketable = "pocketable_ammo_crate",
-    medical_crate_pocketable = "pocketable_medical_crate",
-    syringe_ability_boost_pocketable = "pocketable_syringe_ability",
-    syringe_corruption_pocketable = "pocketable_syringe_corruption",
-    syringe_power_boost_pocketable = "pocketable_syringe_power",
-    syringe_speed_boost_pocketable = "pocketable_syringe_speed",
-    battery_01_luggable = "luggable_power_cell_teal",
-    control_rod_01_luggable = "luggable_cryonic_rod",
-    container_01_luggable = "luggable_moebian_pox_zetaphyte_13_sample",
-    container_02_luggable = "luggable_vacuum_capsule",
-    container_03_luggable = "luggable_special_issue_ammo",
-    prismata_case_01_luggable = "luggable_prismata_crystal_repository",
-    hordes_mcguffin = "pickup_mortis_relic",
-    paper_pickup = "pickup_coordinates_paper",
-    paper_pickup_02 = "pickup_coordinates_paper",
-    paper_pickup_03 = "pickup_coordinates_paper",
-    paper_pickup_04 = "pickup_coordinates_paper",
-    grimoire = "pocketable_grimoire",
-    tome = "pocketable_scripture",
-    expedition_loot_player_drop = "material_expeditions_loot_player_drop",
-    large_ammunition_crate = "pickup_large_ammunition_crate",
-    expedition_deployable_force_field_pocketable = "pocketable_void_shield",
-    expedition_grenade_airstrike_pocketable = "pocketable_airstrike",
-    expedition_grenade_artillery_strike_pocketable = "pocketable_artillery_strike",
-    expedition_grenade_big_pocketable = "pocketable_big_grenade",
-    expedition_grenade_valkyrie_hover_pocketable = "pocketable_valkyrie_hover",
-    motion_detection_mine_explosive_pocketable = "pocketable_landmine_explosive",
-    motion_detection_mine_fire_pocketable = "pocketable_landmine_fire",
-    motion_detection_mine_shock_pocketable = "pocketable_landmine_shock",
-    expedition_loot_heavy_tier_1 = "luggable_data_reliquary",
-    expedition_loot_heavy_tier_2 = "luggable_data_reliquary",
-    expedition_loot_heavy_tier_3 = "luggable_data_reliquary",
-    expedition_explosive_luggable_01 = "luggable_promethium_barrel",
-    expedition_time_syringe_timed = "pocketable_anti_rad_stimm",
-    martyr_skull_pickup = "pickup_martyr_skull",
-    battery_02_luggable = "luggable_power_cell_orange",
-    ammo_cache_deployable = "pickup_ammo_cache_deployable",
-    medical_crate_deployable = "pickup_medkit",
-    skulls_01_pickup = "pickup_tainted_skull",
-    communications_hack_device = "pocketable_corrupted_auspex_scanner",
-    consumable = "pickup_saints",
-    stolen_rations_01_pickup_small = "pickup_stolen_rations",
-    stolen_rations_01_pickup_medium = "pickup_stolen_rations",
-}
-
-local PICKUP_KIND_PREFIX = {
-    { "expedition_currency_", "material_expeditions_currency" },
-    { "expedition_loot_small_", "material_expeditions_loot" },
-    { "live_event_saints_01_pickup_", "pickup_saints" },
-}
-
-local WORLD_MARKER_TEMPLATE_KIND_EXACT = {
-    martyrs_skull_pickup = "pickup_martyr_skull",
-}
-
-local PICKUP_UNKNOWN_KEYWORDS = {
-    "grimoire",
-    "scripture",
-    "side_mission",
-    "objective_side",
-    "objective_pickup",
-    "luggable",
-    "forge_material",
-    "tainted_skull",
-    "saints_pickup",
-    "stolen_rations",
-    "penance_collectible",
-}
-
-local PICKUP_TEMPLATE_KEYWORDS = {
-    "pickup",
-    "clip",
-    "grenade",
-    "ammo",
-    "medkit",
-    "medical_crate",
-    "syringe",
-    "stim",
-    "grimoire",
-    "tome",
-    "metal",
-    "platinum",
-    "luggable",
-    "expedition",
-    "martyr",
-    "skull",
-    "saints",
-    "rations",
-    "auspex",
-    "paper",
-    "battery_",
-    "container_",
-    "control_rod",
-    "prismata",
-    "hordes_mcguffin",
-    "consumable",
+    material_diamantine = "show_diamantine",
+    material_plasteel = "show_plasteel",
+    material_expeditions_currency = "show_expeditions_currency",
+    material_expeditions_loot = "show_expeditions_loot",
+    pocketable_ammo_crate = "show_pocketable_ammo_crate",
+    pocketable_breach_charge = "show_pocketable_breach_charge",
+    pocketable_corrupted_auspex_scanner = "show_pocketable_corrupted_auspex_scanner",
+    pocketable_expedition_loot_crate = "show_pocketable_expedition_loot_crate",
+    pocketable_airstrike = "show_pocketable_airstrike",
+    pocketable_artillery_strike = "show_pocketable_artillery_strike",
+    pocketable_big_grenade = "show_pocketable_big_grenade",
+    pocketable_grimoire = "show_pocketable_grimoire",
+    pocketable_landmine_explosive = "show_pocketable_landmine_explosive",
+    pocketable_landmine_fire = "show_pocketable_landmine_fire",
+    pocketable_landmine_shock = "show_pocketable_landmine_shock",
+    pocketable_medical_crate = "show_pocketable_medical_crate",
+    pocketable_scripture = "show_pocketable_scripture",
+    pocketable_syringe_ability = "show_pocketable_syringe_ability",
+    pocketable_syringe_corruption = "show_pocketable_syringe_corruption",
+    pocketable_syringe_power = "show_pocketable_syringe_power",
+    pocketable_syringe_speed = "show_pocketable_syringe_speed",
+    pocketable_valkyrie_hover = "show_pocketable_valkyrie_hover",
+    pocketable_void_shield = "show_pocketable_void_shield",
 }
 
 function mod.on_all_mods_loaded()
@@ -322,42 +201,6 @@ local function _string_starts_with(value, prefix)
     end
 
     return string.sub(value, 1, string.len(prefix)) == prefix
-end
-
-local function _contains_any(value, needles)
-    if not value then
-        return false
-    end
-
-    for _, needle in ipairs(needles) do
-        if string.find(value, needle, 1, true) then
-            return true
-        end
-    end
-
-    return false
-end
-
-local function _lookup_prefix_kind(value, rules)
-    if not value then
-        return nil
-    end
-
-    for _, rule in ipairs(rules) do
-        if _string_starts_with(value, rule[1]) then
-            return rule[2]
-        end
-    end
-
-    return nil
-end
-
-local function _classify_pickup_key(pickup_key)
-    if not pickup_key then
-        return nil
-    end
-
-    return PICKUP_KIND_EXACT[pickup_key] or _lookup_prefix_kind(pickup_key, PICKUP_KIND_PREFIX)
 end
 
 local function _safe_unit_pickup_name(unit)
@@ -887,13 +730,191 @@ end
 local function _classify_pickup_like(interaction_type, icon, description, unit_name, pickup_name, pickup_data)
     local meta = _pickup_meta(pickup_name, pickup_data, interaction_type, icon, description, unit_name)
 
+    -- default items
     if interaction_type == "chest" then
         return "crate_unknown", meta
     end
 
-    local kind = _classify_pickup_key(pickup_name)
-    if kind then
-        return kind, meta
+    if pickup_name == "small_clip" then
+        return "pickup_ammo_small", meta
+    end
+
+    if pickup_name == "large_clip" then
+        return "pickup_ammo_big", meta
+    end
+
+    if pickup_name == "small_grenade" then
+        return "pickup_grenade", meta
+    end
+
+    if pickup_name == "small_metal" or pickup_name == "large_metal" then
+        return "material_plasteel", meta
+    end
+
+    if pickup_name == "small_platinum" or pickup_name == "large_platinum" then
+        return "material_diamantine", meta
+    end
+
+    if pickup_name == "ammo_cache_pocketable" then
+        return "pocketable_ammo_crate", meta
+    end
+
+    if pickup_name == "medical_crate_pocketable" then
+        return "pocketable_medical_crate", meta
+    end
+
+    if pickup_name == "syringe_ability_boost_pocketable" then
+        return "pocketable_syringe_ability", meta
+    end
+
+    if pickup_name == "syringe_corruption_pocketable" then
+        return "pocketable_syringe_corruption", meta
+    end
+
+    if pickup_name == "syringe_power_boost_pocketable" then
+        return "pocketable_syringe_power", meta
+    end
+
+    if pickup_name == "syringe_speed_boost_pocketable" then
+        return "pocketable_syringe_speed", meta
+    end
+
+    -- primary objective items
+    if pickup_name == "battery_01_luggable" then
+        return "luggable_power_cell_teal", meta
+    end
+
+    if pickup_name == "control_rod_01_luggable" then
+        return "luggable_cryonic_rod", meta
+    end
+
+    if pickup_name == "container_01_luggable" then
+        return "luggable_moebian_pox_zetaphyte_13_sample", meta
+    end
+
+    if pickup_name == "container_02_luggable" then
+        return "luggable_vacuum_capsule", meta
+    end
+
+    if pickup_name == "container_03_luggable" then
+        return "luggable_special_issue_ammo", meta
+    end
+
+    if pickup_name == "prismata_case_01_luggable" then
+        return "luggable_prismata_crystal_repository", meta
+    end
+
+    if pickup_name == "hordes_mcguffin" then
+        return "pickup_mortis_relic", meta
+    end
+
+    if pickup_name == "paper_pickup" or pickup_name == "paper_pickup_02" or pickup_name == "paper_pickup_03" or pickup_name == "paper_pickup_04" then
+        return "pickup_coordinates_paper", meta
+    end
+
+    -- secondary objective items
+    if pickup_name == "grimoire" then
+        return "pocketable_grimoire", meta
+    end
+
+    if pickup_name == "tome" then
+        return "pocketable_scripture", meta
+    end
+
+    -- expeditions specific items
+    if pickup_name and _string_starts_with(pickup_name, "expedition_currency_") then
+        return "material_expeditions_currency", meta
+    end
+
+    if pickup_name and _string_starts_with(pickup_name, "expedition_loot_small_") then
+        return "material_expeditions_loot", meta
+    end
+
+    if pickup_name == "expedition_loot_player_drop" then
+        return "material_expeditions_loot_player_drop", meta
+    end
+
+    if pickup_name == "large_ammunition_crate" then
+        return "pickup_large_ammunition_crate", meta
+    end
+
+    if pickup_name == "expedition_deployable_force_field_pocketable" then
+        return "pocketable_void_shield", meta
+    end
+
+    if pickup_name == "expedition_grenade_airstrike_pocketable" then
+        return "pocketable_airstrike", meta
+    end
+
+    if pickup_name == "expedition_grenade_artillery_strike_pocketable" then
+        return "pocketable_artillery_strike", meta
+    end
+
+    if pickup_name == "expedition_grenade_big_pocketable" then
+        return "pocketable_big_grenade", meta
+    end
+
+    if pickup_name == "expedition_grenade_valkyrie_hover_pocketable" then
+        return "pocketable_valkyrie_hover", meta
+    end
+
+    if pickup_name == "motion_detection_mine_explosive_pocketable" then
+        return "pocketable_landmine_explosive", meta
+    end
+
+    if pickup_name == "motion_detection_mine_fire_pocketable" then
+        return "pocketable_landmine_fire", meta
+    end
+
+    if pickup_name == "motion_detection_mine_shock_pocketable" then
+        return "pocketable_landmine_shock", meta
+    end
+
+    if pickup_name == "expedition_loot_heavy_tier_1" or pickup_name == "expedition_loot_heavy_tier_2" or pickup_name == "expedition_loot_heavy_tier_3" then
+        return "luggable_data_reliquary", meta
+    end
+
+    if pickup_name == "expedition_explosive_luggable_01" then
+        return "luggable_promethium_barrel", meta
+    end
+
+    if pickup_name == "expedition_time_syringe_timed" then
+        return "pocketable_anti_rad_stimm", meta
+    end
+
+    -- Martyr's Skull items
+    if pickup_name == "martyr_skull_pickup" then
+        return "pickup_martyr_skull", meta
+    end
+
+    if pickup_name == "battery_02_luggable" then
+        return "luggable_power_cell_orange", meta
+    end
+
+    -- deployables
+    if pickup_name == "ammo_cache_deployable" then
+        return "pickup_ammo_cache_deployable", meta
+    end
+
+    if pickup_name == "medical_crate_deployable" then
+        return "pickup_medkit", meta
+    end
+
+    -- Event items
+    if pickup_name == "skulls_01_pickup" then
+        return "pickup_tainted_skull", meta
+    end
+
+    if pickup_name == "communications_hack_device" then
+        return "pocketable_corrupted_auspex_scanner", meta
+    end
+
+    if pickup_name == "live_event_saints_01_pickup_small" or pickup_name == "live_event_saints_01_pickup_medium" or pickup_name == "live_event_saints_01_pickup_large" or pickup_name == "consumable" then
+        return "pickup_saints", meta
+    end
+
+    if pickup_name == "stolen_rations_01_pickup_small" or pickup_name == "stolen_rations_01_pickup_medium" then
+        return "pickup_stolen_rations", meta
     end
 
     local key = string.format("%s|%s|%s|%s|%s|%s",
@@ -905,52 +926,18 @@ local function _classify_pickup_like(interaction_type, icon, description, unit_n
         tostring(pickup_data and pickup_data.group or ""))
     key = string.lower(key)
 
-    if _contains_any(key, PICKUP_UNKNOWN_KEYWORDS) then
+    if string.find(key, "grimoire", 1, true)
+        or string.find(key, "scripture", 1, true)
+        or string.find(key, "side_mission", 1, true)
+        or string.find(key, "objective_side", 1, true)
+        or string.find(key, "objective_pickup", 1, true)
+        or string.find(key, "luggable", 1, true)
+        or string.find(key, "forge_material", 1, true)
+        or string.find(key, "tainted_skull", 1, true)
+        or string.find(key, "saints_pickup", 1, true)
+        or string.find(key, "stolen_rations", 1, true)
+        or string.find(key, "penance_collectible", 1, true) then
         _log_once(key, "Unknown pickup: " .. key)
-        return "pickup_unknown", meta
-    end
-
-    return nil, meta
-end
-
-local function _classify_world_marker_template(template_name)
-    local key = _safe_lower_string(template_name)
-    if not key then
-        return nil
-    end
-
-    return _classify_pickup_key(key) or WORLD_MARKER_TEMPLATE_KIND_EXACT[key]
-end
-
-local function _looks_like_pickup_template(template_name)
-    local key = _safe_lower_string(template_name)
-    return _contains_any(key, PICKUP_TEMPLATE_KEYWORDS)
-end
-
-local function _classify_world_marker(unit, template_name)
-    local pickup_name = _safe_unit_pickup_name(unit)
-    local pickup_data = pickup_name and Pickups and Pickups.by_name and Pickups.by_name[pickup_name] or nil
-    local unit_name = _safe_lower_string(_safe_unit_name(unit))
-    local meta = {
-        template_name = template_name,
-        pickup_name = pickup_name,
-        unit_name = unit_name,
-    }
-
-    if pickup_name then
-        local kind, pickup_meta = _classify_pickup_like(nil, nil, nil, unit_name, pickup_name, pickup_data)
-        if kind then
-            pickup_meta.template_name = template_name
-            return kind, pickup_meta
-        end
-    end
-
-    local kind = _classify_world_marker_template(template_name)
-    if kind then
-        return kind, meta
-    end
-
-    if _looks_like_pickup_template(template_name) then
         return "pickup_unknown", meta
     end
 
@@ -1551,9 +1538,16 @@ mod:hook_safe("HudElementWorldMarkers", "event_add_world_marker_unit", function(
         return
     end
 
-    local kind, meta = _classify_world_marker(unit, template_name)
-    if kind then
-        _track_unit(unit, kind, "world_marker", meta)
+    local key = _safe_lower_string(template_name)
+
+    if key and string.find(key, "ammo", 1, true) then
+        _track_unit(unit, "pickup_ammo", "world_marker", { template_name = template_name })
+    elseif key and string.find(key, "grenade", 1, true) then
+        _track_unit(unit, "pickup_grenade", "world_marker", { template_name = template_name })
+    elseif key and (string.find(key, "medical", 1, true) or string.find(key, "medkit", 1, true) or string.find(key, "health", 1, true)) then
+        _track_unit(unit, "pickup_medkit", "world_marker", { template_name = template_name })
+    elseif key and (string.find(key, "stim", 1, true) or string.find(key, "syringe", 1, true)) then
+        _track_unit(unit, "pickup_stimm", "world_marker", { template_name = template_name })
     end
 end)
 
