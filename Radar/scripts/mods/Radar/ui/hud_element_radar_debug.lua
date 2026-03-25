@@ -214,7 +214,7 @@ local PRESENTATIONS = {
         size = 14,
     },
     crate_unknown = {
-        icon = "content/ui/materials/icons/generic/loot",
+        icon = "content/ui/materials/icons/engrams/engram_rarity_04",
         color = _widget_color(255, 255, 255, 255),
         size = 14,
     },
