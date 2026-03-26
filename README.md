@@ -1,2 +1,223 @@
-# darktide-mods-radar
-A mod that displays items and special enemy targets on a configurable radar.
+# Radar
+
+Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu.
+
+## Feature Overview
+
+- Tracks nearby pickups, materials, mission items, event items, teammates, and priority enemies on a single radar.
+- Projects markers relative to your current facing, so the radar rotates with your view instead of acting like a fixed minimap.
+- Supports **square** and **circle** radar frames.
+- Lets you adjust **radar size**, **scan range**, and **maximum marker count**.
+- Supports optional **icon scaling with radar size**.
+- Supports separate marker styles for **enemies** and **teammates**: **Icon only** or **Marked icon**.
+- Colors the radar center dot from the local player HUD slot color.
+- Uses class icons for teammate markers instead of generic dots.
+- Exposes category-based toggles for common pickups, materials, objectives, expeditions items, deployed items, enemies, teammates, and event items.
+- Includes optional **debug logs** and an **unknown pickups** toggle for discovery and troubleshooting.
+
+## Display and Behavior
+
+### Radar Controls
+
+| Option | What it controls |
+| --- | --- |
+| Enable radar | Master on or off switch for the HUD element. |
+| Radar size | Adjustable from **100** to **350**. |
+| Radar range / filter distance | Adjustable from **25 m** to **100 m**. |
+| Max radar markers | Adjustable from **10** to **100**. |
+| Scale icons with radar size | Keeps marker size fixed or scales it with the radar. |
+| Radar style | **Square** or **Circle**. |
+| Enemy marker style | **Icon only** or **Marked icon**. |
+| Player marker style | **Icon only** or **Marked icon**. |
+| Highlight distance | Exposed in the options menu. |
+
+### Marker Rules
+
+- **Enemies** use dedicated danger icons and, in marked mode, red bracket accents.
+- **Teammates** use archetype icons and their runtime HUD slot color.
+- **The center dot** uses the local player HUD color instead of a fixed green.
+- **Objective and event items** reuse a small number of template icons, recolored through ARGB values where needed.
+
+## Target Markers
+
+The legend below follows the option groups exposed by `Radar_data.lua`. The preview tiles were generated from the included `doc/img` templates and the ARGB values used by the HUD presentations.
+
+### High-Priority Enemies
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/enemy_daemonhost.png" width="40" alt="Daemonhost marker" /> | Daemonhost | Separate presentation under the **Monstrosities** toggle. |
+| <img src="doc/img/readme/enemy_monstrosity.png" width="40" alt="Monstrosity marker" /> | Monstrosities | Covers the generic monstrosity presentation used for Beast of Nurgle, Plague Ogryn, Chaos Spawn, and Ogryn Houndmaster. |
+| <img src="doc/img/readme/enemy_captain.png" width="40" alt="Captain marker" /> | Captains | Red danger marker with bracket accent in marked mode. |
+| <img src="doc/img/readme/enemy_karnak_twin.png" width="40" alt="Karnak Twins marker" /> | Karnak Twins | Dedicated presentation for the twins. |
+
+Display style example for enemy markers:
+
+<p>
+  <img src="doc/img/readme/enemy_icon_only_sample.png" width="40" alt="Enemy icon only example" />
+  <img src="doc/img/readme/enemy_monstrosity.png" width="40" alt="Enemy marked icon example" />
+</p>
+
+Left: **Icon only**. Right: **Marked icon**.
+
+### Teammates
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/player_teammate_sample.png" width="40" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only** or **Marked icon**. |
+
+Display style example for teammate markers:
+
+<p>
+  <img src="doc/img/readme/player_teammate_icon_only_sample.png" width="40" alt="Teammate icon only example" />
+  <img src="doc/img/readme/player_teammate_sample.png" width="40" alt="Teammate marked icon example" />
+</p>
+
+Left: **Icon only**. Right: **Marked icon**.
+
+Supported class icon mappings in the HUD:
+
+<p>
+  <img src="doc/img/readme/player_teammates_classes.png" width="320" alt="Supported teammate class icons" />
+</p>
+
+From left to right: **Veteran**, **Zealot**, **Psyker**, **Ogryn**, **Arbitrator**, **Hive Scum**.
+
+### Common Pickups
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/crate_unknown.png" width="40" alt="Crate marker" /> | Crates | Generic chest or crate pickup marker. |
+| <img src="doc/img/readme/pickup_ammo_small.png" width="40" alt="Ammo tin marker" /> | Ammo Tin | Small ammo pickup. |
+| <img src="doc/img/readme/pickup_ammo_big.png" width="40" alt="Ammo stash marker" /> | Ammo Stash | Large ammo pickup. |
+| <img src="doc/img/readme/pickup_grenade.png" width="40" alt="Grenade marker" /> | Grenade | Uses the supplied grenade icon. |
+| <img src="doc/img/readme/pocketable_ammo_crate.png" width="40" alt="Ammo crate marker" /> | Ammo Crate | Pocketable ammo crate. |
+| <img src="doc/img/readme/pocketable_medical_crate.png" width="40" alt="Medical crate marker" /> | Medical Crate | Pocketable medical crate. |
+| <img src="doc/img/readme/pocketable_syringe_ability.png" width="40" alt="Concentration Stimm marker" /> | Concentration Stimm | Recolored syringe template. |
+| <img src="doc/img/readme/pocketable_syringe_corruption.png" width="40" alt="Med Stimm marker" /> | Med Stimm | Recolored syringe template. |
+| <img src="doc/img/readme/pocketable_syringe_power.png" width="40" alt="Combat Stimm marker" /> | Combat Stimm | Recolored syringe template. |
+| <img src="doc/img/readme/pocketable_syringe_speed.png" width="40" alt="Celerity Stimm marker" /> | Celerity Stimm | Recolored syringe template. |
+
+### Collectable Materials
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/material_diamantine.png" width="40" alt="Diamantine marker" /> | Diamantine | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/readme/material_plasteel.png" width="40" alt="Plasteel marker" /> | Plasteel | Uses the supplied item artwork unchanged. |
+
+### Primary Objective Items
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/luggable_power_cell_teal.png" width="40" alt="Power Cell marker" /> | Power Cell | Teal luggable objective marker. |
+| <img src="doc/img/readme/luggable_cryonic_rod.png" width="40" alt="Cryonic Rod marker" /> | Cryonic Rod | Pale ice-blue luggable marker. |
+| <img src="doc/img/readme/luggable_moebian_pox_zetaphyte_13_sample.png" width="40" alt="Moebian Pox Zetaphyte-13 Sample marker" /> | Moebian Pox Zetaphyte-13 Sample | Sickly green luggable marker. |
+| <img src="doc/img/readme/luggable_vacuum_capsule.png" width="40" alt="Vacuum Capsule marker" /> | Vacuum Capsule | Dark steel-grey luggable marker. |
+| <img src="doc/img/readme/luggable_special_issue_ammo.png" width="40" alt="Special Issue Ammo marker" /> | Special Issue Ammo | Olive-green luggable marker. |
+| <img src="doc/img/readme/luggable_prismata_crystal_repository.png" width="40" alt="Prismata Crystal Repository marker" /> | Prismata Crystal Repository | Bright red luggable marker. |
+| <img src="doc/img/readme/pickup_mortis_relic.png" width="40" alt="Mortis Relic marker" /> | Mortis Relic | Recolored device icon. |
+| <img src="doc/img/readme/pickup_coordinates_paper.png" width="40" alt="Coordinates marker" /> | Coordinates | Uses the paper document icon. |
+
+### Secondary Objective Items
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/pocketable_grimoire.png" width="40" alt="Grimoire marker" /> | Grimoire | Secondary objective pocketable. |
+| <img src="doc/img/readme/pocketable_scripture.png" width="40" alt="Scripture marker" /> | Scripture | Secondary objective pocketable. |
+
+### Expeditions-Specific Items
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/material_expeditions_currency.png" width="40" alt="Salvage marker" /> | Salvage | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/readme/material_expeditions_loot.png" width="40" alt="Tech-Remnants marker" /> | Tech-Remnants | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/readme/material_expeditions_loot_player_drop.png" width="40" alt="Dropped Tech-Remnants marker" /> | Dropped Tech-Remnants | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/readme/luggable_data_reliquary.png" width="40" alt="Data Reliquary marker" /> | Data Reliquaries | Gold luggable marker. |
+| <img src="doc/img/readme/pocketable_landmine_explosive.png" width="40" alt="Servo-Triggered Mine marker" /> | Servo-Triggered Mine | Explosive landmine. |
+| <img src="doc/img/readme/pocketable_landmine_fire.png" width="40" alt="Purgation Snare marker" /> | Purgation Snare | Fire landmine. |
+| <img src="doc/img/readme/pocketable_landmine_shock.png" width="40" alt="Voltaic Snare marker" /> | Voltaic Snare | Shock landmine. |
+| <img src="doc/img/readme/pocketable_void_shield.png" width="40" alt="Void Shell marker" /> | Void Shell | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/readme/pocketable_airstrike.png" width="40" alt="Bombing Run Signal Marker marker" /> | Bombing Run Signal Marker | Airstrike support marker. |
+| <img src="doc/img/readme/pocketable_artillery_strike.png" width="40" alt="Artillery Locator Beacon marker" /> | Artillery Locator Beacon | Artillery support marker. |
+| <img src="doc/img/readme/pocketable_big_grenade.png" width="40" alt="Modified Grenade marker" /> | Modified Grenade | Special expeditions grenade pickup. |
+| <img src="doc/img/readme/pocketable_valkyrie_hover.png" width="40" alt="Fire-Support Signal Marker marker" /> | Fire-Support Signal Marker | Valkyrie hover signal marker. |
+| <img src="doc/img/readme/luggable_promethium_barrel.png" width="40" alt="Promethium Barrel marker" /> | Promethium Barrel | Orange explosive barrel marker. |
+| <img src="doc/img/readme/pickup_large_ammunition_crate.png" width="40" alt="Large Ammunition Crate marker" /> | Large Ammunition Crate | White ammo container marker. |
+| <img src="doc/img/readme/pocketable_anti_rad_stimm.png" width="40" alt="Anti-Rad Stimms marker" /> | Anti-Rad Stimms | Uses the expedition time syringe icon. |
+
+### Martyr's Skull Items
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/pickup_martyr_skull.png" width="40" alt="Martyr's Skull marker" /> | Martyr's Skull | Gold skull marker. |
+| <img src="doc/img/readme/luggable_power_cell_orange.png" width="40" alt="Orange Power Cell marker" /> | Power Cell | Orange luggable marker used for the Martyr's Skull group. |
+
+### Deployed Items
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/pickup_ammo_cache_deployable.png" width="40" alt="Deployable ammo crate marker" /> | Ammo Crate | Pale green deployable ammo crate marker. |
+| <img src="doc/img/readme/pickup_medkit.png" width="40" alt="Deployable medical crate marker" /> | Medical Crate | Green deployable medical crate marker. |
+
+### Event-Related Items
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/pickup_tainted_skull.png" width="40" alt="Tainted Skull marker" /> | Tainted Skulls | Green skull marker. |
+| <img src="doc/img/readme/pocketable_corrupted_auspex_scanner.png" width="40" alt="Tainted Communications Device marker" /> | Tainted Communications Device | Orange auspex scanner marker. |
+| <img src="doc/img/readme/pickup_saints.png" width="40" alt="Holy Relics marker" /> | Holy Relics | Gold relic marker. |
+| <img src="doc/img/readme/pickup_stolen_rations.png" width="40" alt="Stolen Rations marker" /> | Stolen Rations | Green crate marker. |
+
+### Debug Marker
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/readme/pickup_unknown.png" width="40" alt="Unknown pickup marker" /> | Unknown pickups | Optional fallback marker used when debug discovery is enabled. |
+
+## Icons and Color Rules
+
+The readme preview icons follow the HUD presentations used by the mod.
+
+### Icons Left Unchanged
+
+The following files were kept as-is and were **not** ARGB recolored:
+
+- `diamantine_big.png`
+- `empty.png`
+- `engram_rarity_04.png`
+- `plasteel_big.png`
+- `salvage_big.png`
+- `tech_dropped.png`
+- `tech_remnant_big.png`
+- `void_shield.png`
+
+### Recolored Template Families
+
+| Base template | Variants in this readme | ARGB colors |
+| --- | --- | --- |
+| `lugged.png` | Data Reliquary, Power Cell, Cryonic Rod, Moebian Pox Zetaphyte-13 Sample, Vacuum Capsule, Special Issue Ammo, Prismata Crystal Repository | `(255, 192, 160, 0)`, `(255, 0, 200, 200)`, `(255, 180, 220, 255)`, `(255, 150, 190, 60)`, `(255, 80, 85, 90)`, `(255, 95, 125, 70)`, `(255, 255, 70, 90)` |
+| `party_syringe.png` | Concentration, Med, Combat, Celerity Stimms | `(255, 230, 192, 13)`, `(255, 38, 205, 26)`, `(255, 205, 51, 26)`, `(255, 0, 127, 218)` |
+| `enemy.png` | Martyr's Skull, Tainted Skulls | `(255, 255, 215, 0)`, `(255, 150, 190, 60)` |
+| `pocketable_ammo.png` | Deployable Ammo Crate, Large Ammunition Crate | `(255, 215, 237, 188)`, unchanged white |
+| `devices.png` | Mortis Relic | `(255, 110, 95, 125)` |
+| `barrel_explosive.png` | Promethium Barrel | `(255, 255, 110, 0)` |
+| `auspex_scanner.png` | Tainted Communications Device | `(255, 255, 120, 0)` |
+| `live_event_01.png` | Holy Relics | `(255, 192, 160, 0)` |
+| Enemy accent brackets | Daemonhost, Monstrosity, Captain, Karnak Twins | `(220, 255, 0, 0)` |
+
+### Runtime-Dynamic Colors
+
+Not every radar marker uses a fixed readme tint:
+
+- **Teammates** use the class icon for the detected archetype and take their color from the active HUD slot color at runtime.
+- **The radar center dot** also uses the local player's HUD color.
+
+## Requirements
+
+- **Darktide Mod Framework**
+- **Warhammer 40,000: Darktide**
+
+## Notes
+
+- The radar is intended for active gameplay and suppresses itself outside valid runtime states such as hub and menu contexts.
+- Marker previews in this readme were generated from the included template assets so the legend matches the mod's configured presentations as closely as possible.

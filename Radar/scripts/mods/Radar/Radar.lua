@@ -1524,8 +1524,8 @@ mod.on_game_state_changed = function(status, state_name)
 end
 
 mod:register_hud_element({
-    class_name = "HudElementRadarDebug",
-    filename = "Radar/scripts/mods/Radar/ui/hud_element_radar_debug",
+    class_name = "HudElementRadar",
+    filename = "Radar/scripts/mods/Radar/ui/hud_element_radar",
     visibility_groups = { "alive" },
     use_hud_scale = true,
 })

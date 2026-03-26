@@ -3,7 +3,7 @@ local UIRenderer = require("scripts/managers/ui/ui_renderer")
 local UISettings = require("scripts/settings/ui/ui_settings")
 local UIWidget = require("scripts/managers/ui/ui_widget")
 
-local HudElementRadarDebug = class("HudElementRadarDebug", "HudElementBase")
+local HudElementRadar = class("HudElementRadar", "HudElementBase")
 
 local Definitions = {
     scenegraph_definition = {
@@ -655,16 +655,16 @@ local function _safe_player_camera_rotation(self)
     return nil
 end
 
-HudElementRadarDebug.init = function(self, parent, draw_layer, start_scale, optional_context)
-    HudElementRadarDebug.super.init(self, parent, draw_layer, start_scale, Definitions)
+HudElementRadar.init = function(self, parent, draw_layer, start_scale, optional_context)
+    HudElementRadar.super.init(self, parent, draw_layer, start_scale, Definitions)
     _ensure_marker_widgets(self)
 end
 
-HudElementRadarDebug.update = function(self, dt, t)
+HudElementRadar.update = function(self, dt, t)
     return
 end
 
-HudElementRadarDebug.draw = function(self, dt, t, ui_renderer, render_settings, input_service)
+HudElementRadar.draw = function(self, dt, t, ui_renderer, render_settings, input_service)
     if not mod:is_enabled() or mod:get("enable_radar") == false or not mod:should_draw_radar() then
         return
     end
@@ -765,8 +765,8 @@ HudElementRadarDebug.draw = function(self, dt, t, ui_renderer, render_settings, 
     UIRenderer.end_pass(ui_renderer)
 
     if not ok then
-        mod:error("HudElementRadarDebug.draw failed: %s", tostring(err))
+        mod:error("HudElementRadar.draw failed: %s", tostring(err))
     end
 end
 
-return HudElementRadarDebug
+return HudElementRadar
