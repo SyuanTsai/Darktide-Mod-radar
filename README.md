@@ -14,6 +14,27 @@ Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide
 - Uses class icons for teammate markers instead of generic dots.
 - Exposes category-based toggles for common pickups, materials, objectives, expeditions items, deployed items, enemies, teammates, and event items.
 - Includes optional **debug logs** and an **unknown pickups** toggle for discovery and troubleshooting.
+- Includes a groundwork **highlighting** option, but the actual highlighting behavior is currently still under development.
+
+## In-Game Radar Examples
+
+The screenshots below show both radar styles during an expedition mission. They illustrate the camera-oriented layout, mixed pickup categories, teammate markers, and priority targets in live gameplay.
+
+### Circle Radar
+
+<p>
+  <img src="doc/img/circle_radar_1.png" width="31%" alt="Circle radar example 1" />
+  <img src="doc/img/circle_radar_2.png" width="31%" alt="Circle radar example 2" />
+  <img src="doc/img/circle_radar_3.png" width="31%" alt="Circle radar example 3" />
+</p>
+
+### Square Radar
+
+<p>
+  <img src="doc/img/square_radar_1.png" width="31%" alt="Square radar example 1" />
+  <img src="doc/img/square_radar_2.png" width="31%" alt="Square radar example 2" />
+  <img src="doc/img/square_radar_3.png" width="31%" alt="Square radar example 3" />
+</p>
 
 ## Display and Behavior
 
@@ -29,7 +50,7 @@ Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide
 | Radar style | **Square** or **Circle**. |
 | Enemy marker style | **Icon only** or **Marked icon**. |
 | Player marker style | **Icon only** or **Marked icon**. |
-| Highlight distance | Exposed in the options menu. |
+| Highlight distance | Present in the options menu, but the highlighting feature is currently still under development. |
 
 ### Marker Rules
 
@@ -220,4 +241,6 @@ Not every radar marker uses a fixed readme tint:
 ## Notes
 
 - The radar is intended for active gameplay and suppresses itself outside valid runtime states such as hub and menu contexts.
+- The highlighting option is visible in the configuration, but the actual highlighting behavior is still work in progress.
 - Marker previews in this readme were generated from the included template assets so the legend matches the mod's configured presentations as closely as possible.
+- The gameplay screenshots in this readme were captured during an expedition mission and show both radar frame styles in live use.
