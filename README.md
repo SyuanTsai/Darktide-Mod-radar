@@ -46,16 +46,16 @@ The legend below follows the option groups exposed by `Radar_data.lua`. The prev
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/enemy_daemonhost.png" width="40" alt="Daemonhost marker" /> | Daemonhost | Separate presentation under the **Monstrosities** toggle. |
-| <img src="doc/img/readme/enemy_monstrosity.png" width="40" alt="Monstrosity marker" /> | Monstrosities | Covers the generic monstrosity presentation used for Beast of Nurgle, Plague Ogryn, Chaos Spawn, and Ogryn Houndmaster. |
-| <img src="doc/img/readme/enemy_captain.png" width="40" alt="Captain marker" /> | Captains | Red danger marker with bracket accent in marked mode. |
-| <img src="doc/img/readme/enemy_karnak_twin.png" width="40" alt="Karnak Twins marker" /> | Karnak Twins | Dedicated presentation for the twins. |
+| <img src="doc/img/enemy_daemonhost.png" width="40" alt="Daemonhost marker" /> | Daemonhost | Separate presentation under the **Monstrosities** toggle. |
+| <img src="doc/img/enemy_monstrosity.png" width="40" alt="Monstrosity marker" /> | Monstrosities | Covers the generic monstrosity presentation used for Beast of Nurgle, Plague Ogryn, Chaos Spawn, and Ogryn Houndmaster. |
+| <img src="doc/img/enemy_captain.png" width="40" alt="Captain marker" /> | Captains | Red danger marker with bracket accent in marked mode. |
+| <img src="doc/img/enemy_karnak_twin.png" width="40" alt="Karnak Twins marker" /> | Karnak Twins | Dedicated presentation for the twins. |
 
 Display style example for enemy markers:
 
 <p>
-  <img src="doc/img/readme/enemy_icon_only_sample.png" width="40" alt="Enemy icon only example" />
-  <img src="doc/img/readme/enemy_monstrosity.png" width="40" alt="Enemy marked icon example" />
+  <img src="doc/img/enemy_icon_only_sample.png" width="40" alt="Enemy icon only example" />
+  <img src="doc/img/enemy_monstrosity.png" width="40" alt="Enemy marked icon example" />
 </p>
 
 Left: **Icon only**. Right: **Marked icon**.
@@ -64,13 +64,13 @@ Left: **Icon only**. Right: **Marked icon**.
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/player_teammate_sample.png" width="40" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only** or **Marked icon**. |
+| <img src="doc/img/player_teammate_sample.png" width="40" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only** or **Marked icon**. |
 
 Display style example for teammate markers:
 
 <p>
-  <img src="doc/img/readme/player_teammate_icon_only_sample.png" width="40" alt="Teammate icon only example" />
-  <img src="doc/img/readme/player_teammate_sample.png" width="40" alt="Teammate marked icon example" />
+  <img src="doc/img/player_teammate_icon_only_sample.png" width="40" alt="Teammate icon only example" />
+  <img src="doc/img/player_teammate_sample.png" width="40" alt="Teammate marked icon example" />
 </p>
 
 Left: **Icon only**. Right: **Marked icon**.
@@ -78,7 +78,7 @@ Left: **Icon only**. Right: **Marked icon**.
 Supported class icon mappings in the HUD:
 
 <p>
-  <img src="doc/img/readme/player_teammates_classes.png" width="320" alt="Supported teammate class icons" />
+  <img src="doc/img/player_teammates_classes.png" width="320" alt="Supported teammate class icons" />
 </p>
 
 From left to right: **Veteran**, **Zealot**, **Psyker**, **Ogryn**, **Arbitrator**, **Hive Scum**.
@@ -87,92 +87,92 @@ From left to right: **Veteran**, **Zealot**, **Psyker**, **Ogryn**, **Arbitrator
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/crate_unknown.png" width="40" alt="Crate marker" /> | Crates | Generic chest or crate pickup marker. |
-| <img src="doc/img/readme/pickup_ammo_small.png" width="40" alt="Ammo tin marker" /> | Ammo Tin | Small ammo pickup. |
-| <img src="doc/img/readme/pickup_ammo_big.png" width="40" alt="Ammo stash marker" /> | Ammo Stash | Large ammo pickup. |
-| <img src="doc/img/readme/pickup_grenade.png" width="40" alt="Grenade marker" /> | Grenade | Uses the supplied grenade icon. |
-| <img src="doc/img/readme/pocketable_ammo_crate.png" width="40" alt="Ammo crate marker" /> | Ammo Crate | Pocketable ammo crate. |
-| <img src="doc/img/readme/pocketable_medical_crate.png" width="40" alt="Medical crate marker" /> | Medical Crate | Pocketable medical crate. |
-| <img src="doc/img/readme/pocketable_syringe_ability.png" width="40" alt="Concentration Stimm marker" /> | Concentration Stimm | Recolored syringe template. |
-| <img src="doc/img/readme/pocketable_syringe_corruption.png" width="40" alt="Med Stimm marker" /> | Med Stimm | Recolored syringe template. |
-| <img src="doc/img/readme/pocketable_syringe_power.png" width="40" alt="Combat Stimm marker" /> | Combat Stimm | Recolored syringe template. |
-| <img src="doc/img/readme/pocketable_syringe_speed.png" width="40" alt="Celerity Stimm marker" /> | Celerity Stimm | Recolored syringe template. |
+| <img src="doc/img/crate_unknown.png" width="40" alt="Crate marker" /> | Crates | Generic chest or crate pickup marker. |
+| <img src="doc/img/pickup_ammo_small.png" width="40" alt="Ammo tin marker" /> | Ammo Tin | Small ammo pickup. |
+| <img src="doc/img/pickup_ammo_big.png" width="40" alt="Ammo stash marker" /> | Ammo Stash | Large ammo pickup. |
+| <img src="doc/img/pickup_grenade.png" width="40" alt="Grenade marker" /> | Grenade | Uses the supplied grenade icon. |
+| <img src="doc/img/pocketable_ammo_crate.png" width="40" alt="Ammo crate marker" /> | Ammo Crate | Pocketable ammo crate. |
+| <img src="doc/img/pocketable_medical_crate.png" width="40" alt="Medical crate marker" /> | Medical Crate | Pocketable medical crate. |
+| <img src="doc/img/pocketable_syringe_ability.png" width="40" alt="Concentration Stimm marker" /> | Concentration Stimm | Recolored syringe template. |
+| <img src="doc/img/pocketable_syringe_corruption.png" width="40" alt="Med Stimm marker" /> | Med Stimm | Recolored syringe template. |
+| <img src="doc/img/pocketable_syringe_power.png" width="40" alt="Combat Stimm marker" /> | Combat Stimm | Recolored syringe template. |
+| <img src="doc/img/pocketable_syringe_speed.png" width="40" alt="Celerity Stimm marker" /> | Celerity Stimm | Recolored syringe template. |
 
 ### Collectable Materials
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/material_diamantine.png" width="40" alt="Diamantine marker" /> | Diamantine | Uses the supplied item artwork unchanged. |
-| <img src="doc/img/readme/material_plasteel.png" width="40" alt="Plasteel marker" /> | Plasteel | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/material_diamantine.png" width="40" alt="Diamantine marker" /> | Diamantine | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/material_plasteel.png" width="40" alt="Plasteel marker" /> | Plasteel | Uses the supplied item artwork unchanged. |
 
 ### Primary Objective Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/luggable_power_cell_teal.png" width="40" alt="Power Cell marker" /> | Power Cell | Teal luggable objective marker. |
-| <img src="doc/img/readme/luggable_cryonic_rod.png" width="40" alt="Cryonic Rod marker" /> | Cryonic Rod | Pale ice-blue luggable marker. |
-| <img src="doc/img/readme/luggable_moebian_pox_zetaphyte_13_sample.png" width="40" alt="Moebian Pox Zetaphyte-13 Sample marker" /> | Moebian Pox Zetaphyte-13 Sample | Sickly green luggable marker. |
-| <img src="doc/img/readme/luggable_vacuum_capsule.png" width="40" alt="Vacuum Capsule marker" /> | Vacuum Capsule | Dark steel-grey luggable marker. |
-| <img src="doc/img/readme/luggable_special_issue_ammo.png" width="40" alt="Special Issue Ammo marker" /> | Special Issue Ammo | Olive-green luggable marker. |
-| <img src="doc/img/readme/luggable_prismata_crystal_repository.png" width="40" alt="Prismata Crystal Repository marker" /> | Prismata Crystal Repository | Bright red luggable marker. |
-| <img src="doc/img/readme/pickup_mortis_relic.png" width="40" alt="Mortis Relic marker" /> | Mortis Relic | Recolored device icon. |
-| <img src="doc/img/readme/pickup_coordinates_paper.png" width="40" alt="Coordinates marker" /> | Coordinates | Uses the paper document icon. |
+| <img src="doc/img/luggable_power_cell_teal.png" width="40" alt="Power Cell marker" /> | Power Cell | Teal luggable objective marker. |
+| <img src="doc/img/luggable_cryonic_rod.png" width="40" alt="Cryonic Rod marker" /> | Cryonic Rod | Pale ice-blue luggable marker. |
+| <img src="doc/img/luggable_moebian_pox_zetaphyte_13_sample.png" width="40" alt="Moebian Pox Zetaphyte-13 Sample marker" /> | Moebian Pox Zetaphyte-13 Sample | Sickly green luggable marker. |
+| <img src="doc/img/luggable_vacuum_capsule.png" width="40" alt="Vacuum Capsule marker" /> | Vacuum Capsule | Dark steel-grey luggable marker. |
+| <img src="doc/img/luggable_special_issue_ammo.png" width="40" alt="Special Issue Ammo marker" /> | Special Issue Ammo | Olive-green luggable marker. |
+| <img src="doc/img/luggable_prismata_crystal_repository.png" width="40" alt="Prismata Crystal Repository marker" /> | Prismata Crystal Repository | Bright red luggable marker. |
+| <img src="doc/img/pickup_mortis_relic.png" width="40" alt="Mortis Relic marker" /> | Mortis Relic | Recolored device icon. |
+| <img src="doc/img/pickup_coordinates_paper.png" width="40" alt="Coordinates marker" /> | Coordinates | Uses the paper document icon. |
 
 ### Secondary Objective Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/pocketable_grimoire.png" width="40" alt="Grimoire marker" /> | Grimoire | Secondary objective pocketable. |
-| <img src="doc/img/readme/pocketable_scripture.png" width="40" alt="Scripture marker" /> | Scripture | Secondary objective pocketable. |
+| <img src="doc/img/pocketable_grimoire.png" width="40" alt="Grimoire marker" /> | Grimoire | Secondary objective pocketable. |
+| <img src="doc/img/pocketable_scripture.png" width="40" alt="Scripture marker" /> | Scripture | Secondary objective pocketable. |
 
 ### Expeditions-Specific Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/material_expeditions_currency.png" width="40" alt="Salvage marker" /> | Salvage | Uses the supplied item artwork unchanged. |
-| <img src="doc/img/readme/material_expeditions_loot.png" width="40" alt="Tech-Remnants marker" /> | Tech-Remnants | Uses the supplied item artwork unchanged. |
-| <img src="doc/img/readme/material_expeditions_loot_player_drop.png" width="40" alt="Dropped Tech-Remnants marker" /> | Dropped Tech-Remnants | Uses the supplied item artwork unchanged. |
-| <img src="doc/img/readme/luggable_data_reliquary.png" width="40" alt="Data Reliquary marker" /> | Data Reliquaries | Gold luggable marker. |
-| <img src="doc/img/readme/pocketable_landmine_explosive.png" width="40" alt="Servo-Triggered Mine marker" /> | Servo-Triggered Mine | Explosive landmine. |
-| <img src="doc/img/readme/pocketable_landmine_fire.png" width="40" alt="Purgation Snare marker" /> | Purgation Snare | Fire landmine. |
-| <img src="doc/img/readme/pocketable_landmine_shock.png" width="40" alt="Voltaic Snare marker" /> | Voltaic Snare | Shock landmine. |
-| <img src="doc/img/readme/pocketable_void_shield.png" width="40" alt="Void Shell marker" /> | Void Shell | Uses the supplied item artwork unchanged. |
-| <img src="doc/img/readme/pocketable_airstrike.png" width="40" alt="Bombing Run Signal Marker marker" /> | Bombing Run Signal Marker | Airstrike support marker. |
-| <img src="doc/img/readme/pocketable_artillery_strike.png" width="40" alt="Artillery Locator Beacon marker" /> | Artillery Locator Beacon | Artillery support marker. |
-| <img src="doc/img/readme/pocketable_big_grenade.png" width="40" alt="Modified Grenade marker" /> | Modified Grenade | Special expeditions grenade pickup. |
-| <img src="doc/img/readme/pocketable_valkyrie_hover.png" width="40" alt="Fire-Support Signal Marker marker" /> | Fire-Support Signal Marker | Valkyrie hover signal marker. |
-| <img src="doc/img/readme/luggable_promethium_barrel.png" width="40" alt="Promethium Barrel marker" /> | Promethium Barrel | Orange explosive barrel marker. |
-| <img src="doc/img/readme/pickup_large_ammunition_crate.png" width="40" alt="Large Ammunition Crate marker" /> | Large Ammunition Crate | White ammo container marker. |
-| <img src="doc/img/readme/pocketable_anti_rad_stimm.png" width="40" alt="Anti-Rad Stimms marker" /> | Anti-Rad Stimms | Uses the expedition time syringe icon. |
+| <img src="doc/img/material_expeditions_currency.png" width="40" alt="Salvage marker" /> | Salvage | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/material_expeditions_loot.png" width="40" alt="Tech-Remnants marker" /> | Tech-Remnants | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/material_expeditions_loot_player_drop.png" width="40" alt="Dropped Tech-Remnants marker" /> | Dropped Tech-Remnants | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/luggable_data_reliquary.png" width="40" alt="Data Reliquary marker" /> | Data Reliquaries | Gold luggable marker. |
+| <img src="doc/img/pocketable_landmine_explosive.png" width="40" alt="Servo-Triggered Mine marker" /> | Servo-Triggered Mine | Explosive landmine. |
+| <img src="doc/img/pocketable_landmine_fire.png" width="40" alt="Purgation Snare marker" /> | Purgation Snare | Fire landmine. |
+| <img src="doc/img/pocketable_landmine_shock.png" width="40" alt="Voltaic Snare marker" /> | Voltaic Snare | Shock landmine. |
+| <img src="doc/img/pocketable_void_shield.png" width="40" alt="Void Shell marker" /> | Void Shell | Uses the supplied item artwork unchanged. |
+| <img src="doc/img/pocketable_airstrike.png" width="40" alt="Bombing Run Signal Marker marker" /> | Bombing Run Signal Marker | Airstrike support marker. |
+| <img src="doc/img/pocketable_artillery_strike.png" width="40" alt="Artillery Locator Beacon marker" /> | Artillery Locator Beacon | Artillery support marker. |
+| <img src="doc/img/pocketable_big_grenade.png" width="40" alt="Modified Grenade marker" /> | Modified Grenade | Special expeditions grenade pickup. |
+| <img src="doc/img/pocketable_valkyrie_hover.png" width="40" alt="Fire-Support Signal Marker marker" /> | Fire-Support Signal Marker | Valkyrie hover signal marker. |
+| <img src="doc/img/luggable_promethium_barrel.png" width="40" alt="Promethium Barrel marker" /> | Promethium Barrel | Orange explosive barrel marker. |
+| <img src="doc/img/pickup_large_ammunition_crate.png" width="40" alt="Large Ammunition Crate marker" /> | Large Ammunition Crate | White ammo container marker. |
+| <img src="doc/img/pocketable_anti_rad_stimm.png" width="40" alt="Anti-Rad Stimms marker" /> | Anti-Rad Stimms | Uses the expedition time syringe icon. |
 
 ### Martyr's Skull Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/pickup_martyr_skull.png" width="40" alt="Martyr's Skull marker" /> | Martyr's Skull | Gold skull marker. |
-| <img src="doc/img/readme/luggable_power_cell_orange.png" width="40" alt="Orange Power Cell marker" /> | Power Cell | Orange luggable marker used for the Martyr's Skull group. |
+| <img src="doc/img/pickup_martyr_skull.png" width="40" alt="Martyr's Skull marker" /> | Martyr's Skull | Gold skull marker. |
+| <img src="doc/img/luggable_power_cell_orange.png" width="40" alt="Orange Power Cell marker" /> | Power Cell | Orange luggable marker used for the Martyr's Skull group. |
 
 ### Deployed Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/pickup_ammo_cache_deployable.png" width="40" alt="Deployable ammo crate marker" /> | Ammo Crate | Pale green deployable ammo crate marker. |
-| <img src="doc/img/readme/pickup_medkit.png" width="40" alt="Deployable medical crate marker" /> | Medical Crate | Green deployable medical crate marker. |
+| <img src="doc/img/pickup_ammo_cache_deployable.png" width="40" alt="Deployable ammo crate marker" /> | Ammo Crate | Pale green deployable ammo crate marker. |
+| <img src="doc/img/pickup_medkit.png" width="40" alt="Deployable medical crate marker" /> | Medical Crate | Green deployable medical crate marker. |
 
 ### Event-Related Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/pickup_tainted_skull.png" width="40" alt="Tainted Skull marker" /> | Tainted Skulls | Green skull marker. |
-| <img src="doc/img/readme/pocketable_corrupted_auspex_scanner.png" width="40" alt="Tainted Communications Device marker" /> | Tainted Communications Device | Orange auspex scanner marker. |
-| <img src="doc/img/readme/pickup_saints.png" width="40" alt="Holy Relics marker" /> | Holy Relics | Gold relic marker. |
-| <img src="doc/img/readme/pickup_stolen_rations.png" width="40" alt="Stolen Rations marker" /> | Stolen Rations | Green crate marker. |
+| <img src="doc/img/pickup_tainted_skull.png" width="40" alt="Tainted Skull marker" /> | Tainted Skulls | Green skull marker. |
+| <img src="doc/img/pocketable_corrupted_auspex_scanner.png" width="40" alt="Tainted Communications Device marker" /> | Tainted Communications Device | Orange auspex scanner marker. |
+| <img src="doc/img/pickup_saints.png" width="40" alt="Holy Relics marker" /> | Holy Relics | Gold relic marker. |
+| <img src="doc/img/pickup_stolen_rations.png" width="40" alt="Stolen Rations marker" /> | Stolen Rations | Green crate marker. |
 
 ### Debug Marker
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/readme/pickup_unknown.png" width="40" alt="Unknown pickup marker" /> | Unknown pickups | Optional fallback marker used when debug discovery is enabled. |
+| <img src="doc/img/pickup_unknown.png" width="40" alt="Unknown pickup marker" /> | Unknown pickups | Optional fallback marker used when debug discovery is enabled. |
 
 ## Icons and Color Rules
 
