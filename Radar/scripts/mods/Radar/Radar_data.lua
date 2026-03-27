@@ -71,6 +71,48 @@ return {
                         },
                     },
                     {
+                        setting_id = "radar_outline",
+                        type = "dropdown",
+                        default_value = "solid",
+                        options = {
+                            {
+                                text = "radar_outline_solid",
+                                value = "solid",
+                            },
+                            {
+                                text = "radar_outline_dotted",
+                                value = "dotted",
+                            },
+                            {
+                                text = "radar_outline_off",
+                                value = "off",
+                            },
+                        },
+                    },
+                    {
+                        setting_id = "radar_guides",
+                        type = "dropdown",
+                        default_value = "crosshair",
+                        options = {
+                            {
+                                text = "radar_guides_crosshair",
+                                value = "crosshair",
+                            },
+                            {
+                                text = "radar_guides_view_guides",
+                                value = "view_guides",
+                            },
+                            {
+                                text = "radar_guides_range_rings",
+                                value = "range_rings",
+                            },
+                            {
+                                text = "radar_guides_off",
+                                value = "off",
+                            },
+                        },
+                    },
+                    {
                         setting_id = "enemy_display_style",
                         type = "dropdown",
                         default_value = "marked_icon",
@@ -325,6 +367,47 @@ return {
                     },
                     {
                         setting_id = "show_pocketable_scripture",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                },
+            },
+            {
+                setting_id = "expeditions_location_group",
+                type = "group",
+                sub_widgets = {
+                    {
+                        setting_id = "ignore_radar_range_for_expedition_markers",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_expedition_objective_opportunity",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_expedition_objective_transition",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_expedition_objective_main_objective",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_expedition_objective_extraction",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_expedition_objective_arrival",
+                        type = "checkbox",
+                        default_value = true,
+                    },
+                    {
+                        setting_id = "show_expedition_loot_converter",
                         type = "checkbox",
                         default_value = true,
                     },

@@ -52,6 +52,33 @@ return {
         en = "Circle",
         ["zh-cn"] = "圆形",
     },
+    radar_outline = {
+        en = "Radar outline",
+    },
+    radar_outline_solid = {
+        en = "Solid",
+    },
+    radar_outline_dotted = {
+        en = "Dotted",
+    },
+    radar_outline_off = {
+        en = "Off",
+    },
+    radar_guides = {
+        en = "Radar guides",
+    },
+    radar_guides_crosshair = {
+        en = "Crosshair",
+    },
+    radar_guides_view_guides = {
+        en = "View guides",
+    },
+    radar_guides_range_rings = {
+        en = "Range rings",
+    },
+    radar_guides_off = {
+        en = "Off",
+    },
     enemy_display_style = {
         en = "Enemy marker style",
         ["zh-cn"] = "敌人标记样式",
@@ -223,6 +250,30 @@ return {
     show_expeditions_dropped_loot = {
         en = "Dropped Tech-Remnants",
         ["zh-cn"] = "掉落科技遗物",
+    },
+    expeditions_location_group = {
+        en = "Expeditions POI",
+    },
+    ignore_radar_range_for_expedition_markers = {
+        en = "Ignore range limit for POI",
+    },
+    show_expedition_objective_opportunity = {
+        en = "Sites of Interest",
+    },
+    show_expedition_objective_transition = {
+        en = "Deadsider Sanctuaries",
+    },
+    show_expedition_loot_converter = {
+        en = "Data Reliquary Harvesters",
+    },
+    show_expedition_objective_main_objective = {
+        en = "Main Objective",
+    },
+    show_expedition_objective_extraction = {
+        en = "Valkyrie Extraction Zone",
+    },
+    show_expedition_objective_arrival = {
+        en = "Valkyrie Arrival Zone",
     },
     show_data_reliquaries = {
         en = "Data Reliquaries",

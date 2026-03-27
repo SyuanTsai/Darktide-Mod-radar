@@ -28,6 +28,15 @@ local PLAYER_CLASS_ICONS = {
     broker = "content/ui/materials/icons/classes/broker",
 }
 
+local EXPEDITION_OBJECTIVE_KINDS = {
+    expedition_loot_converter = true,
+    expedition_objective_opportunity = true,
+    expedition_objective_transition = true,
+    expedition_objective_main_objective = true,
+    expedition_objective_extraction = true,
+    expedition_objective_arrival = true,
+}
+
 local function _log_once(bucket, key, message)
     if mod:get("debug_mode") ~= true then
         return
@@ -396,7 +405,51 @@ local function _draw_circle_fill(ui_renderer, center_x, center_y, z, radius, col
     end
 end
 
+local function _round(n)
+    return math.floor(n + 0.5)
+end
+
+local function _draw_dot(ui_renderer, x, y, z, size, color)
+    local half = size / 2
+    _draw_box(ui_renderer, _round(x - half), _round(y - half), z, size, size, color)
+end
+
 local function _draw_circle_outline(ui_renderer, center_x, center_y, z, radius, color)
+    local circumference = math.max(24, 2 * math.pi * radius)
+    local steps = math.max(96, math.floor(circumference * 1.25))
+    local dot_size = radius >= 100 and 1
+
+    for i = 0, steps - 1 do
+        local angle = (math.pi * 2 * i) / steps
+        local px = center_x + math.cos(angle) * radius
+        local py = center_y + math.sin(angle) * radius
+        _draw_dot(ui_renderer, px, py, z, dot_size, color)
+    end
+end
+
+local function _draw_hline_dotted(ui_renderer, x, y, z, length, thickness, color, dash, gap)
+    local step = dash + gap
+    local i = 0
+
+    while i < length do
+        local segment = math.min(dash, length - i)
+        _draw_box(ui_renderer, x + i, y, z, segment, thickness, color)
+        i = i + step
+    end
+end
+
+local function _draw_vline_dotted(ui_renderer, x, y, z, thickness, length, color, dash, gap)
+    local step = dash + gap
+    local i = 0
+
+    while i < length do
+        local segment = math.min(dash, length - i)
+        _draw_box(ui_renderer, x, y + i, z, thickness, segment, color)
+        i = i + step
+    end
+end
+
+local function _draw_circle_outline_dotted(ui_renderer, center_x, center_y, z, radius, color)
     local point_size = radius >= 90 and 2 or 1
     local steps = 64
 
@@ -408,37 +461,297 @@ local function _draw_circle_outline(ui_renderer, center_x, center_y, z, radius, 
     end
 end
 
-local function _draw_radar_frame_square(ui_renderer, x, y, z, size)
-    local thickness = 2
-    local center = size / 2
+local function _draw_square_outline(ui_renderer, x, y, z, size, thickness, color)
+    x = _round(x)
+    y = _round(y)
+    size = math.max(1, _round(size))
+    thickness = math.max(1, _round(thickness))
 
-    _draw_box(ui_renderer, x, y, z, size, size, _color(90, 0, 0, 0))
-    _draw_box(ui_renderer, x, y, z + 1, size, thickness, _color(255, 255, 255, 255))
-    _draw_box(ui_renderer, x, y + size - thickness, z + 1, size, thickness, _color(255, 255, 255, 255))
-    _draw_box(ui_renderer, x, y, z + 1, thickness, size, _color(255, 255, 255, 255))
-    _draw_box(ui_renderer, x + size - thickness, y, z + 1, thickness, size, _color(255, 255, 255, 255))
-    _draw_box(ui_renderer, x + center, y, z + 1, 1, size, _color(90, 255, 255, 255))
-    _draw_box(ui_renderer, x, y + center, z + 1, size, 1, _color(90, 255, 255, 255))
+    _draw_box(ui_renderer, x, y, z, size, thickness, color)
+    _draw_box(ui_renderer, x, y + size - thickness, z, size, thickness, color)
+    _draw_box(ui_renderer, x, y, z, thickness, size, color)
+    _draw_box(ui_renderer, x + size - thickness, y, z, thickness, size, color)
 end
 
-local function _draw_radar_frame_circle(ui_renderer, x, y, z, size)
-    local center_x = x + size / 2
-    local center_y = y + size / 2
-    local radius = math.max(1, size / 2 - 1)
+local function _draw_diagonal_line(ui_renderer, x1, y1, x2, y2, z, color, dot_size)
+    local dx = x2 - x1
+    local dy = y2 - y1
+    local steps = math.max(math.abs(dx), math.abs(dy), 1)
 
-    _draw_circle_fill(ui_renderer, center_x, center_y, z, radius, _color(90, 0, 0, 0))
-    _draw_circle_outline(ui_renderer, center_x, center_y, z + 1, radius, _color(255, 255, 255, 255))
-    _draw_box(ui_renderer, center_x, y + 1, z + 1, 1, math.max(1, size - 2), _color(90, 255, 255, 255))
-    _draw_box(ui_renderer, x + 1, center_y, z + 1, math.max(1, size - 2), 1, _color(90, 255, 255, 255))
+    for i = 0, steps do
+        local t = i / steps
+        local px = x1 + dx * t
+        local py = y1 + dy * t
+        _draw_dot(ui_renderer, px, py, z, dot_size or 1, color)
+    end
 end
 
-local function _draw_radar_frame(ui_renderer, x, y, z, size)
-    if mod:get_radar_style() == "circle" then
-        _draw_radar_frame_circle(ui_renderer, x, y, z, size)
+local function _safe_local_player()
+    local player_manager = Managers and Managers.state and Managers.state.player
+    if not player_manager then
+        return nil
+    end
+
+    local getter = player_manager.local_player or player_manager.player
+    if type(getter) ~= "function" then
+        return nil
+    end
+
+    local ok, player = pcall(function()
+        return getter(player_manager, 1)
+    end)
+
+    if ok then
+        return player
+    end
+
+    return nil
+end
+
+local function _safe_player_horizontal_fov()
+    local local_player = _safe_local_player()
+    if not local_player then
+        return nil
+    end
+
+    local viewport_name = local_player.viewport_name
+    if not viewport_name then
+        return nil
+    end
+
+    local camera_manager = Managers and Managers.state and Managers.state.camera
+    if not camera_manager or type(camera_manager.fov) ~= "function" then
+        return nil
+    end
+
+    if type(camera_manager.has_camera) == "function" then
+        local ok_has_camera, has_camera = pcall(function()
+            return camera_manager:has_camera(viewport_name)
+        end)
+
+        if ok_has_camera and not has_camera then
+            return nil
+        end
+    end
+
+    local ok_fov, vertical_fov = pcall(function()
+        return camera_manager:fov(viewport_name)
+    end)
+
+    vertical_fov = ok_fov and tonumber(vertical_fov) or nil
+    if not vertical_fov or vertical_fov <= 0 then
+        return nil
+    end
+
+    local aspect_ratio = 16 / 9
+    if rawget(_G, "RESOLUTION_LOOKUP") and RESOLUTION_LOOKUP.width and RESOLUTION_LOOKUP.height and RESOLUTION_LOOKUP.height > 0 then
+        aspect_ratio = RESOLUTION_LOOKUP.width / RESOLUTION_LOOKUP.height
+    end
+
+    return 2 * math.atan(math.tan(vertical_fov * 0.5) * aspect_ratio)
+end
+
+local function _view_cone_half_angle()
+    local horizontal_fov = _safe_player_horizontal_fov() or math.rad(90)
+    local half_angle = horizontal_fov * 0.5
+
+    return math.clamp(half_angle, math.rad(15), math.rad(85))
+end
+
+local function _view_cone_direction(angle)
+    return math.sin(angle), -math.cos(angle)
+end
+
+local function _view_cone_endpoint_circle(center_x, center_y, radius, angle)
+    local dx, dy = _view_cone_direction(angle)
+
+    return center_x + dx * radius, center_y + dy * radius
+end
+
+local function _view_cone_endpoint_square(center_x, center_y, left, top, right, bottom, angle)
+    local dx, dy = _view_cone_direction(angle)
+    local t_candidates = {}
+
+    if math.abs(dx) > 0.0001 then
+        if dx > 0 then
+            t_candidates[#t_candidates + 1] = (right - center_x) / dx
+        else
+            t_candidates[#t_candidates + 1] = (left - center_x) / dx
+        end
+    end
+
+    if math.abs(dy) > 0.0001 then
+        if dy > 0 then
+            t_candidates[#t_candidates + 1] = (bottom - center_y) / dy
+        else
+            t_candidates[#t_candidates + 1] = (top - center_y) / dy
+        end
+    end
+
+    local best_t = nil
+
+    for i = 1, #t_candidates do
+        local t = t_candidates[i]
+        if t and t > 0 and (not best_t or t < best_t) then
+            best_t = t
+        end
+    end
+
+    best_t = best_t or 0
+
+    return center_x + dx * best_t, center_y + dy * best_t
+end
+
+local function _draw_circle_ring(ui_renderer, center_x, center_y, z, outer_radius, thickness, color)
+    local outer_r = math.max(1, math.floor((outer_radius or 0) + 0.5))
+    local inner_r = math.max(0, outer_r - math.max(1, math.floor((thickness or 1) + 0.5)))
+
+    for dy = -outer_r, outer_r do
+        local outer_span = math.floor(math.sqrt(math.max(0, outer_r * outer_r - dy * dy)))
+        local inner_span = 0
+
+        if math.abs(dy) <= inner_r then
+            inner_span = math.floor(math.sqrt(math.max(0, inner_r * inner_r - dy * dy)))
+        end
+
+        if outer_span > inner_span then
+            local y_pos = center_y + dy
+            local left_x = center_x - outer_span
+            local right_x = center_x + inner_span + 1
+            local segment_width = outer_span - inner_span
+
+            _draw_box(ui_renderer, left_x, y_pos, z, segment_width, 1, color)
+            _draw_box(ui_renderer, right_x, y_pos, z, segment_width, 1, color)
+        end
+    end
+end
+
+local function _draw_radar_guides(ui_renderer, x, y, z, size, is_circle)
+    local guide_style = mod.get_radar_guides and mod:get_radar_guides() or "crosshair"
+
+    if guide_style == "off" then
         return
     end
 
-    _draw_radar_frame_square(ui_renderer, x, y, z, size)
+    local center_x = x + size / 2
+    local center_y = y + size / 2
+    local radius = size / 2
+    local guide_color = _color(90, 255, 255, 255)
+
+    if guide_style == "crosshair" then
+        if is_circle then
+            local guide_radius = math.max(1, radius - 2)
+            local top = _round(center_y - guide_radius)
+            local left = _round(center_x - guide_radius)
+            local span = math.max(1, _round(guide_radius * 2))
+
+            _draw_box(ui_renderer, _round(center_x), top, z, 1, span, guide_color)
+            _draw_box(ui_renderer, left, _round(center_y), z, span, 1, guide_color)
+        else
+            local inset = 1
+            local left = x + inset
+            local top = y + inset
+            local span = math.max(1, size - inset * 2)
+
+            _draw_box(ui_renderer, _round(center_x), top, z, 1, span, guide_color)
+            _draw_box(ui_renderer, left, _round(center_y), z, span, 1, guide_color)
+        end
+
+        return
+    end
+
+    if guide_style == "view_guides" then
+        local half_angle = _view_cone_half_angle()
+        local thickness = size >= 180 and 1
+        local left_x, left_y
+        local right_x, right_y
+
+        if is_circle then
+            left_x, left_y = _view_cone_endpoint_circle(center_x, center_y, radius - 1, -half_angle)
+            right_x, right_y = _view_cone_endpoint_circle(center_x, center_y, radius - 1, half_angle)
+        else
+            left_x, left_y = _view_cone_endpoint_square(center_x, center_y, x + 1, y + 1, x + size - 1, y + size - 1,
+                -half_angle)
+            right_x, right_y = _view_cone_endpoint_square(center_x, center_y, x + 1, y + 1, x + size - 1, y + size - 1,
+                half_angle)
+        end
+
+        _draw_diagonal_line(ui_renderer, center_x, center_y, left_x, left_y, z, guide_color, thickness)
+        _draw_diagonal_line(ui_renderer, center_x, center_y, right_x, right_y, z, guide_color, thickness)
+
+        return
+    end
+
+    if guide_style == "range_rings" then
+        local ring_gap = radius / 4
+        local ring_thickness = 1
+
+        for ring = 1, 3 do
+            local r = ring_gap * ring
+
+            if is_circle then
+                _draw_circle_ring(ui_renderer, center_x, center_y, z, r, ring_thickness, guide_color)
+            else
+                local inset = radius - r
+                local ring_x = x + inset
+                local ring_y = y + inset
+                local ring_size = size - inset * 2
+                _draw_square_outline(ui_renderer, ring_x, ring_y, z, ring_size, ring_thickness, guide_color)
+            end
+        end
+    end
+end
+
+local function _draw_radar_frame_square(ui_renderer, x, y, z, size, outline_style)
+    local thickness = 2
+    local fill_color = _color(90, 0, 0, 0)
+    local outline_color = _color(255, 213, 226, 206)
+
+    _draw_box(ui_renderer, x, y, z, size, size, fill_color)
+
+    if outline_style == "solid" then
+        _draw_box(ui_renderer, x, y, z + 1, size, thickness, outline_color)
+        _draw_box(ui_renderer, x, y + size - thickness, z + 1, size, thickness, outline_color)
+        _draw_box(ui_renderer, x, y, z + 1, thickness, size, outline_color)
+        _draw_box(ui_renderer, x + size - thickness, y, z + 1, thickness, size, outline_color)
+    elseif outline_style == "dotted" then
+        local dash = 8
+        local gap = 5
+
+        _draw_hline_dotted(ui_renderer, x, y, z + 1, size, thickness, outline_color, dash, gap)
+        _draw_hline_dotted(ui_renderer, x, y + size - thickness, z + 1, size, thickness, outline_color, dash, gap)
+        _draw_vline_dotted(ui_renderer, x, y, z + 1, thickness, size, outline_color, dash, gap)
+        _draw_vline_dotted(ui_renderer, x + size - thickness, y, z + 1, thickness, size, outline_color, dash, gap)
+    end
+end
+
+local function _draw_radar_frame_circle(ui_renderer, x, y, z, size, outline_style)
+    local center_x = x + size / 2
+    local center_y = y + size / 2
+    local radius = math.max(1, size / 2 - 1)
+    local fill_color = _color(90, 0, 0, 0)
+    local outline_color = _color(255, 213, 226, 206)
+
+    _draw_circle_fill(ui_renderer, center_x, center_y, z, radius, fill_color)
+
+    if outline_style == "solid" then
+        _draw_circle_outline(ui_renderer, center_x, center_y, z + 1, radius, outline_color)
+    elseif outline_style == "dotted" then
+        _draw_circle_outline_dotted(ui_renderer, center_x, center_y, z + 1, radius, outline_color)
+    end
+end
+
+local function _draw_radar_frame(ui_renderer, x, y, z, size)
+    local outline_style = mod.get_radar_outline and mod:get_radar_outline() or "solid"
+    local is_circle = mod:get_radar_style() == "circle"
+
+    if is_circle then
+        _draw_radar_frame_circle(ui_renderer, x, y, z, size, outline_style)
+    else
+        _draw_radar_frame_square(ui_renderer, x, y, z, size, outline_style)
+    end
+
+    _draw_radar_guides(ui_renderer, x, y, z + 1, size, is_circle)
 end
 
 local function _marker_definition()
@@ -458,6 +771,21 @@ local function _marker_definition()
                 return content.icon ~= nil and content.icon ~= ""
             end,
         },
+        {
+            pass_type = "texture",
+            value_id = "title_icon",
+            style_id = "title_icon",
+            style = {
+                vertical_alignment = "top",
+                horizontal_alignment = "left",
+                offset = { 0, 0, 11 },
+                size = { 16, 16 },
+                color = { 255, 255, 255, 255 },
+            },
+            visibility_function = function(content, style)
+                return content.title_icon ~= nil and content.title_icon ~= ""
+            end,
+        },
     }, "screen")
 end
 
@@ -469,6 +797,7 @@ end
 
 local function _clear_marker_widget(widget)
     widget.content.icon = nil
+    widget.content.title_icon = nil
 end
 
 local function _ensure_marker_widgets(self)
@@ -517,6 +846,10 @@ local function _is_enemy_kind(kind)
     return kind ~= nil and string.sub(tostring(kind), 1, 6) == "enemy_"
 end
 
+local function _is_expedition_objective_kind(kind)
+    return kind ~= nil and EXPEDITION_OBJECTIVE_KINDS[kind] == true
+end
+
 local function _display_style_for_kind(kind)
     if kind == "player_teammate" then
         local value = tostring(mod:get("player_display_style") or "marked_icon")
@@ -526,6 +859,10 @@ local function _display_style_for_kind(kind)
     if _is_enemy_kind(kind) then
         local value = tostring(mod:get("enemy_display_style") or "marked_icon")
         return value == "icon_only" and "icon_only" or "marked_icon"
+    end
+
+    if _is_expedition_objective_kind(kind) then
+        return "marked_icon"
     end
 
     return "icon_only"
@@ -548,16 +885,82 @@ local function _center_dot_color(snapshot)
 end
 
 local function _apply_marker_widget(widget, visual, x, y, z)
-    local style = widget.style.icon
+    local icon_style = widget.style.icon
+    local title_icon_style = widget.style.title_icon
     local size = _scaled_icon_size(visual and visual.size or 14)
+    local color = _any_to_widget_color(visual and visual.color or nil)
 
     widget.content.icon = visual and visual.icon or nil
-    style.offset[1] = math.floor((x or 0) + 0.5)
-    style.offset[2] = math.floor((y or 0) + 0.5)
-    style.offset[3] = math.floor((z or 0) + 0.5)
-    style.size[1] = size
-    style.size[2] = size
-    style.color = _any_to_widget_color(visual and visual.color or nil)
+    widget.content.title_icon = visual and visual.title_icon or nil
+
+    icon_style.offset[1] = math.floor((x or 0) + 0.5)
+    icon_style.offset[2] = math.floor((y or 0) + 0.5)
+    icon_style.offset[3] = math.floor((z or 0) + 0.5)
+    icon_style.size[1] = size
+    icon_style.size[2] = size
+    icon_style.color = color
+
+    if title_icon_style then
+        title_icon_style.offset[1] = icon_style.offset[1]
+        title_icon_style.offset[2] = icon_style.offset[2]
+        title_icon_style.offset[3] = (icon_style.offset[3] or 0) + 1
+        title_icon_style.size[1] = size
+        title_icon_style.size[2] = size
+        title_icon_style.color = color
+    end
+end
+
+local DEFAULT_INTERACTION_ICON = "content/ui/materials/hud/interactions/icons/default"
+local DEFAULT_EXPEDITION_UNMARKED_COLOR = _widget_color(255, 54, 198, 49)
+
+local EXPEDITION_UNMARKED_COLORS = {
+    expedition_loot_converter = _widget_color(255, 192, 160, 0),
+    expedition_objective_opportunity = DEFAULT_EXPEDITION_UNMARKED_COLOR,
+    expedition_objective_transition = DEFAULT_EXPEDITION_UNMARKED_COLOR,
+    expedition_objective_main_objective = _widget_color(255, 255, 255, 255),
+    expedition_objective_extraction = DEFAULT_EXPEDITION_UNMARKED_COLOR,
+    expedition_objective_arrival = _widget_color(255, 255, 255, 255),
+}
+
+local function _expedition_unmarked_color(target)
+    local kind = target and target.kind
+
+    return EXPEDITION_UNMARKED_COLORS[kind] or DEFAULT_EXPEDITION_UNMARKED_COLOR
+end
+
+local function _expedition_objective_visual(target)
+    local meta = target and target.meta or {}
+    local player_slot = tonumber(meta.marked_by_player_slot)
+    local slot_colors = UISettings and UISettings.player_slot_colors
+    local player_color = player_slot and slot_colors and slot_colors[player_slot] or nil
+    local default_color = _expedition_unmarked_color(target)
+    local widget_color = _any_to_widget_color(player_color, default_color)
+
+    local accent_color = nil
+    local icon = nil
+
+    if target and target.kind == "expedition_loot_converter" then
+        icon = meta.objective_icon or DEFAULT_INTERACTION_ICON
+    else
+        local interaction_icon = meta.interaction_icon
+        icon = interaction_icon
+
+        if icon == nil or icon == DEFAULT_INTERACTION_ICON then
+            icon = meta.objective_icon or DEFAULT_INTERACTION_ICON
+        end
+    end
+
+    if player_slot then
+        accent_color = _with_alpha_widget(player_color or widget_color, 180)
+    end
+
+    return {
+        icon = icon,
+        title_icon = meta.objective_title_icon,
+        color = widget_color,
+        accent_color = accent_color,
+        size = 15,
+    }
 end
 
 local function _target_visual(target)
@@ -589,6 +992,26 @@ local function _target_visual(target)
             accent_color = _with_alpha_widget(widget_color, 180),
             size = 15,
         }
+    end
+
+    if _is_expedition_objective_kind(target.kind) then
+        if mod:get("debug_mode") then
+            _log_once(
+                _logged_visuals,
+                "expedition:" ..
+                tostring(target.kind) ..
+                ":" ..
+                tostring((target.meta or {}).interaction_icon or (target.meta or {}).objective_icon) ..
+                ":" .. tostring((target.meta or {}).objective_title_icon),
+                string.format("[Radar] visual expedition | kind=%s icon=%s title_icon=%s marked_by=%s",
+                    tostring(target.kind),
+                    tostring((target.meta or {}).interaction_icon or (target.meta or {}).objective_icon),
+                    tostring((target.meta or {}).objective_title_icon),
+                    tostring((target.meta or {}).marked_by_player_slot))
+            )
+        end
+
+        return _expedition_objective_visual(target)
     end
 
     local presentation = PRESENTATIONS[target.kind]
@@ -720,7 +1143,7 @@ HudElementRadar.draw = function(self, dt, t, ui_renderer, render_settings, input
 
                 local target = targets[i]
                 local px, py = mod:project_target_to_radar(player_pos, projection_rotation, target.position, radius - 8,
-                    range)
+                    range, target.ignore_radar_range)
 
                 if px and py then
                     local visual = _target_visual(target)
@@ -738,8 +1161,9 @@ HudElementRadar.draw = function(self, dt, t, ui_renderer, render_settings, input
                     _log_once(
                         _logged_draws,
                         "widget_material:" .. tostring(visual and visual.icon),
-                        string.format("[Radar] widget material scheduled | material=%s",
-                            tostring(visual and visual.icon))
+                        string.format("[Radar] widget material scheduled | material=%s title_material=%s",
+                            tostring(visual and visual.icon),
+                            tostring(visual and visual.title_icon))
                     )
 
                     local widget_ok, widget_err = pcall(function()
