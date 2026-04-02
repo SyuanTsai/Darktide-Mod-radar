@@ -2,24 +2,36 @@
 
 Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu.
 
+## What's New in 1.3.0
+
+- Adds small **up** and **down** arrows for supported item markers, plus settings to control when the arrows appear and when vertically distant items are hidden.
+- Fixes **Heretic Idol** markers so active idols show reliably on the radar.
+- Adds anchor-based radar positioning with corner anchors plus horizontal and vertical offsets for more consistent placement across different screen layouts.
+- Adds a **radar background opacity** slider and an optional **Infinite** boss marker range mode.
+- Adds per-category **Icon size (%)** sliders, so you can resize major marker groups independently while keeping the final combined size capped at **4.0x**.
+
 ## Feature Overview
 
 - Tracks nearby pickups, materials, mission items, event items, deployables, environment interactables, expedition POIs, teammates, and priority enemies on a single radar.
 - Projects markers relative to your current facing, so the radar rotates with your view instead of acting like a fixed minimap.
 - Supports **square** and **circle** radar frames, plus configurable **outline** and **guide** styles for both shapes.
-- Lets you adjust **radar size**, **scan range**, and **maximum marker count**.
+- Lets you adjust **radar size**, **scan range**, **radar background opacity**, **vertical arrow range**, **vertical hide threshold**, and **maximum marker count**.
 - Supports optional **icon scaling with radar size**.
+- Adds per-category **Icon size (%)** sliders for common pickups, materials, objective items, expedition markers, deployables, enemies, players, event items, and debug markers.
 - Supports separate marker styles for **enemies** and **teammates**. Enemies support **Icon only** and **Marked icon**, teammates support **Icon only**, **Marked icon**, **Dot only**, and **Marked dot**.
 - Includes a **toggle radar on or off** keybind, so you can hide or restore the radar during a mission without opening the options menu.
-- Supports configurable **radar positioning** with **Radar position X**, **Radar position Y**, **Steps per input**, and dedicated movement keybinds for nudging the radar **left**, **right**, **up**, or **down**.
+- Supports anchor-based **radar positioning** with **Radar anchor**, **Horizontal offset**, **Vertical offset**, **Steps per input**, and dedicated movement keybinds for nudging the radar **left**, **right**, **up**, or **down**.
+- Adds small **up** and **down** arrows to supported item markers when they are above or below you and still within the configured arrow range.
+- Lets you hide supported item markers that are far above or below your current level, which helps reduce clutter in multi-level areas.
 - Adds dedicated **Expedition POI** support for numbered **Sites of Interest** opportunity markers, plus dedicated icons for **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**, with an option to ignore the normal range limit for these markers.
-- Adds environment markers for **Medicae Station**, **Power Socket**, and **Heretic Idol**.
+- Adds environment markers for **Medicae Station**, **Power Socket**, and **Heretic Idol**, and active heretic idols now appear reliably on the radar.
 - Supports per-marker display mode dropdowns for supported artwork-based markers with **Artwork**, **Icon**, and **Off** modes. **Artwork** remains the default, and older boolean settings are migrated automatically.
 - Recolors the remaining formerly white pickup icons with more semantic colors, including ammo, grenades, medicae-related markers, power sockets, and heretic idols.
 - Keeps the radar position clamped to the visible UI space, so moving or resizing it does not push it off-screen.
 - Colors the radar center dot from the local player HUD slot color.
 - Supports class-icon and dot-based teammate presentations instead of a single fixed teammate marker style.
-- Exposes category-based checkboxes, style dropdowns, and display mode dropdowns for common pickups, materials, objective items, expedition items, expedition POIs, environment markers, deployed items, enemies, teammates, and event items.
+- Adds an optional **Infinite** boss marker range mode, which is especially useful for expeditions.
+- Exposes category-based checkboxes, style dropdowns, display mode dropdowns, and group-based icon size sliders for common pickups, materials, objective items, expedition items, expedition POIs, environment markers, deployed items, enemies, teammates, event items, and debug markers.
 - Includes optional **debug logs** and an **unknown pickups** toggle for discovery and troubleshooting.
 - Includes a groundwork **highlighting** option, but the actual highlighting behavior is currently still under development.
 
@@ -41,6 +53,16 @@ The screenshots below show both radar styles during an expedition mission. They 
   <img src="doc/img/square_radar_1.png" width="31%" alt="Square radar example 1" />
   <img src="doc/img/square_radar_2.png" width="31%" alt="Square radar example 2" />
   <img src="doc/img/square_radar_3.png" width="31%" alt="Square radar example 3" />
+</p>
+
+### Vertical item arrows
+
+The new vertical item arrows add a small **up** or **down** overlay to supported item markers when the item is on a different level but still close enough horizontally to matter. You can also tune when these arrows appear and when vertically distant items are hidden entirely.
+
+<p>
+  <img src="doc/img/material_expeditions_loot.png" width="50" alt="Same-level item marker example" />
+  <img src="doc/img/material_expeditions_loot_up.png" width="50" alt="Item marker with up arrow example" />
+  <img src="doc/img/material_expeditions_loot_down.png" width="50" alt="Item marker with down arrow example" />
 </p>
 
 ## Display and Behavior
@@ -102,17 +124,22 @@ Supported artwork-based markers now use dropdowns instead of simple booleans. Ea
 | --- | --- |
 | Enable radar | Master on or off switch for the HUD element. |
 | Toggle radar on or off | Assign a key to switch the radar HUD visibility during gameplay without opening the options menu. |
-| Radar size | Adjustable from **100** to **350**. |
+| Radar size | Adjustable from **100** to **1200**. |
 | Radar range / filter distance | Adjustable from **25 m** to **100 m**. |
+| Show vertical arrows within range (m) | Adjustable from **25 m** to **100 m**. Supported item markers show a small **up** or **down** arrow when they are on another level and still within this horizontal range. |
+| Hide items above/below (m) | Adjustable from **8 m** to **50 m**. Supported item markers with a larger vertical separation are hidden. |
 | Max radar markers | Adjustable from **10** to **100**. |
-| Scale icons with radar size | Keeps marker size fixed or scales it with the radar. |
+| Scale icons with radar size | Keeps marker size fixed or scales it with the radar. The final combined icon size is capped at **4.0x**. |
 | Radar style | **Square** or **Circle**. |
 | Radar outline | **Solid**, **Dotted**, or **Off**. |
 | Radar guides | **Crosshair**, **View guides**, **Range rings**, or **Off**. |
+| Radar background opacity | Adjustable from **0** to **255**. Controls the alpha of the radar background without changing marker readability. |
 | Enemy marker style | **Icon only** or **Marked icon**. |
+| Boss marker range | **Normal** or **Infinite**. Lets boss-type markers follow the normal radar range or stay visible at any distance. |
 | Player marker style | **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. |
-| Radar position X | Sets the radar's horizontal position. The value is clamped to the visible UI space. |
-| Radar position Y | Sets the radar's vertical position. The value is clamped to the visible UI space. |
+| Radar anchor | **Top left**, **Top right**, **Bottom left**, or **Bottom right**. Sets the corner the radar offsets from. |
+| Horizontal offset | Sets the radar's horizontal offset from the selected anchor. The value is clamped to the visible UI space. |
+| Vertical offset | Sets the radar's vertical offset from the selected anchor. The value is clamped to the visible UI space. |
 | Steps per input | Sets how far each radar movement key press nudges the radar. |
 | Move radar left | Assign a key to move the radar left by the configured step size. |
 | Move radar right | Assign a key to move the radar right by the configured step size. |
@@ -127,6 +154,26 @@ Supported artwork-based markers now use dropdowns instead of simple booleans. Ea
 | Common Pickups | Crates | **Artwork**, **Icon**, **Off** |
 | Collectable Materials | Diamantine, Plasteel | **Artwork**, **Icon**, **Off** |
 | Expeditions-Specific Items | Salvage, Tech-Remnants, Dropped Tech-Remnants, Servo-Triggered Mine, Purgation Snare, Voltaic Snare, Void Shell, Bombing Run Signal Marker, Artillery Locator Beacon, Modified Grenade, Fire-Support Signal Marker | **Artwork**, **Icon**, **Off** |
+
+### Per-category icon size controls
+
+Each major option group now includes an **Icon size (%)** slider. These sliders resize the whole marker family from **50%** to **300%**. When combined with **Scale icons with radar size**, the final rendered icon size is still capped at **4.0x**.
+
+| Option group | Affects |
+| --- | --- |
+| Common Pickups | Crates, ammo, grenades, crates, and stimms |
+| Collectable Materials | Diamantine and Plasteel |
+| Primary Objective Items | Mission luggables and primary objective pickups |
+| Secondary Objective Items | Grimoires and Scriptures |
+| Expeditions POI | Sites of Interest, sanctuaries, harvesters, main objective, extraction, and arrival markers |
+| Expeditions-Specific Items | Salvage, Tech-Remnants, expedition pocketables, and related expedition pickups |
+| Martyr's Skull Items | Martyr's Skull markers and related power cell markers |
+| Environment | Medicae Station, Power Socket, and Heretic Idol |
+| Deployed Items | Ammo Crate and Medical Crate deployables |
+| Enemies | Bosses, captains, and Karnak Twins markers |
+| Players | Teammate markers |
+| Event-Related Items | Event pickups and event objectives |
+| Debugging | Unknown pickup markers and debug visuals |
 
 ### Expedition POI Controls
 
@@ -153,10 +200,11 @@ Supported artwork-based markers now use dropdowns instead of simple booleans. Ea
 ### Positioning and Toggle Use
 
 - Use **Toggle radar on or off** to quickly hide or restore the radar while staying in the mission.
-- Use **Radar position X** and **Radar position Y** when you want to place the radar precisely in a fixed HUD location.
+- Use **Radar anchor** first to choose the screen corner the radar should stick to.
+- Use **Horizontal offset** and **Vertical offset** when you want to place the radar precisely relative to that anchor.
 - Use **Move radar left**, **right**, **up**, and **down** when you want to fine-tune the placement in live gameplay with key presses.
 - **Steps per input** controls how large each movement increment is, which makes it easier to do either quick repositioning or small adjustments.
-- Radar placement is automatically clamped against the current UI space, so the widget stays within the visible screen area even after changing size or resolution scale.
+- Anchor-based placement is automatically clamped against the current UI space, so the widget stays within the visible screen area even after changing size or resolution scale.
 
 ### Marker Rules
 
@@ -164,7 +212,9 @@ Supported artwork-based markers now use dropdowns instead of simple booleans. Ea
 - **Teammates** use archetype icons or dot presentations, plus their runtime HUD slot color.
 - **The center dot** uses the local player HUD color instead of a fixed green.
 - **Supported artwork-based markers** can now switch between artwork mode, simplified icon mode, or be disabled entirely.
-- **Environment markers** cover medicae stations, power sockets, and heretic idols.
+- **Supported item markers** can show a small **up** or **down** arrow when they are above or below you within the configured arrow range, and can be hidden entirely when they are too far above or below your level.
+- **Environment markers** cover medicae stations, power sockets, and heretic idols, and active idols now appear reliably on the radar.
+- **Boss markers** can follow the normal radar range or ignore it completely by switching **Boss marker range** to **Infinite**.
 - **Expedition POIs** use numbered scanner-map glyphs for opportunity markers, can also reflect player-marked states in expedition colors, use dedicated icons for transition, harvester, main objective, extraction, and arrival locations, can optionally ignore the normal radar range limit, and are filtered to the active expedition section so outdated location markers do not linger after section changes.
 
 ## Target Markers
@@ -176,7 +226,7 @@ The legend below follows the option groups exposed by `Radar_data.lua`. The prev
 | Preview | Marker | Notes |
 | --- | --- | --- |
 | <img src="doc/img/enemy_daemonhost.png" width="40" alt="Daemonhost marker" /> | Daemonhost | Separate presentation under the **Monstrosities** toggle. |
-| <img src="doc/img/enemy_monstrosity.png" width="40" alt="Monstrosity marker" /> | Monstrosities | Covers the generic monstrosity presentation used for Beast of Nurgle, Plague Ogryn, Chaos Spawn, and Ogryn Houndmaster. |
+| <img src="doc/img/enemy_monstrosity.png" width="40" alt="Monstrosity marker" /> | Monstrosities | Covers the generic monstrosity presentation used for Beast of Nurgle, Plague Ogryn, Chaos Spawn, and Ogryn Houndmaster. **Boss marker range** can be set to **Normal** or **Infinite**. |
 | <img src="doc/img/enemy_captain.png" width="40" alt="Captain marker" /> | Captains | Red danger marker with bracket accent in marked mode. |
 | <img src="doc/img/enemy_karnak_twin.png" width="40" alt="Karnak Twins marker" /> | Karnak Twins | Dedicated presentation for the twins. |
 
@@ -307,7 +357,7 @@ These markers are driven by expedition navigation data rather than standard pick
 | --- | --- | --- |
 | <img src="doc/img/medicae_station.png" width="40" alt="Medicae Station marker" /> | Medicae Station | Green medical interaction marker used for medicae stations and equivalent health-station interactions. |
 | <img src="doc/img/luggable_socket.png" width="40" alt="Power Socket marker" /> | Power Socket | Yellow power socket marker for luggable socket targets. |
-| <img src="doc/img/heretic_idol.png" width="40" alt="Heretic Idol marker" /> | Heretic Idol | Sickly green idol marker shown while the idol is still active. |
+| <img src="doc/img/heretic_idol.png" width="40" alt="Heretic Idol marker" /> | Heretic Idol | Sickly green idol marker shown while the idol is still active. Active idols now appear reliably on the radar. |
 
 ### Deployed Items
 
@@ -411,8 +461,12 @@ Not every radar marker uses a fixed readme tint:
 - The radar is intended for active gameplay and suppresses itself outside valid runtime states such as hub and menu contexts.
 - Expedition POIs are filtered to the active expedition section, and **Data Reliquary Harvesters** are only shown inside the relevant **Deadsider Sanctuary** where they can actually be used.
 - Artwork-based markers now use localized **Artwork**, **Icon**, and **Off** dropdowns where supported, and older saved boolean settings are migrated automatically.
-- The **Environment** group adds dedicated toggles for **Medicae Station**, **Power Socket**, and **Heretic Idol**.
+- Supported item markers can show vertical **up** and **down** arrows within the configured range, and can be hidden when they are too far above or below your current level.
+- The **Environment** group adds dedicated toggles for **Medicae Station**, **Power Socket**, and **Heretic Idol**, and active heretic idols now appear reliably on the radar.
+- Anchor-based positioning uses a corner anchor plus horizontal and vertical offsets, which makes radar placement more consistent across different screen layouts.
+- Each major marker group now includes an **Icon size (%)** slider, and the final combined marker size is capped at **4.0x**.
+- Boss markers can use **Normal** or **Infinite** range.
 - The highlighting option is visible in the configuration, but the actual highlighting behavior is still work in progress.
 - Marker previews in this readme were generated from the included template assets and documentation images so the legend matches the mod's configured presentations as closely as possible.
 - The gameplay screenshots in this readme were captured during an expedition mission and show both radar frame styles in live use.
-- Localization entries are included for the new display-mode labels and the environment marker settings, so the new options show up consistently with the rest of the translated mod menu.
+- Localization entries are included for the new positioning, icon size, vertical arrow, boss range, and background opacity settings, so the new options show up consistently with the rest of the translated mod menu.
