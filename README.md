@@ -2,38 +2,42 @@
 
 Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu.
 
-## What's New in 1.3.0
+## What's New in 2.0.0
 
-- Adds small **up** and **down** arrows for supported item markers, plus settings to control when the arrows appear and when vertically distant items are hidden.
-- Fixes **Heretic Idol** markers so active idols show reliably on the radar.
-- Adds anchor-based radar positioning with corner anchors plus horizontal and vertical offsets for more consistent placement across different screen layouts.
-- Adds a **radar background opacity** slider and an optional **Infinite** boss marker range mode.
-- Adds per-category **Icon size (%)** sliders, so you can resize major marker groups independently while keeping the final combined size capped at **4.0x**.
+- Adds optional nearby item highlights as small screen-space brackets for supported marker groups, with per-category toggles, range tuning, occlusion darkening, and suppression when the related radar marker is turned off. [PR #61](https://github.com/LucLeto/darktide-mods-radar/pull/61)
+- Adds per-game-mode radar toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**, and switches dynamically at runtime without requiring a restart. [PR #62](https://github.com/LucLeto/darktide-mods-radar/pull/62)
+- Adds optional tech-remnant scaling, nearby clustering, value badges, and player-tunable horizontal and vertical cluster radii for expedition loot. [PR #63](https://github.com/LucLeto/darktide-mods-radar/pull/63)
+- Optimizes hot-path Lua code in the radar update and draw loops conservatively, while preserving behavior and existing functionality. [PR #66](https://github.com/LucLeto/darktide-mods-radar/pull/66)
+- Fixes stale radar markers for picked up, destroyed, hidden, or otherwise invalid world items, including expedition loot, opened crates, and destroyed idols. [PR #67](https://github.com/LucLeto/darktide-mods-radar/pull/67)
+- Fixes ultrawide radar positioning and adds an unrestricted positioning fallback for layouts where normal UI clamping is still too restrictive. [PR #69](https://github.com/LucLeto/darktide-mods-radar/pull/69)
+- Adds a data-driven enemy radar with per-enemy toggles, group and per-category scaling, optional boss distance text, improved render priority, documentation icons, and higher marker capacity. [PR #71](https://github.com/LucLeto/darktide-mods-radar/pull/71)
+
+**Full Changelog**: https://github.com/LucLeto/darktide-mods-radar/compare/Radar-1.3.0...Radar-2.0.0
 
 ## Feature Overview
 
-- Tracks nearby pickups, materials, mission items, event items, deployables, environment interactables, expedition POIs, teammates, and priority enemies on a single radar.
+- Tracks nearby pickups, materials, mission items, event items, deployables, environment interactables, expedition points of interest, teammates, boss targets, and now optional broader enemy categories on a single radar.
 - Projects markers relative to your current facing, so the radar rotates with your view instead of acting like a fixed minimap.
 - Supports **square** and **circle** radar frames, plus configurable **outline** and **guide** styles for both shapes.
-- Lets you adjust **radar size**, **scan range**, **radar background opacity**, **vertical arrow range**, **vertical hide threshold**, and **maximum marker count**.
+- Lets you adjust **radar size**, **scan range**, **radar background opacity**, **vertical arrow range**, **vertical hide threshold**, **nearby highlight range**, and **maximum marker count**.
 - Supports optional **icon scaling with radar size**.
-- Adds per-category **Icon size (%)** sliders for common pickups, materials, objective items, expedition markers, deployables, enemies, players, event items, and debug markers.
-- Supports separate marker styles for **enemies** and **teammates**. Enemies support **Icon only** and **Marked icon**, teammates support **Icon only**, **Marked icon**, **Dot only**, and **Marked dot**.
+- Adds per-category **Icon size (%)** sliders for common pickups, materials, objective items, expedition markers, deployables, enemies, players, event items, and debug markers, plus dedicated enemy sub-category sliders for bosses, horde, common, shooters, elites, specials, and ritualists.
+- Supports separate marker styles for **enemies** and **teammates**. Bosses and enemy groups use **Icon only** or **Marked icon**, teammates support **Icon only**, **Marked icon**, **Dot only**, and **Marked dot**.
 - Includes a **toggle radar on or off** keybind, so you can hide or restore the radar during a mission without opening the options menu.
-- Supports anchor-based **radar positioning** with **Radar anchor**, **Horizontal offset**, **Vertical offset**, **Steps per input**, and dedicated movement keybinds for nudging the radar **left**, **right**, **up**, or **down**.
+- Supports per-mode radar enable toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**.
+- Supports anchor-based **radar positioning** with **Radar anchor**, **Horizontal offset**, **Vertical offset**, **Steps per input**, dedicated movement keybinds for nudging the radar, and an optional **unrestricted positioning** fallback for advanced placements and ultrawide layouts.
 - Adds small **up** and **down** arrows to supported item markers when they are above or below you and still within the configured arrow range.
 - Lets you hide supported item markers that are far above or below your current level, which helps reduce clutter in multi-level areas.
+- Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups, using the same semantic colors as the radar markers and darkening when the target is occluded.
 - Adds dedicated **Expedition POI** support for numbered **Sites of Interest** opportunity markers, plus dedicated icons for **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**, with an option to ignore the normal range limit for these markers.
+- Adds tech-remnant loot modes for **Default**, **Scale by value**, and **Merge nearby piles**, plus optional value badges and cluster radius tuning.
 - Adds environment markers for **Medicae Station**, **Power Socket**, and **Heretic Idol**, and active heretic idols now appear reliably on the radar.
 - Supports per-marker display mode dropdowns for supported artwork-based markers with **Artwork**, **Icon**, and **Off** modes. **Artwork** remains the default, and older boolean settings are migrated automatically.
 - Recolors the remaining formerly white pickup icons with more semantic colors, including ammo, grenades, medicae-related markers, power sockets, and heretic idols.
-- Keeps the radar position clamped to the visible UI space, so moving or resizing it does not push it off-screen.
 - Colors the radar center dot from the local player HUD slot color.
 - Supports class-icon and dot-based teammate presentations instead of a single fixed teammate marker style.
-- Adds an optional **Infinite** boss marker range mode, which is especially useful for expeditions.
-- Exposes category-based checkboxes, style dropdowns, display mode dropdowns, and group-based icon size sliders for common pickups, materials, objective items, expedition items, expedition POIs, environment markers, deployed items, enemies, teammates, event items, and debug markers.
+- Adds an optional **Infinite** boss marker range mode and optional **boss distance text** for bosses except the daemonhost.
 - Includes optional **debug logs** and an **unknown pickups** toggle for discovery and troubleshooting.
-- Includes a groundwork **highlighting** option, but the actual highlighting behavior is currently still under development.
 
 ## In-Game Radar Examples
 
@@ -98,54 +102,61 @@ Supported artwork-based markers now use dropdowns instead of simple booleans. Ea
 
 | Marker | Artwork | Icon | Off |
 | --- | --- | --- | --- |
-| Crates | <img src="doc/img/crate_unknown.png" width="40" alt="Crate artwork mode" /> | <img src="doc/img/crate_unknown_alternative.png" width="40" alt="Crate icon mode" /> | Hidden |
-| Diamantine | <img src="doc/img/material_diamantine.png" width="40" alt="Diamantine artwork mode" /> | <img src="doc/img/material_diamantine_alternative.png" width="40" alt="Diamantine icon mode" /> | Hidden |
-| Plasteel | <img src="doc/img/material_plasteel.png" width="40" alt="Plasteel artwork mode" /> | <img src="doc/img/material_plasteel_alternative.png" width="40" alt="Plasteel icon mode" /> | Hidden |
+| Crates | <img src="doc/img/crate_unknown.png"  width="80" alt="Crate artwork mode" /> | <img src="doc/img/crate_unknown_alternative.png"  width="80" alt="Crate icon mode" /> | Hidden |
+| Diamantine | <img src="doc/img/material_diamantine.png"  width="80" alt="Diamantine artwork mode" /> | <img src="doc/img/material_diamantine_alternative.png"  width="80" alt="Diamantine icon mode" /> | Hidden |
+| Plasteel | <img src="doc/img/material_plasteel.png"  width="80" alt="Plasteel artwork mode" /> | <img src="doc/img/material_plasteel_alternative.png"  width="80" alt="Plasteel icon mode" /> | Hidden |
 
 ### Expeditions-specific items with display modes
 
 | Marker | Artwork | Icon | Off |
 | --- | --- | --- | --- |
-| Salvage | <img src="doc/img/material_expeditions_currency.png" width="40" alt="Salvage artwork mode" /> | <img src="doc/img/material_expeditions_currency_alternative.png" width="40" alt="Salvage icon mode" /> | Hidden |
-| Tech-Remnants | <img src="doc/img/material_expeditions_loot.png" width="40" alt="Tech-Remnants artwork mode" /> | <img src="doc/img/material_expeditions_loot_alternative.png" width="40" alt="Tech-Remnants icon mode" /> | Hidden |
-| Dropped Tech-Remnants | <img src="doc/img/material_expeditions_loot_player_drop.png" width="40" alt="Dropped Tech-Remnants artwork mode" /> | <img src="doc/img/material_expeditions_loot_player_drop_alternative.png" width="40" alt="Dropped Tech-Remnants icon mode" /> | Hidden |
-| Servo-Triggered Mine | <img src="doc/img/pocketable_landmine_explosive.png" width="40" alt="Explosive mine artwork mode" /> | <img src="doc/img/pocketable_landmine_explosive_alternative.png" width="40" alt="Explosive mine icon mode" /> | Hidden |
-| Purgation Snare | <img src="doc/img/pocketable_landmine_fire.png" width="40" alt="Fire mine artwork mode" /> | <img src="doc/img/pocketable_landmine_fire_alternative.png" width="40" alt="Fire mine icon mode" /> | Hidden |
-| Voltaic Snare | <img src="doc/img/pocketable_landmine_shock.png" width="40" alt="Shock mine artwork mode" /> | <img src="doc/img/pocketable_landmine_shock_alternative.png" width="40" alt="Shock mine icon mode" /> | Hidden |
-| Void Shell | <img src="doc/img/pocketable_void_shield.png" width="40" alt="Void Shell artwork mode" /> | <img src="doc/img/pocketable_void_shield_alternative.png" width="40" alt="Void Shell icon mode" /> | Hidden |
-| Bombing Run Signal Marker | <img src="doc/img/pocketable_airstrike.png" width="40" alt="Airstrike artwork mode" /> | <img src="doc/img/pocketable_airstrike_alternative.png" width="40" alt="Airstrike icon mode" /> | Hidden |
-| Artillery Locator Beacon | <img src="doc/img/pocketable_artillery_strike.png" width="40" alt="Artillery artwork mode" /> | <img src="doc/img/pocketable_artillery_strike_alternative.png" width="40" alt="Artillery icon mode" /> | Hidden |
-| Modified Grenade | <img src="doc/img/pocketable_big_grenade.png" width="40" alt="Modified grenade artwork mode" /> | <img src="doc/img/pocketable_big_grenade_alternative.png" width="40" alt="Modified grenade icon mode" /> | Hidden |
-| Fire-Support Signal Marker | <img src="doc/img/pocketable_valkyrie_hover.png" width="40" alt="Valkyrie hover artwork mode" /> | <img src="doc/img/pocketable_valkyrie_hover_alternative.png" width="40" alt="Valkyrie hover icon mode" /> | Hidden |
+| Salvage | <img src="doc/img/material_expeditions_currency.png"  width="80" alt="Salvage artwork mode" /> | <img src="doc/img/material_expeditions_currency_alternative.png"  width="80" alt="Salvage icon mode" /> | Hidden |
+| Tech-Remnants | <img src="doc/img/material_expeditions_loot.png"  width="80" alt="Tech-Remnants artwork mode" /> | <img src="doc/img/material_expeditions_loot_alternative.png"  width="80" alt="Tech-Remnants icon mode" /> | Hidden |
+| Dropped Tech-Remnants | <img src="doc/img/material_expeditions_loot_player_drop.png"  width="80" alt="Dropped Tech-Remnants artwork mode" /> | <img src="doc/img/material_expeditions_loot_player_drop_alternative.png"  width="80" alt="Dropped Tech-Remnants icon mode" /> | Hidden |
+| Servo-Triggered Mine | <img src="doc/img/pocketable_landmine_explosive.png"  width="80" alt="Explosive mine artwork mode" /> | <img src="doc/img/pocketable_landmine_explosive_alternative.png"  width="80" alt="Explosive mine icon mode" /> | Hidden |
+| Purgation Snare | <img src="doc/img/pocketable_landmine_fire.png"  width="80" alt="Fire mine artwork mode" /> | <img src="doc/img/pocketable_landmine_fire_alternative.png"  width="80" alt="Fire mine icon mode" /> | Hidden |
+| Voltaic Snare | <img src="doc/img/pocketable_landmine_shock.png"  width="80" alt="Shock mine artwork mode" /> | <img src="doc/img/pocketable_landmine_shock_alternative.png"  width="80" alt="Shock mine icon mode" /> | Hidden |
+| Void Shell | <img src="doc/img/pocketable_void_shield.png"  width="80" alt="Void Shell artwork mode" /> | <img src="doc/img/pocketable_void_shield_alternative.png"  width="80" alt="Void Shell icon mode" /> | Hidden |
+| Bombing Run Signal Marker | <img src="doc/img/pocketable_airstrike.png"  width="80" alt="Airstrike artwork mode" /> | <img src="doc/img/pocketable_airstrike_alternative.png"  width="80" alt="Airstrike icon mode" /> | Hidden |
+| Artillery Locator Beacon | <img src="doc/img/pocketable_artillery_strike.png"  width="80" alt="Artillery artwork mode" /> | <img src="doc/img/pocketable_artillery_strike_alternative.png"  width="80" alt="Artillery icon mode" /> | Hidden |
+| Modified Grenade | <img src="doc/img/pocketable_big_grenade.png"  width="80" alt="Modified grenade artwork mode" /> | <img src="doc/img/pocketable_big_grenade_alternative.png"  width="80" alt="Modified grenade icon mode" /> | Hidden |
+| Fire-Support Signal Marker | <img src="doc/img/pocketable_valkyrie_hover.png"  width="80" alt="Valkyrie hover artwork mode" /> | <img src="doc/img/pocketable_valkyrie_hover_alternative.png"  width="80" alt="Valkyrie hover icon mode" /> | Hidden |
 
 ## Radar Controls
 
 | Option | What it controls |
 | --- | --- |
 | Enable radar | Master on or off switch for the HUD element. |
+| Enable in Regular Missions | Enables or disables the radar for standard mission runs. |
+| Enable in Havoc | Enables or disables the radar in Havoc. |
+| Enable in Mortis Trials | Enables or disables the radar in Mortis Trials. |
+| Enable in Expeditions | Enables or disables the radar in Expeditions. |
 | Toggle radar on or off | Assign a key to switch the radar HUD visibility during gameplay without opening the options menu. |
 | Radar size | Adjustable from **100** to **1200**. |
 | Radar range / filter distance | Adjustable from **25 m** to **100 m**. |
 | Show vertical arrows within range (m) | Adjustable from **25 m** to **100 m**. Supported item markers show a small **up** or **down** arrow when they are on another level and still within this horizontal range. |
 | Hide items above/below (m) | Adjustable from **8 m** to **50 m**. Supported item markers with a larger vertical separation are hidden. |
-| Max radar markers | Adjustable from **10** to **100**. |
+| Max radar markers | Adjustable from **10** to **200**. |
 | Scale icons with radar size | Keeps marker size fixed or scales it with the radar. The final combined icon size is capped at **4.0x**. |
 | Radar style | **Square** or **Circle**. |
 | Radar outline | **Solid**, **Dotted**, or **Off**. |
 | Radar guides | **Crosshair**, **View guides**, **Range rings**, or **Off**. |
 | Radar background opacity | Adjustable from **0** to **255**. Controls the alpha of the radar background without changing marker readability. |
-| Enemy marker style | **Icon only** or **Marked icon**. |
+| Nearby highlight range (m) | Adjustable from **5 m** to **20 m**. Controls how close supported items must be before their screen-space bracket highlights appear. |
+| Boss marker style | **Icon only** or **Marked icon**. |
 | Boss marker range | **Normal** or **Infinite**. Lets boss-type markers follow the normal radar range or stay visible at any distance. |
+| Show boss distance text | Shows yellow distance text in meters for bosses except the daemonhost. |
 | Player marker style | **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. |
 | Radar anchor | **Top left**, **Top right**, **Bottom left**, or **Bottom right**. Sets the corner the radar offsets from. |
-| Horizontal offset | Sets the radar's horizontal offset from the selected anchor. The value is clamped to the visible UI space. |
-| Vertical offset | Sets the radar's vertical offset from the selected anchor. The value is clamped to the visible UI space. |
+| Allow unrestricted radar positioning | Removes the normal UI-space clamping fallback, which is useful for ultrawide or highly customized layouts. |
+| Horizontal offset | Sets the radar's horizontal offset from the selected anchor. |
+| Vertical offset | Sets the radar's vertical offset from the selected anchor. |
 | Steps per input | Sets how far each radar movement key press nudges the radar. |
 | Move radar left | Assign a key to move the radar left by the configured step size. |
 | Move radar right | Assign a key to move the radar right by the configured step size. |
 | Move radar up | Assign a key to move the radar up by the configured step size. |
 | Move radar down | Assign a key to move the radar down by the configured step size. |
-| Highlight distance | Present in the options menu, but the highlighting feature is currently still under development. |
+
 
 ### Marker display mode controls
 
@@ -154,6 +165,9 @@ Supported artwork-based markers now use dropdowns instead of simple booleans. Ea
 | Common Pickups | Crates | **Artwork**, **Icon**, **Off** |
 | Collectable Materials | Diamantine, Plasteel | **Artwork**, **Icon**, **Off** |
 | Expeditions-Specific Items | Salvage, Tech-Remnants, Dropped Tech-Remnants, Servo-Triggered Mine, Purgation Snare, Voltaic Snare, Void Shell, Bombing Run Signal Marker, Artillery Locator Beacon, Modified Grenade, Fire-Support Signal Marker | **Artwork**, **Icon**, **Off** |
+| Enemy bosses | Daemonhost, Monstrosities, Captains, Karnak Twins | **Icon only**, **Marked icon** |
+| Enemy groups | Common enemies and Shooters | **Icon only**, **Marked icon**, **Off** |
+| Individual enemy toggles | Elite, Special, and Misc enemies listed below | **Icon only**, **Marked icon**, **Off** |
 
 ### Per-category icon size controls
 
@@ -161,7 +175,7 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 
 | Option group | Affects |
 | --- | --- |
-| Common Pickups | Crates, ammo, grenades, crates, and stimms |
+| Common Pickups | Crates, ammo, grenades, portable crates, and stimms |
 | Collectable Materials | Diamantine and Plasteel |
 | Primary Objective Items | Mission luggables and primary objective pickups |
 | Secondary Objective Items | Grimoires and Scriptures |
@@ -170,10 +184,53 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 | Martyr's Skull Items | Martyr's Skull markers and related power cell markers |
 | Environment | Medicae Station, Power Socket, and Heretic Idol |
 | Deployed Items | Ammo Crate and Medical Crate deployables |
-| Enemies | Bosses, captains, and Karnak Twins markers |
+| Enemies | High-priority boss markers |
+| Enemy Boss | Daemonhost, Monstrosities, Captains, Karnak Twins |
+| Enemy Horde | Horde enemies |
+| Enemy Common | Common enemies |
+| Enemy Shooter | Shooter enemies |
+| Enemy Elite | Elite enemies |
+| Enemy Special | Special enemies |
+| Enemy Misc | Ritualists |
 | Players | Teammate markers |
 | Event-Related Items | Event pickups and event objectives |
 | Debugging | Unknown pickup markers and debug visuals |
+
+### Enemy radar controls
+
+| Option | What it controls |
+| --- | --- |
+| Monstrosities | Shows daemonhost and generic monstrosity markers. |
+| Captains | Shows captain markers. |
+| Karnak Twins | Shows the dedicated Karnak Twins marker. |
+| Horde enemies | Single toggle for horde markers. Horde enemies stay on or off rather than using per-unit display modes. |
+| Common enemies | Shared display-style dropdown for common enemy markers. |
+| Shooters | Shared display-style dropdown for shooter enemy markers. |
+| Elite enemies | Per-unit display-style dropdowns for Dreg Gunners, Ragers, Shotgunners, Scab Gunners, Maulers, Plasma Gunners, Ragers, Shotgunners, and Ogryn elites. |
+| Special enemies | Per-unit display-style dropdowns for Bombers, Flamers, Mutants, Poxbursters, Hounds, Snipers, and Trappers. |
+| Ritualist | Dedicated toggle under the misc enemy category. |
+
+### Nearby highlight controls
+
+| Option group | What it controls |
+| --- | --- |
+| Common Pickups | Highlights nearby ammo, grenades, crates, portable crates, and stimms. |
+| Collectable Materials | Highlights nearby diamantine and plasteel. |
+| Primary Objective Items | Highlights nearby mission luggables and main objective pickups. |
+| Secondary Objective Items | Highlights nearby grimoires and scriptures. |
+| Expeditions-Specific Items | Highlights nearby salvage, tech-remnants, expedition pocketables, and related expedition pickups. |
+| Martyr's Skull Items | Highlights nearby martyr's skull items and their orange power cell markers. |
+| Environment | Highlights nearby medicae stations, power sockets, and heretic idols. |
+| Event-Related Items | Highlights nearby event pickups and event objectives. |
+
+### Tech-Remnant controls
+
+| Option | What it controls |
+| --- | --- |
+| Tech-Remnant marker mode | **Default**, **Scale by value**, or **Merge nearby piles**. |
+| Show cluster value | Shows a value badge on clustered tech-remnant markers. |
+| Cluster horizontal radius | Horizontal merge range for clustered tech-remnant markers. |
+| Cluster vertical radius | Vertical merge range for clustered tech-remnant markers. |
 
 ### Expedition POI Controls
 
@@ -200,58 +257,133 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 ### Positioning and Toggle Use
 
 - Use **Toggle radar on or off** to quickly hide or restore the radar while staying in the mission.
+- Use the per-mode enable toggles when you want the radar active in some modes but completely absent in others.
 - Use **Radar anchor** first to choose the screen corner the radar should stick to.
 - Use **Horizontal offset** and **Vertical offset** when you want to place the radar precisely relative to that anchor.
 - Use **Move radar left**, **right**, **up**, and **down** when you want to fine-tune the placement in live gameplay with key presses.
 - **Steps per input** controls how large each movement increment is, which makes it easier to do either quick repositioning or small adjustments.
-- Anchor-based placement is automatically clamped against the current UI space, so the widget stays within the visible screen area even after changing size or resolution scale.
+- Normal anchor-based placement stays clamped against the current UI space, so the widget remains visible after changing size or resolution scale.
+- **Allow unrestricted radar positioning** is available when Darktide safe-area or HUD-space clamping still prevents the placement you want, especially on ultrawide displays.
 
 ### Marker Rules
 
-- **Enemies** use dedicated danger icons and, in marked mode, red bracket accents.
+- **Enemies** use category-appropriate radar icons and, in marked mode, a red enemy background and bracket accent.
+- **Bosses** support **Icon only** or **Marked icon**, optional **Infinite** range, and optional yellow distance text for bosses except the daemonhost.
+- **Horde enemies** use a single simple icon-style toggle instead of per-unit dropdowns.
 - **Teammates** use archetype icons or dot presentations, plus their runtime HUD slot color.
 - **The center dot** uses the local player HUD color instead of a fixed green.
-- **Supported artwork-based markers** can now switch between artwork mode, simplified icon mode, or be disabled entirely.
+- **Supported artwork-based markers** can switch between artwork mode, simplified icon mode, or be disabled entirely.
 - **Supported item markers** can show a small **up** or **down** arrow when they are above or below you within the configured arrow range, and can be hidden entirely when they are too far above or below your level.
+- **Nearby highlights** appear as small screen-space brackets for supported categories, reuse the family color of the corresponding radar marker, darken when the target is occluded, and are suppressed when the matching radar marker category is turned off.
 - **Environment markers** cover medicae stations, power sockets, and heretic idols, and active idols now appear reliably on the radar.
-- **Boss markers** can follow the normal radar range or ignore it completely by switching **Boss marker range** to **Infinite**.
+- **Tech-Remnants** can keep their default behavior, scale by pile value, or merge nearby piles into larger clustered markers while preserving nearby highlights for the individual nearby items.
 - **Expedition POIs** use numbered scanner-map glyphs for opportunity markers, can also reflect player-marked states in expedition colors, use dedicated icons for transition, harvester, main objective, extraction, and arrival locations, can optionally ignore the normal radar range limit, and are filtered to the active expedition section so outdated location markers do not linger after section changes.
 
 ## Target Markers
 
-The legend below follows the option groups exposed by `Radar_data.lua`. The preview tiles were generated from the included `doc/img` assets and the ARGB values used by the HUD presentations.
+The legend below follows the option groups exposed by `Radar_data.lua`. Enemy markers are listed in the same gameplay-oriented order used by the enemy settings: bosses, horde, common, shooters, elites, specials, and misc. The preview tiles were generated from the included `doc/img` assets and the ARGB values used by the HUD presentations.
 
 ### High-Priority Enemies
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/enemy_daemonhost.png" width="40" alt="Daemonhost marker" /> | Daemonhost | Separate presentation under the **Monstrosities** toggle. |
-| <img src="doc/img/enemy_monstrosity.png" width="40" alt="Monstrosity marker" /> | Monstrosities | Covers the generic monstrosity presentation used for Beast of Nurgle, Plague Ogryn, Chaos Spawn, and Ogryn Houndmaster. **Boss marker range** can be set to **Normal** or **Infinite**. |
-| <img src="doc/img/enemy_captain.png" width="40" alt="Captain marker" /> | Captains | Red danger marker with bracket accent in marked mode. |
-| <img src="doc/img/enemy_karnak_twin.png" width="40" alt="Karnak Twins marker" /> | Karnak Twins | Dedicated presentation for the twins. |
+| <img src="doc/img/enemy_daemonhost.png"  width="80" alt="Daemonhost marker" /> | Daemonhost | Separate presentation under the **Monstrosities** toggle. It uses the boss marker style settings, but does **not** show boss distance text. |
+| <img src="doc/img/enemy_monstrosity.png"  width="80" alt="Monstrosity marker" /> | Monstrosities | Covers the generic monstrosity presentation used for Beast of Nurgle, Plague Ogryn, Chaos Spawn, and Ogryn Houndmaster. **Boss marker range** can be set to **Normal** or **Infinite**, and optional boss distance text is supported. |
+| <img src="doc/img/enemy_captain.png"  width="80" alt="Captain marker" /> | Captains | Red danger marker with bracket accent in marked mode. |
+| <img src="doc/img/enemy_karnak_twin.png"  width="80" alt="Karnak Twins marker" /> | Karnak Twins | Dedicated presentation for the twins. |
 
-Display style example for enemy markers:
+Display style example for boss and enemy markers:
 
 <p>
-  <img src="doc/img/enemy_icon_only_sample.png" width="40" alt="Enemy icon only example" />
-  <img src="doc/img/enemy_monstrosity.png" width="40" alt="Enemy marked icon example" />
+  <img src="doc/img/enemy_icon_only_sample.png"  width="80" alt="Enemy icon only example" />
+  <img src="doc/img/enemy_monstrosity.png"  width="80" alt="Enemy marked icon example" />
 </p>
 
 Left: **Icon only**. Right: **Marked icon**.
+
+### Horde Enemies
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/horde.png"  width="80" alt="Horde enemy marker" /> | Horde enemies | Shared horde presentation used for Groaners, Moebian 21st infantry, Poxwalkers, lesser mutated poxwalkers, mutated poxwalkers, and related horde-only infected. Horde enemies use a single on or off toggle plus the **Enemy Horde** size slider. |
+
+### Common Enemies
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/cultist_melee.png"  width="80" alt="Dreg Bruiser marker" /> | Dreg Bruiser | Uses the shared **Common enemies** display-style dropdown. |
+| <img src="doc/img/renegade_melee.png"  width="80" alt="Scab Bruiser marker" /> | Scab Bruiser | Uses the shared **Common enemies** display-style dropdown. |
+
+### Shooter Enemies
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/cultist_assault.png"  width="80" alt="Dreg Stalker marker" /> | Dreg Stalker | Uses the shared **Shooters** display-style dropdown. |
+| <img src="doc/img/renegade_assault.png"  width="80" alt="Scab Stalker marker" /> | Scab Stalker | Uses the shared **Shooters** display-style dropdown. |
+| <img src="doc/img/renegade_rifleman.png"  width="80" alt="Scab Shooter marker" /> | Scab Shooter | Uses the shared **Shooters** display-style dropdown. |
+
+### Elite Enemies
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/cultist_gunner.png"  width="80" alt="Dreg Gunner marker" /> | Dreg Gunner | Individual elite enemy toggle. |
+| <img src="doc/img/cultist_berzerker.png"  width="80" alt="Dreg Rager marker" /> | Dreg Rager | Individual elite enemy toggle. |
+| <img src="doc/img/cultist_shocktrooper.png"  width="80" alt="Dreg Shotgunner marker" /> | Dreg Shotgunner | Individual elite enemy toggle. |
+| <img src="doc/img/renegade_gunner.png"  width="80" alt="Scab Gunner marker" /> | Scab Gunner | Individual elite enemy toggle. |
+| <img src="doc/img/renegade_radio_operator.png"  width="80" alt="Scab Gunner mutator variant marker" /> | Scab Gunner, mutator variant | Uses the same toggle and scale settings as **Scab Gunner**. |
+| <img src="doc/img/renegade_executor.png"  width="80" alt="Scab Mauler marker" /> | Scab Mauler | Individual elite enemy toggle. |
+| <img src="doc/img/renegade_plasma_gunner.png"  width="80" alt="Scab Plasma Gunner marker" /> | Scab Plasma Gunner | Individual elite enemy toggle. |
+| <img src="doc/img/renegade_berzerker.png"  width="80" alt="Scab Rager marker" /> | Scab Rager | Individual elite enemy toggle. |
+| <img src="doc/img/renegade_shocktrooper.png"  width="80" alt="Scab Shotgunner marker" /> | Scab Shotgunner | Individual elite enemy toggle. |
+| <img src="doc/img/chaos_ogryn_bulwark.png"  width="80" alt="Ogryn Bulwark marker" /> | Ogryn - Bulwark | Individual elite enemy toggle. |
+| <img src="doc/img/chaos_ogryn_executor.png"  width="80" alt="Ogryn Crusher marker" /> | Ogryn - Crusher | Individual elite enemy toggle. |
+| <img src="doc/img/chaos_ogryn_gunner.png"  width="80" alt="Ogryn Reaper marker" /> | Ogryn - Reaper | Individual elite enemy toggle. |
+
+### Special Enemies
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/renegade_grenadier.png"  width="80" alt="Scab Bomber marker" /> | Scab Bomber | Individual special enemy toggle. |
+| <img src="doc/img/cultist_grenadier.png"  width="80" alt="Dreg Tox Bomber marker" /> | Dreg Tox Bomber | Individual special enemy toggle. |
+| <img src="doc/img/renegade_flamer.png"  width="80" alt="Scab Flamer marker" /> | Scab Flamer | Individual special enemy toggle. |
+| <img src="doc/img/renegade_flamer_mutator.png"  width="80" alt="Scab Flamer mutator variant marker" /> | Scab Flamer, mutator variant | Uses the same toggle and scale settings as **Scab Flamer**. |
+| <img src="doc/img/cultist_flamer.png"  width="80" alt="Dreg Tox Flamer marker" /> | Dreg Tox Flamer | Individual special enemy toggle. |
+| <img src="doc/img/cultist_mutant.png"  width="80" alt="Mutant marker" /> | Mutant | Individual special enemy toggle. |
+| <img src="doc/img/chaos_hound.png"  width="80" alt="Pox Hound marker" /> | Pox Hound | Individual special enemy toggle. |
+| <img src="doc/img/chaos_hound_mutator.png"  width="80" alt="Pox Hound mutator variant marker" /> | Pox Hound, mutator variant | Uses the same toggle and scale settings as **Pox Hound**. |
+| <img src="doc/img/chaos_armored_hound.png"  width="80" alt="Armored Pox Hound marker" /> | Armored Pox Hound | Individual special enemy toggle. |
+| <img src="doc/img/chaos_poxwalker_bomber.png"  width="80" alt="Poxburster marker" /> | Poxburster | Individual special enemy toggle. The default display style is **Marked icon**. |
+| <img src="doc/img/renegade_sniper.png"  width="80" alt="Sniper marker" /> | Sniper | Individual special enemy toggle. |
+| <img src="doc/img/renegade_netgunner.png"  width="80" alt="Trapper marker" /> | Trapper | Individual special enemy toggle. |
+
+Poxburster style example:
+
+<p>
+  <img src="doc/img/chaos_poxwalker_bomber.png"  width="80" alt="Poxburster icon only example" />
+  <img src="doc/img/chaos_poxwalker_bomber_marked.png"  width="80" alt="Poxburster marked icon example" />
+</p>
+
+Left: **Icon only**. Right: **Marked icon**.
+
+### Misc Enemies
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/chaos_ritualist.png"  width="80" alt="Ritualist marker" /> | Ritualist | Dedicated misc enemy toggle with its own **Enemy Misc** size slider. |
 
 ### Teammates
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/player_teammate_sample.png" width="40" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. |
+| <img src="doc/img/player_teammate_sample.png"  width="80" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. |
 
 Display style example for teammate markers:
 
 <p>
-  <img src="doc/img/player_teammate_icon_only_sample.png" width="40" alt="Teammate icon only example" />
-  <img src="doc/img/player_teammate_sample.png" width="40" alt="Teammate marked icon example" />
-  <img src="doc/img/player_teammate_dot_only_sample.png" width="40" alt="Teammate dot only example" />
-  <img src="doc/img/player_teammate_marked_dot_sample.png.png" width="40" alt="Teammate marked dot example" />
+  <img src="doc/img/player_teammate_icon_only_sample.png"  width="80" alt="Teammate icon only example" />
+  <img src="doc/img/player_teammate_sample.png"  width="80" alt="Teammate marked icon example" />
+  <img src="doc/img/player_teammate_dot_only_sample.png"  width="80" alt="Teammate dot only example" />
+  <img src="doc/img/player_teammate_marked_dot_sample.png.png"  width="80" alt="Teammate marked dot example" />
 </p>
 
 Left to right:
@@ -272,43 +404,43 @@ From left to right: **Veteran**, **Zealot**, **Psyker**, **Ogryn**, **Arbitrator
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/crate_unknown.png" width="40" alt="Crate marker" /> | Crates | Supports **Artwork**, **Icon**, and **Off**. Artwork keeps the pickup art, icon mode uses a simplified loot icon. |
-| <img src="doc/img/pickup_ammo_small.png" width="40" alt="Ammo tin marker" /> | Ammo Tin | Small ammo pickup, recolored with an ammo-specific yellow. |
-| <img src="doc/img/pickup_ammo_big.png" width="40" alt="Ammo stash marker" /> | Ammo Stash | Large ammo pickup, recolored with an ammo-specific yellow. |
-| <img src="doc/img/pickup_grenade.png" width="40" alt="Grenade marker" /> | Grenade | Uses a warm grenade-specific amber tint. |
-| <img src="doc/img/pocketable_ammo_crate.png" width="40" alt="Ammo crate marker" /> | Ammo Crate | Pocketable ammo crate, recolored to match the ammo family. |
-| <img src="doc/img/pocketable_medical_crate.png" width="40" alt="Medical crate marker" /> | Medical Crate | Pocketable medical crate with a medicae green tint. |
-| <img src="doc/img/pocketable_syringe_ability.png" width="40" alt="Concentration Stimm marker" /> | Concentration Stimm | Recolored syringe template. |
-| <img src="doc/img/pocketable_syringe_corruption.png" width="40" alt="Med Stimm marker" /> | Med Stimm | Recolored syringe template. |
-| <img src="doc/img/pocketable_syringe_power.png" width="40" alt="Combat Stimm marker" /> | Combat Stimm | Recolored syringe template. |
-| <img src="doc/img/pocketable_syringe_speed.png" width="40" alt="Celerity Stimm marker" /> | Celerity Stimm | Recolored syringe template. |
+| <img src="doc/img/crate_unknown.png"  width="80" alt="Crate marker" /> | Crates | Supports **Artwork**, **Icon**, and **Off**. Artwork keeps the pickup art, icon mode uses a simplified loot icon. |
+| <img src="doc/img/pickup_ammo_small.png"  width="80" alt="Ammo tin marker" /> | Ammo Tin | Small ammo pickup, recolored with an ammo-specific yellow. |
+| <img src="doc/img/pickup_ammo_big.png"  width="80" alt="Ammo stash marker" /> | Ammo Stash | Large ammo pickup, recolored with an ammo-specific yellow. |
+| <img src="doc/img/pickup_grenade.png"  width="80" alt="Grenade marker" /> | Grenade | Uses a warm grenade-specific amber tint. |
+| <img src="doc/img/pocketable_ammo_crate.png"  width="80" alt="Ammo crate marker" /> | Ammo Crate | Pocketable ammo crate, recolored to match the ammo family. |
+| <img src="doc/img/pocketable_medical_crate.png"  width="80" alt="Medical crate marker" /> | Medical Crate | Pocketable medical crate with a medicae green tint. |
+| <img src="doc/img/pocketable_syringe_ability.png"  width="80" alt="Concentration Stimm marker" /> | Concentration Stimm | Recolored syringe template. |
+| <img src="doc/img/pocketable_syringe_corruption.png"  width="80" alt="Med Stimm marker" /> | Med Stimm | Recolored syringe template. |
+| <img src="doc/img/pocketable_syringe_power.png"  width="80" alt="Combat Stimm marker" /> | Combat Stimm | Recolored syringe template. |
+| <img src="doc/img/pocketable_syringe_speed.png"  width="80" alt="Celerity Stimm marker" /> | Celerity Stimm | Recolored syringe template. |
 
 ### Collectable Materials
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/material_diamantine.png" width="40" alt="Diamantine marker" /> | Diamantine | Supports **Artwork**, **Icon**, and **Off**. Icon mode uses a simplified blue material icon. |
-| <img src="doc/img/material_plasteel.png" width="40" alt="Plasteel marker" /> | Plasteel | Supports **Artwork**, **Icon**, and **Off**. Icon mode uses a simplified steel-grey material icon. |
+| <img src="doc/img/material_diamantine.png"  width="80" alt="Diamantine marker" /> | Diamantine | Supports **Artwork**, **Icon**, and **Off**. Icon mode uses a simplified blue material icon. |
+| <img src="doc/img/material_plasteel.png"  width="80" alt="Plasteel marker" /> | Plasteel | Supports **Artwork**, **Icon**, and **Off**. Icon mode uses a simplified steel-grey material icon. |
 
 ### Primary Objective Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/luggable_power_cell_teal.png" width="40" alt="Power Cell marker" /> | Power Cell | Teal luggable objective marker. |
-| <img src="doc/img/luggable_cryonic_rod.png" width="40" alt="Cryonic Rod marker" /> | Cryonic Rod | Pale ice-blue luggable marker. |
-| <img src="doc/img/luggable_moebian_pox_zetaphyte_13_sample.png" width="40" alt="Moebian Pox Zetaphyte-13 Sample marker" /> | Moebian Pox Zetaphyte-13 Sample | Sickly green luggable marker. |
-| <img src="doc/img/luggable_vacuum_capsule.png" width="40" alt="Vacuum Capsule marker" /> | Vacuum Capsule | Dark steel-grey luggable marker. |
-| <img src="doc/img/luggable_special_issue_ammo.png" width="40" alt="Special Issue Ammo marker" /> | Special Issue Ammo | Olive-green luggable marker. |
-| <img src="doc/img/luggable_prismata_crystal_repository.png" width="40" alt="Prismata Crystal Repository marker" /> | Prismata Crystal Repository | Bright red luggable marker. |
-| <img src="doc/img/pickup_mortis_relic.png" width="40" alt="Mortis Relic marker" /> | Mortis Relic | Recolored device icon. |
-| <img src="doc/img/pickup_coordinates_paper.png" width="40" alt="Coordinates marker" /> | Coordinates | Uses the paper document icon. |
+| <img src="doc/img/luggable_power_cell_teal.png"  width="80" alt="Power Cell marker" /> | Power Cell | Teal luggable objective marker. |
+| <img src="doc/img/luggable_cryonic_rod.png"  width="80" alt="Cryonic Rod marker" /> | Cryonic Rod | Pale ice-blue luggable marker. |
+| <img src="doc/img/luggable_moebian_pox_zetaphyte_13_sample.png"  width="80" alt="Moebian Pox Zetaphyte-13 Sample marker" /> | Moebian Pox Zetaphyte-13 Sample | Sickly green luggable marker. |
+| <img src="doc/img/luggable_vacuum_capsule.png"  width="80" alt="Vacuum Capsule marker" /> | Vacuum Capsule | Dark steel-grey luggable marker. |
+| <img src="doc/img/luggable_special_issue_ammo.png"  width="80" alt="Special Issue Ammo marker" /> | Special Issue Ammo | Olive-green luggable marker. |
+| <img src="doc/img/luggable_prismata_crystal_repository.png"  width="80" alt="Prismata Crystal Repository marker" /> | Prismata Crystal Repository | Bright red luggable marker. |
+| <img src="doc/img/pickup_mortis_relic.png"  width="80" alt="Mortis Relic marker" /> | Mortis Relic | Recolored device icon. |
+| <img src="doc/img/pickup_coordinates_paper.png"  width="80" alt="Coordinates marker" /> | Coordinates | Uses the paper document icon. |
 
 ### Secondary Objective Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/pocketable_grimoire.png" width="40" alt="Grimoire marker" /> | Grimoire | Secondary objective pocketable. |
-| <img src="doc/img/pocketable_scripture.png" width="40" alt="Scripture marker" /> | Scripture | Secondary objective pocketable. |
+| <img src="doc/img/pocketable_grimoire.png"  width="80" alt="Grimoire marker" /> | Grimoire | Secondary objective pocketable. |
+| <img src="doc/img/pocketable_scripture.png"  width="80" alt="Scripture marker" /> | Scripture | Secondary objective pocketable. |
 
 ### Expedition POIs
 
@@ -316,11 +448,11 @@ From left to right: **Veteran**, **Zealot**, **Psyker**, **Ogryn**, **Arbitrator
 | --- | --- | --- |
 | <img src="doc/img/expedition_unmarked_xi_2_4x.png" width="48" alt="Expedition unmarked XI 2 marker" /> <img src="doc/img/expedition_unmarked_n_4_4x.png" width="48" alt="Expedition unmarked N 4 marker" /> <img src="doc/img/expedition_unmarked_m_1_4x.png" width="48" alt="Expedition unmarked M 1 marker" /> | Sites of Interest | Unmarked expedition opportunity markers, using scanner-map glyphs with location numbering. |
 | <img src="doc/img/expedition_marked_yellow_n_4_4x.png" width="48" alt="Expedition marked yellow N 4 marker" /> <img src="doc/img/expedition_marked_purple_xi_2_4x.png" width="48" alt="Expedition marked purple XI 2 marker" /> <img src="doc/img/expedition_marked_blue_m_1_4x.png" width="48" alt="Expedition marked blue M 1 marker" /> | Sites of Interest, player-marked | Player-marked expedition opportunity markers, using the same glyph and number combinations with the expedition marked colors. |
-| <img src="doc/img/expedition_objective_transition.png" width="40" alt="Expedition transition marker" /> | Deadsider Sanctuaries | Transition marker for sanctuary travel and section movement. |
-| <img src="doc/img/expedition_loot_converter.png" width="40" alt="Expedition loot converter marker" /> | Data Reliquary Harvesters | Uses the expedition harvester icon and is only shown while inside the sanctuary where the converter is relevant. |
-| <img src="doc/img/expedition_objective_main_objective.png" width="40" alt="Expedition main objective marker" /> | Main Objective | Main expedition objective location marker. |
-| <img src="doc/img/expedition_objective_extraction.png" width="40" alt="Expedition extraction marker" /> | Valkyrie Extraction Zone | Extraction location marker. |
-| <img src="doc/img/expedition_objective_arrival.png" width="40" alt="Expedition arrival marker" /> | Valkyrie Arrival Zone | Arrival location marker. |
+| <img src="doc/img/expedition_objective_transition.png"  width="80" alt="Expedition transition marker" /> | Deadsider Sanctuaries | Transition marker for sanctuary travel and section movement. |
+| <img src="doc/img/expedition_loot_converter.png"  width="80" alt="Expedition loot converter marker" /> | Data Reliquary Harvesters | Uses the expedition harvester icon and is only shown while inside the sanctuary where the converter is relevant. |
+| <img src="doc/img/expedition_objective_main_objective.png"  width="80" alt="Expedition main objective marker" /> | Main Objective | Main expedition objective location marker. |
+| <img src="doc/img/expedition_objective_extraction.png"  width="80" alt="Expedition extraction marker" /> | Valkyrie Extraction Zone | Extraction location marker. |
+| <img src="doc/img/expedition_objective_arrival.png"  width="80" alt="Expedition arrival marker" /> | Valkyrie Arrival Zone | Arrival location marker. |
 
 These markers are driven by expedition navigation data rather than standard pickup scanning. **Sites of Interest** can appear as unmarked opportunity markers or player-marked variants, while the remaining expedition POIs use dedicated objective-style icons. They can optionally ignore the normal radar range limit, are filtered to the currently active expedition section, and clear outdated location markers when the active section changes.
 
@@ -328,58 +460,58 @@ These markers are driven by expedition navigation data rather than standard pick
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/material_expeditions_currency.png" width="40" alt="Salvage marker" /> | Salvage | Supports **Artwork**, **Icon**, and **Off**. Artwork uses the salvage item art, icon mode uses a simplified salvage icon. |
-| <img src="doc/img/material_expeditions_loot.png" width="40" alt="Tech-Remnants marker" /> | Tech-Remnants | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/material_expeditions_loot_player_drop.png" width="40" alt="Dropped Tech-Remnants marker" /> | Dropped Tech-Remnants | Supports **Artwork**, **Icon**, and **Off**. Icon mode uses a red-tinted simplified icon to distinguish dropped loot. |
-| <img src="doc/img/luggable_data_reliquary.png" width="40" alt="Data Reliquary marker" /> | Data Reliquaries | Gold luggable marker. |
-| <img src="doc/img/pocketable_landmine_explosive.png" width="40" alt="Servo-Triggered Mine marker" /> | Servo-Triggered Mine | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/pocketable_landmine_fire.png" width="40" alt="Purgation Snare marker" /> | Purgation Snare | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/pocketable_landmine_shock.png" width="40" alt="Voltaic Snare marker" /> | Voltaic Snare | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/pocketable_void_shield.png" width="40" alt="Void Shell marker" /> | Void Shell | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/pocketable_airstrike.png" width="40" alt="Bombing Run Signal Marker marker" /> | Bombing Run Signal Marker | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/pocketable_artillery_strike.png" width="40" alt="Artillery Locator Beacon marker" /> | Artillery Locator Beacon | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/pocketable_big_grenade.png" width="40" alt="Modified Grenade marker" /> | Modified Grenade | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/pocketable_valkyrie_hover.png" width="40" alt="Fire-Support Signal Marker marker" /> | Fire-Support Signal Marker | Supports **Artwork**, **Icon**, and **Off**. |
-| <img src="doc/img/luggable_promethium_barrel.png" width="40" alt="Promethium Barrel marker" /> | Promethium Barrel | Orange explosive barrel marker. |
-| <img src="doc/img/pickup_large_ammunition_crate.png" width="40" alt="Large Ammunition Crate marker" /> | Large Ammunition Crate | Large ammo container, recolored to match the ammo family. |
-| <img src="doc/img/pocketable_anti_rad_stimm.png" width="40" alt="Anti-Rad Stimms marker" /> | Anti-Rad Stimms | Uses the expedition time syringe icon. |
+| <img src="doc/img/material_expeditions_currency.png"  width="80" alt="Salvage marker" /> | Salvage | Supports **Artwork**, **Icon**, and **Off**. Artwork uses the salvage item art, icon mode uses a simplified salvage icon. |
+| <img src="doc/img/material_expeditions_loot.png"  width="80" alt="Tech-Remnants marker" /> | Tech-Remnants | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/material_expeditions_loot_player_drop.png"  width="80" alt="Dropped Tech-Remnants marker" /> | Dropped Tech-Remnants | Supports **Artwork**, **Icon**, and **Off**. Icon mode uses a red-tinted simplified icon to distinguish dropped loot. |
+| <img src="doc/img/luggable_data_reliquary.png"  width="80" alt="Data Reliquary marker" /> | Data Reliquaries | Gold luggable marker. |
+| <img src="doc/img/pocketable_landmine_explosive.png"  width="80" alt="Servo-Triggered Mine marker" /> | Servo-Triggered Mine | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/pocketable_landmine_fire.png"  width="80" alt="Purgation Snare marker" /> | Purgation Snare | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/pocketable_landmine_shock.png"  width="80" alt="Voltaic Snare marker" /> | Voltaic Snare | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/pocketable_void_shield.png"  width="80" alt="Void Shell marker" /> | Void Shell | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/pocketable_airstrike.png"  width="80" alt="Bombing Run Signal Marker marker" /> | Bombing Run Signal Marker | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/pocketable_artillery_strike.png"  width="80" alt="Artillery Locator Beacon marker" /> | Artillery Locator Beacon | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/pocketable_big_grenade.png"  width="80" alt="Modified Grenade marker" /> | Modified Grenade | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/pocketable_valkyrie_hover.png"  width="80" alt="Fire-Support Signal Marker marker" /> | Fire-Support Signal Marker | Supports **Artwork**, **Icon**, and **Off**. |
+| <img src="doc/img/luggable_promethium_barrel.png"  width="80" alt="Promethium Barrel marker" /> | Promethium Barrel | Orange explosive barrel marker. |
+| <img src="doc/img/pickup_large_ammunition_crate.png"  width="80" alt="Large Ammunition Crate marker" /> | Large Ammunition Crate | Large ammo container, recolored to match the ammo family. |
+| <img src="doc/img/pocketable_anti_rad_stimm.png"  width="80" alt="Anti-Rad Stimms marker" /> | Anti-Rad Stimms | Uses the expedition time syringe icon. |
 
 ### Martyr's Skull Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/pickup_martyr_skull.png" width="40" alt="Martyr's Skull marker" /> | Martyr's Skull | Gold skull marker. |
-| <img src="doc/img/luggable_power_cell_orange.png" width="40" alt="Orange Power Cell marker" /> | Power Cell | Orange luggable marker used for the Martyr's Skull group. |
+| <img src="doc/img/pickup_martyr_skull.png"  width="80" alt="Martyr's Skull marker" /> | Martyr's Skull | Gold skull marker. |
+| <img src="doc/img/luggable_power_cell_orange.png"  width="80" alt="Orange Power Cell marker" /> | Power Cell | Orange luggable marker used for the Martyr's Skull group. |
 
 ### Environment Markers
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/medicae_station.png" width="40" alt="Medicae Station marker" /> | Medicae Station | Green medical interaction marker used for medicae stations and equivalent health-station interactions. |
-| <img src="doc/img/luggable_socket.png" width="40" alt="Power Socket marker" /> | Power Socket | Yellow power socket marker for luggable socket targets. |
-| <img src="doc/img/heretic_idol.png" width="40" alt="Heretic Idol marker" /> | Heretic Idol | Sickly green idol marker shown while the idol is still active. Active idols now appear reliably on the radar. |
+| <img src="doc/img/medicae_station.png"  width="80" alt="Medicae Station marker" /> | Medicae Station | Green medical interaction marker used for medicae stations and equivalent health-station interactions. |
+| <img src="doc/img/luggable_socket.png"  width="80" alt="Power Socket marker" /> | Power Socket | Yellow power socket marker for luggable socket targets. |
+| <img src="doc/img/heretic_idol.png"  width="80" alt="Heretic Idol marker" /> | Heretic Idol | Sickly green idol marker shown while the idol is still active. Active idols now appear reliably on the radar. |
 
 ### Deployed Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/pickup_ammo_cache_deployable.png" width="40" alt="Deployable ammo crate marker" /> | Ammo Crate | Ammo-yellow deployable ammo crate marker. |
-| <img src="doc/img/pickup_medkit.png" width="40" alt="Deployable medical crate marker" /> | Medical Crate | Green deployable medical crate marker. |
+| <img src="doc/img/pickup_ammo_cache_deployable.png"  width="80" alt="Deployable ammo crate marker" /> | Ammo Crate | Ammo-yellow deployable ammo crate marker. |
+| <img src="doc/img/pickup_medkit.png"  width="80" alt="Deployable medical crate marker" /> | Medical Crate | Green deployable medical crate marker. |
 
 ### Event-Related Items
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/pickup_tainted_skull.png" width="40" alt="Tainted Skull marker" /> | Tainted Skulls | Green skull marker. |
-| <img src="doc/img/pocketable_corrupted_auspex_scanner.png" width="40" alt="Tainted Communications Device marker" /> | Tainted Communications Device | Orange auspex scanner marker. |
-| <img src="doc/img/pickup_saints.png" width="40" alt="Holy Relics marker" /> | Holy Relics | Gold relic marker. |
-| <img src="doc/img/pickup_stolen_rations.png" width="40" alt="Stolen Rations marker" /> | Stolen Rations | Green crate marker. |
+| <img src="doc/img/pickup_tainted_skull.png"  width="80" alt="Tainted Skull marker" /> | Tainted Skulls | Green skull marker. |
+| <img src="doc/img/pocketable_corrupted_auspex_scanner.png"  width="80" alt="Tainted Communications Device marker" /> | Tainted Communications Device | Orange auspex scanner marker. |
+| <img src="doc/img/pickup_saints.png"  width="80" alt="Holy Relics marker" /> | Holy Relics | Gold relic marker. |
+| <img src="doc/img/pickup_stolen_rations.png"  width="80" alt="Stolen Rations marker" /> | Stolen Rations | Green crate marker. |
 
 ### Debug Marker
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/pickup_unknown.png" width="40" alt="Unknown pickup marker" /> | Unknown pickups | Optional fallback marker used when debug discovery is enabled. |
+| <img src="doc/img/pickup_unknown.png"  width="80" alt="Unknown pickup marker" /> | Unknown pickups | Optional fallback marker used when debug discovery is enabled. |
 
 ## Display Modes and Color Rules
 
@@ -438,7 +570,7 @@ The remaining formerly white pickup icons were recolored so marker families read
 | --- | --- | --- |
 | `content/ui/materials/icons/player_states/lugged` | Data Reliquary, Power Cell, Cryonic Rod, Moebian Pox Zetaphyte-13 Sample, Vacuum Capsule, Special Issue Ammo, Prismata Crystal Repository, Martyr's Skull Power Cell | `(255, 192, 160, 0)`, `(255, 0, 200, 200)`, `(255, 180, 220, 255)`, `(255, 150, 190, 60)`, `(255, 80, 85, 90)`, `(255, 95, 125, 70)`, `(255, 255, 70, 90)`, `(255, 255, 140, 0)` |
 | `party_syringe` family | Concentration, Med, Combat, Celerity Stimms | `(255, 230, 192, 13)`, `(255, 38, 205, 26)`, `(255, 205, 51, 26)`, `(255, 0, 127, 218)` |
-| Enemy accent brackets | Daemonhost, Monstrosity, Captain, Karnak Twins | `(220, 255, 0, 0)` |
+| Enemy marked backgrounds and brackets | Marked enemy presentations, including bosses and per-enemy radar markers | `(220, 255, 0, 0)` |
 | `content/ui/materials/icons/item_types/devices` | Mortis Relic | `(255, 110, 95, 125)` |
 | `content/ui/materials/hud/interactions/icons/barrel_explosive` | Promethium Barrel | `(255, 255, 110, 0)` |
 | `content/ui/materials/icons/circumstances/live_event_01` | Holy Relics | `(255, 192, 160, 0)` |
@@ -463,10 +595,12 @@ Not every radar marker uses a fixed readme tint:
 - Artwork-based markers now use localized **Artwork**, **Icon**, and **Off** dropdowns where supported, and older saved boolean settings are migrated automatically.
 - Supported item markers can show vertical **up** and **down** arrows within the configured range, and can be hidden when they are too far above or below your current level.
 - The **Environment** group adds dedicated toggles for **Medicae Station**, **Power Socket**, and **Heretic Idol**, and active heretic idols now appear reliably on the radar.
-- Anchor-based positioning uses a corner anchor plus horizontal and vertical offsets, which makes radar placement more consistent across different screen layouts.
-- Each major marker group now includes an **Icon size (%)** slider, and the final combined marker size is capped at **4.0x**.
-- Boss markers can use **Normal** or **Infinite** range.
-- The highlighting option is visible in the configuration, but the actual highlighting behavior is still work in progress.
+- Anchor-based positioning uses a corner anchor plus horizontal and vertical offsets, which makes radar placement more consistent across different screen layouts, and an unrestricted fallback is available for ultrawide or advanced setups.
+- Each major marker group now includes an **Icon size (%)** slider, including dedicated enemy sub-category sliders, and the final combined marker size is capped at **4.0x**.
+- Boss markers can use **Normal** or **Infinite** range, and can optionally show yellow distance text for bosses except the daemonhost.
+- Nearby highlight brackets are live for the supported non-enemy marker groups and use the configured nearby highlight range.
 - Marker previews in this readme were generated from the included template assets and documentation images so the legend matches the mod's configured presentations as closely as possible.
 - The gameplay screenshots in this readme were captured during an expedition mission and show both radar frame styles in live use.
+- Per-mode radar toggles let the mod stay enabled only in the activities where you actually want it, including Regular Missions, Havoc, Mortis Trials, and Expeditions.
+- Tech-Remnant markers can scale by value or merge nearby piles, and stale expedition loot markers are cleaned up when the underlying world items disappear.
 - Localization entries are included for the new positioning, icon size, vertical arrow, boss range, and background opacity settings, so the new options show up consistently with the rest of the translated mod menu.
