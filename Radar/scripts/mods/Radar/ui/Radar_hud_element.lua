@@ -91,13 +91,18 @@ local function _color(a, r, g, b)
     return Color(a, r, g, b)
 end
 
-local WHITE_WIDGET_COLOR = _widget_color(255, 255, 255, 255)
+local WHITE_WIDGET_COLOR = { 255, 255, 255, 255 }
 local OCCLUSION_RAYCAST_FILTERS = {
     "filter_player_character_shooting",
     "filter_ray_projectile",
     "filter_minion_shooting",
     "filter_cover",
 }
+local FULL_CIRCLE = math_pi * 2
+local OCCLUSION_EPSILON = 0.05
+local OCCLUSION_RAYCAST_MODE = "closest"
+local OCCLUSION_COLLISION_FILTER = "collision_filter"
+local OCCLUSION_RAYCAST_FILTER_COUNT = #OCCLUSION_RAYCAST_FILTERS
 
 local function _widget_to_color(color)
     if not color then
@@ -154,8 +159,8 @@ local function _vector3_components(vec)
 end
 
 local function _ui_space_size()
-    local width = 1920
-    local height = 1080
+    local width = 1920.0
+    local height = 1080.0
 
     if RESOLUTION_LOOKUP and RESOLUTION_LOOKUP.width and RESOLUTION_LOOKUP.height then
         local inverse_scale = RESOLUTION_LOOKUP.inverse_scale or 1
@@ -575,6 +580,10 @@ local function _draw_box(ui_renderer, x, y, z, w, h, color)
 end
 
 local function _draw_marker_brackets(ui_renderer, x, y, z, size, color)
+    x = math_floor((tonumber(x) or 0) + 0.5)
+    y = math_floor((tonumber(y) or 0) + 0.5)
+    size = math_max(1, math_floor((tonumber(size) or 0) + 0.5))
+
     local thickness = size >= 16 and 2 or 1
     local length = math_max(4, math_floor(size * 0.35))
     local pad = 1
@@ -599,9 +608,10 @@ end
 
 local function _draw_circle_fill(ui_renderer, center_x, center_y, z, radius, color)
     local integer_radius = math_max(1, math_floor((radius or 0) + 0.5))
+    local radius_sq = integer_radius * integer_radius
 
     for dy = -integer_radius, integer_radius do
-        local span = math_floor(math_sqrt(math_max(0, integer_radius * integer_radius - dy * dy)))
+        local span = math_floor(math_sqrt(math_max(0, radius_sq - dy * dy)))
         _draw_box(ui_renderer, center_x - span, center_y + dy, z, span * 2 + 1, 1, color)
     end
 end
@@ -774,9 +784,10 @@ end
 local function _draw_circle_outline_dotted(ui_renderer, center_x, center_y, z, radius, color)
     local point_size = radius >= 90 and 2 or 1
     local steps = 64
+    local step_angle = FULL_CIRCLE / steps
 
     for i = 0, steps - 1 do
-        local angle = (math_pi * 2 * i) / steps
+        local angle = step_angle * i
         local px = center_x + math_cos(angle) * radius
         local py = center_y + math_sin(angle) * radius
         _draw_dot(ui_renderer, px, py, z, point_size, color)
@@ -793,6 +804,23 @@ local function _draw_square_outline(ui_renderer, x, y, z, size, thickness, color
     _draw_box(ui_renderer, x, y + size - thickness, z, size, thickness, color)
     _draw_box(ui_renderer, x, y, z, thickness, size, color)
     _draw_box(ui_renderer, x + size - thickness, y, z, thickness, size, color)
+end
+
+local function _draw_square_fill_soft(ui_renderer, x, y, z, size, color)
+    size = math_max(1, _round(size))
+
+    if size <= 2 then
+        _draw_box(ui_renderer, x, y, z, size, size, color)
+        return
+    end
+
+    local feather_color = _color_with_alpha_scale(color, 0.45)
+
+    _draw_box(ui_renderer, x + 1, y + 1, z, size - 2, size - 2, color)
+    _draw_box(ui_renderer, x, y, z, size, 1, feather_color)
+    _draw_box(ui_renderer, x, y + size - 1, z, size, 1, feather_color)
+    _draw_box(ui_renderer, x, y + 1, z, 1, size - 2, feather_color)
+    _draw_box(ui_renderer, x + size - 1, y + 1, z, 1, size - 2, feather_color)
 end
 
 local function _draw_screen_pixel(ui_renderer, screen_x, screen_y, z, color)
@@ -1043,7 +1071,7 @@ local function _draw_radar_frame_square(ui_renderer, x, y, z, size, outline_styl
     local fill_color = _color(fill_alpha, 0, 0, 0)
     local outline_color = _color(255, 213, 226, 206)
 
-    _draw_box(ui_renderer, x, y, z, size, size, fill_color)
+    _draw_square_fill_soft(ui_renderer, x, y, z, size, fill_color)
 
     if outline_style == "solid" then
         _draw_box(ui_renderer, x, y, z + 1, size, thickness, outline_color)
@@ -1093,6 +1121,10 @@ local function _has_icon(content)
     return content.icon ~= nil and content.icon ~= ""
 end
 
+local function _has_overlay_icon(content)
+    return content.overlay_icon ~= nil and content.overlay_icon ~= ""
+end
+
 local function _has_title_icon(content)
     return content.title_icon ~= nil and content.title_icon ~= ""
 end
@@ -1112,9 +1144,22 @@ local function _marker_definition()
                 horizontal_alignment = "left",
                 offset = { 0, 0, 10 },
                 size = { 16, 16 },
-                color = { 255, 255, 255, 255 },
+                color = WHITE_WIDGET_COLOR,
             },
             visibility_function = _has_icon,
+        },
+        {
+            pass_type = "texture",
+            value_id = "overlay_icon",
+            style_id = "overlay_icon",
+            style = {
+                vertical_alignment = "top",
+                horizontal_alignment = "left",
+                offset = { 0, 0, 11 },
+                size = { 10, 10 },
+                color = WHITE_WIDGET_COLOR,
+            },
+            visibility_function = _has_overlay_icon,
         },
         {
             pass_type = "texture",
@@ -1123,9 +1168,9 @@ local function _marker_definition()
             style = {
                 vertical_alignment = "top",
                 horizontal_alignment = "left",
-                offset = { 0, 0, 11 },
+                offset = { 0, 0, 12 },
                 size = { 16, 16 },
-                color = { 255, 255, 255, 255 },
+                color = WHITE_WIDGET_COLOR,
             },
             visibility_function = _has_title_icon,
         },
@@ -1138,14 +1183,14 @@ local function _marker_definition()
                 horizontal_alignment = "left",
                 offset = { 2, 2, 16 },
                 size = { 4, 4 },
-                color = { 255, 255, 255, 255 },
+                color = WHITE_WIDGET_COLOR,
             },
             visibility_function = _has_arrow_icon,
         },
     }, "screen")
 end
 
-local MAX_RADAR_MARKERS = 100
+local MAX_RADAR_MARKERS = 200
 
 local function _create_marker_widget(index)
     return UIWidget.init("RadarMarker_" .. index, _marker_definition())
@@ -1153,6 +1198,7 @@ end
 
 local function _clear_marker_widget(widget)
     widget.content.icon = nil
+    widget.content.overlay_icon = nil
     widget.content.title_icon = nil
     widget.content.arrow_icon = nil
     widget.content.value_text = ""
@@ -1164,13 +1210,16 @@ local function _ensure_marker_widgets(self)
     end
 
     self._marker_widgets = {}
+    self._last_active_marker_widget_index = 0
 
     for i = 1, MAX_RADAR_MARKERS do
         self._marker_widgets[i] = _create_marker_widget(i)
     end
 
-    _log_once(_logged_draws, "widget_pool_init",
-        string_format("[Radar] widget pool created | count=%d", MAX_RADAR_MARKERS))
+    if mod:get("debug_mode") == true then
+        _log_once(_logged_draws, "widget_pool_init",
+            string_format("[Radar] widget pool created | count=%d", MAX_RADAR_MARKERS))
+    end
 end
 
 local function _normalized_player_display_style(value)
@@ -1194,21 +1243,30 @@ end
 local _icon_scale_factor
 local _draw_cache = {
     marker_display_mode_by_kind = {},
+    enemy_marker_mode_by_kind = {},
+    marker_scale_by_group = {},
+    enemy_scale_by_kind = {},
+    enemy_visual_by_kind = {},
+    show_boss_distance_text = false,
 }
 
 local function _build_draw_cache()
     local draw_cache = _draw_cache
-    local marker_display_mode_by_kind = draw_cache.marker_display_mode_by_kind
 
-    table_clear(marker_display_mode_by_kind)
+    table_clear(draw_cache.marker_display_mode_by_kind)
+    table_clear(draw_cache.enemy_marker_mode_by_kind)
+    table_clear(draw_cache.marker_scale_by_group)
+    table_clear(draw_cache.enemy_scale_by_kind)
+    table_clear(draw_cache.enemy_visual_by_kind)
 
     draw_cache.icon_scale = _icon_scale_factor()
     draw_cache.player_display_style = _normalized_player_display_style(mod:get("player_display_style"))
-    draw_cache.enemy_display_style = _normalized_enemy_display_style(mod:get("enemy_display_style"))
+    draw_cache.boss_display_style = _normalized_enemy_display_style(mod:get("boss_display_style"))
     draw_cache.expedition_loot_marker_mode = mod.get_expedition_loot_marker_mode and
         mod:get_expedition_loot_marker_mode() or "default"
     draw_cache.show_expedition_loot_value_text = mod.get_show_expedition_loot_value_text and
         mod:get_show_expedition_loot_value_text() or false
+    draw_cache.show_boss_distance_text = mod:get("show_boss_distance_text") == true
     draw_cache.slot_colors = UISettings and UISettings.player_slot_colors or nil
     draw_cache.debug_mode = mod:get("debug_mode") == true
 
@@ -1220,27 +1278,153 @@ _icon_scale_factor = function()
         return 1
     end
 
-    local radar_size = tonumber(mod:get("radar_size")) or 180
-    local scale = radar_size / 180
+    local radar_size = tonumber(mod:get("radar_size")) or 300
+    local scale = radar_size / 300
 
-    if scale < 0.6 then
-        scale = 0.6
-    elseif scale > 2.0 then
-        scale = 2.0
+    if scale < 0.5 then
+        scale = 0.5
+    elseif scale > 3.0 then
+        scale = 3.0
     end
 
     return scale
 end
 
-local function _scaled_icon_size(base_size, icon_scale)
+local function _scaled_icon_size(base_size, icon_scale, min_size, max_size)
     local scale = tonumber(icon_scale) or _icon_scale_factor()
     local scaled = math_floor((tonumber(base_size) or 14) * scale + 0.5)
+    local resolved_min = tonumber(min_size) or 1
+    local resolved_max = tonumber(max_size)
 
-    if scaled < 10 then
-        scaled = 10
+    if scaled < resolved_min then
+        scaled = resolved_min
+    end
+
+    if resolved_max and scaled > resolved_max then
+        scaled = resolved_max
     end
 
     return scaled
+end
+
+local function _cached_group_icon_scale(kind, draw_cache)
+    if not kind then
+        return 1
+    end
+
+    local group_name = mod.get_marker_scale_group and mod:get_marker_scale_group(kind)
+
+    if not group_name then
+        return 1
+    end
+
+    local cache = draw_cache and draw_cache.marker_scale_by_group
+
+    if cache then
+        local cached = cache[group_name]
+
+        if cached ~= nil then
+            return cached
+        end
+
+        cached = mod.get_marker_scale_factor and mod:get_marker_scale_factor(group_name) or 1
+        cache[group_name] = cached
+
+        return cached
+    end
+
+    return mod.get_marker_scale_factor and mod:get_marker_scale_factor(group_name) or 1
+end
+
+local function _cached_enemy_category_icon_scale(kind, draw_cache)
+    if not kind or string_sub(tostring(kind), 1, 6) ~= "enemy_" then
+        return 1
+    end
+
+    local cache = draw_cache and draw_cache.enemy_scale_by_kind
+
+    if cache then
+        local cached = cache[kind]
+
+        if cached ~= nil then
+            return cached
+        end
+
+        cached = mod.get_enemy_category_scale_factor and mod:get_enemy_category_scale_factor(kind) or 1
+        cache[kind] = cached
+
+        return cached
+    end
+
+    return mod.get_enemy_category_scale_factor and mod:get_enemy_category_scale_factor(kind) or 1
+end
+
+local function _resolved_icon_scale_for_target(target, draw_cache)
+    local scale = tonumber(draw_cache and draw_cache.icon_scale) or _icon_scale_factor()
+    local kind = target and target.kind
+
+    if kind then
+        scale = scale * _cached_group_icon_scale(kind, draw_cache)
+
+        if string_sub(tostring(kind), 1, 6) == "enemy_" then
+            scale = scale * _cached_enemy_category_icon_scale(kind, draw_cache)
+        end
+    end
+
+    return scale
+end
+
+local function _enemy_icon_size_limits(kind)
+    local definition = mod.get_enemy_radar_definition and mod:get_enemy_radar_definition(kind)
+    local category = definition and definition.category or nil
+
+    if category == "special" or category == "elite" or category == "misc" then
+        return 10, 72
+    end
+
+    if category == "shooter" then
+        return 8, 56
+    end
+
+    if category == "common" then
+        return 6, 40
+    end
+
+    if category == "horde" then
+        return 6, 28
+    end
+
+    return 10, 72
+end
+
+local function _target_icon_size(target, visual, draw_cache)
+    local base_size = visual and visual.size or 14
+    local icon_scale = _resolved_icon_scale_for_target(target, draw_cache)
+
+    if target and target.kind and string_sub(tostring(target.kind), 1, 6) == "enemy_" then
+        local min_size, max_size = _enemy_icon_size_limits(target.kind)
+        return _scaled_icon_size(base_size, icon_scale, min_size, max_size)
+    end
+
+    return _scaled_icon_size(base_size, icon_scale, 10, 48)
+end
+
+local function _target_bracket_size(target, visual, draw_cache, marker_size)
+    local base_size = visual and (visual.bracket_base_size or visual.size) or 14
+
+    if target and target.kind and string_sub(tostring(target.kind), 1, 6) == "enemy_" then
+        local base_marker_size = tonumber(visual and visual.size) or base_size
+        local actual_marker_size = tonumber(marker_size) or _target_icon_size(target, visual, draw_cache)
+        local actual_marker_scale = actual_marker_size / math_max(1, base_marker_size)
+        local bracket_scale = 1 + (actual_marker_scale - 1)
+        local min_size, max_size = _enemy_icon_size_limits(target.kind)
+
+        return _scaled_icon_size(base_size, bracket_scale, min_size, max_size)
+    end
+
+    local icon_scale = _resolved_icon_scale_for_target(target, draw_cache)
+
+    return _scaled_icon_size(base_size, icon_scale, 10, 64)
 end
 
 local function _is_enemy_kind(kind)
@@ -1259,6 +1443,45 @@ local function _is_expedition_objective_kind(kind)
     return kind ~= nil and EXPEDITION_OBJECTIVE_KINDS[kind] == true
 end
 
+local function _normalized_enemy_marker_mode(value)
+    value = tostring(value or "icon_only")
+
+    if value ~= "icon_only" and value ~= "marked_icon" and value ~= "off" then
+        value = "icon_only"
+    end
+
+    return value
+end
+
+local function _is_boss_enemy_kind(kind)
+    return kind == "enemy_daemonhost"
+        or kind == "enemy_monstrosity"
+        or kind == "enemy_captain"
+        or kind == "enemy_karnak_twin"
+end
+
+local function _enemy_marker_mode_for_kind(kind, draw_cache)
+    if _is_boss_enemy_kind(kind) then
+        return draw_cache and draw_cache.boss_display_style or
+            _normalized_enemy_display_style(mod:get("boss_display_style"))
+    end
+
+    if draw_cache then
+        local cache = draw_cache.enemy_marker_mode_by_kind
+        local mode = cache[kind]
+
+        if mode == nil then
+            mode = mod.get_enemy_marker_mode and mod:get_enemy_marker_mode(kind) or "off"
+            mode = _normalized_enemy_marker_mode(mode)
+            cache[kind] = mode
+        end
+
+        return mode
+    end
+
+    return _normalized_enemy_marker_mode(mod.get_enemy_marker_mode and mod:get_enemy_marker_mode(kind) or "off")
+end
+
 local function _display_style_for_kind(kind, draw_cache)
     if kind == "player_teammate" then
         return draw_cache and draw_cache.player_display_style or
@@ -1266,8 +1489,7 @@ local function _display_style_for_kind(kind, draw_cache)
     end
 
     if _is_enemy_kind(kind) then
-        return draw_cache and draw_cache.enemy_display_style or
-            _normalized_enemy_display_style(mod:get("enemy_display_style"))
+        return _enemy_marker_mode_for_kind(kind, draw_cache)
     end
 
     if _is_expedition_objective_kind(kind) then
@@ -1319,7 +1541,8 @@ local function _marker_value_font_size(icon_size, digits)
     return font_size
 end
 
-local function _draw_marker_value_text(ui_renderer, value_text, x, y, z, icon_size, has_arrow)
+local function _draw_marker_value_text(ui_renderer, value_text, x, y, z, icon_size, has_arrow, value_text_color,
+                                       value_text_anchor, value_text_offset_x, value_text_offset_y)
     if value_text == nil or value_text == "" then
         return
     end
@@ -1330,26 +1553,52 @@ local function _draw_marker_value_text(ui_renderer, value_text, x, y, z, icon_si
         return
     end
 
+    local x0 = x or 0
+    local y0 = y or 0
+    local z0 = z or 0
+    local half_icon_size = icon_size * 0.5
     local font_size = _marker_value_font_size(icon_size, digits)
     local arrow_size = math_max(6, math_floor(icon_size * 0.45 + 1))
     local text_box_width = math_max(font_size + 2, math_floor(font_size * (digits * 0.62 + 0.45) + 0.5))
     local text_box_height = font_size + 2
-    local text_x = math_floor((x or 0) + icon_size - text_box_width + 0.5)
-    local text_y = math_floor((y or 0) + icon_size - text_box_height + 0.5)
+    local anchor = value_text_anchor or "bottom_right"
+    local text_x
+    local text_y
 
-    if has_arrow then
-        text_x = text_x - math_floor(arrow_size * 0.8 + 0.5)
+    if anchor == "top_center" then
+        text_x = math_floor(x0 + half_icon_size - text_box_width * 0.5 + 0.5)
+        text_y = math_floor(y0 - text_box_height - 2 + 0.5)
+    elseif anchor == "bottom_center" then
+        text_x = math_floor(x0 + half_icon_size - text_box_width * 0.5 + 0.5)
+        text_y = math_floor(y0 + icon_size + 2 + 0.5)
+    else
+        text_x = math_floor(x0 + icon_size - text_box_width + 0.5)
+        text_y = math_floor(y0 + icon_size - text_box_height + 0.5)
+
+        if has_arrow then
+            text_x = text_x - math_floor(arrow_size * 0.8 + 0.5)
+        end
     end
 
-    _marker_value_text_position[1] = text_x
-    _marker_value_text_position[2] = text_y
-    _marker_value_text_position[3] = math_floor((z or 0) + 4 + 0.5)
-    _marker_value_text_size[1] = text_box_width
-    _marker_value_text_size[2] = text_box_height
-    _marker_value_text_color[1] = 255
-    _marker_value_text_color[2] = 255
-    _marker_value_text_color[3] = 225
-    _marker_value_text_color[4] = 0
+    text_x = text_x + (value_text_offset_x or 0)
+    text_y = text_y + (value_text_offset_y or 0)
+
+    local position = _marker_value_text_position
+    local size = _marker_value_text_size
+    local color = _marker_value_text_color
+    local source_color = value_text_color or color
+
+    position[1] = text_x
+    position[2] = text_y
+    position[3] = math_floor(z0 + 4 + 0.5)
+
+    size[1] = text_box_width
+    size[2] = text_box_height
+
+    color[1] = source_color[1] or 255
+    color[2] = source_color[2] or 255
+    color[3] = source_color[3] or 225
+    color[4] = source_color[4] or 0
 
     table_clear(_marker_value_text_options)
     UIFonts.get_font_options_by_style(MARKER_VALUE_TEXT_STYLE, _marker_value_text_options)
@@ -1359,9 +1608,9 @@ local function _draw_marker_value_text(ui_renderer, value_text, x, y, z, icon_si
         value_text,
         font_size,
         MARKER_VALUE_TEXT_STYLE.font_type,
-        Vector3(_marker_value_text_position[1], _marker_value_text_position[2], _marker_value_text_position[3]),
-        _marker_value_text_size,
-        _marker_value_text_color,
+        Vector3(position[1], position[2], position[3]),
+        size,
+        color,
         _marker_value_text_options
     )
 end
@@ -1371,10 +1620,12 @@ local ITEM_VERTICAL_ARROW_DOWN_ICON = "content/ui/materials/icons/circumstances/
 
 local function _apply_marker_widget(widget, visual, x, y, z, target, icon_size)
     local icon_style = widget.style.icon
+    local overlay_icon_style = widget.style.overlay_icon
     local title_icon_style = widget.style.title_icon
     local arrow_icon_style = widget.style.arrow_icon
     local size = tonumber(icon_size) or _scaled_icon_size(visual and visual.size or 14)
     local color = _any_to_widget_color(visual and visual.color or nil)
+    local overlay_color = _any_to_widget_color(visual and visual.overlay_color or nil)
     local vertical_state = target and target.vertical_state or nil
     local arrow_icon = nil
 
@@ -1385,35 +1636,71 @@ local function _apply_marker_widget(widget, visual, x, y, z, target, icon_size)
     end
 
     widget.content.icon = visual and visual.icon or nil
+    widget.content.overlay_icon = visual and visual.overlay_icon or nil
     widget.content.title_icon = visual and visual.title_icon or nil
     widget.content.arrow_icon = arrow_icon
     widget.content.value_text = visual and visual.value_text or ""
 
-    icon_style.offset[1] = math_floor((x or 0) + 0.5)
-    icon_style.offset[2] = math_floor((y or 0) + 0.5)
-    icon_style.offset[3] = math_floor((z or 0) + 0.5)
-    icon_style.size[1] = size
-    icon_style.size[2] = size
+    local icon_offset = icon_style.offset
+    local icon_size_tbl = icon_style.size
+    local icon_z = math_floor((z or 0) + 0.5)
+
+    icon_offset[1] = math_floor((x or 0) + 0.5)
+    icon_offset[2] = math_floor((y or 0) + 0.5)
+    icon_offset[3] = icon_z
+    icon_size_tbl[1] = size
+    icon_size_tbl[2] = size
     icon_style.color = color
 
+    if overlay_icon_style then
+        local overlay_size = nil
+        local overlay_base_size = visual and tonumber(visual.overlay_base_size) or nil
+        local background_base_size = visual and tonumber(visual.background_base_size or visual.size) or nil
+
+        if overlay_base_size and background_base_size and background_base_size > 0 then
+            overlay_size = math_floor(size * (overlay_base_size / background_base_size) + 0.5)
+        else
+            overlay_size = math_floor((visual and visual.overlay_size or (size - 2)) + 0.5)
+        end
+
+        overlay_size = math_max(4, overlay_size)
+
+        local overlay_offset = overlay_icon_style.offset
+        local overlay_size_tbl = overlay_icon_style.size
+        local icon_center_x = icon_offset[1] + math_floor(size * 0.5)
+        local icon_center_y = icon_offset[2] + math_floor(size * 0.5)
+
+        overlay_offset[1] = icon_center_x - math_floor(overlay_size * 0.5)
+        overlay_offset[2] = icon_center_y - math_floor(overlay_size * 0.5)
+        overlay_offset[3] = icon_z + 1
+        overlay_size_tbl[1] = overlay_size
+        overlay_size_tbl[2] = overlay_size
+        overlay_icon_style.color = overlay_color
+    end
+
     if title_icon_style then
-        title_icon_style.offset[1] = icon_style.offset[1]
-        title_icon_style.offset[2] = icon_style.offset[2]
-        title_icon_style.offset[3] = (icon_style.offset[3] or 0) + 1
-        title_icon_style.size[1] = size
-        title_icon_style.size[2] = size
+        local title_offset = title_icon_style.offset
+        local title_size = title_icon_style.size
+
+        title_offset[1] = icon_offset[1]
+        title_offset[2] = icon_offset[2]
+        title_offset[3] = icon_z + 2
+        title_size[1] = size
+        title_size[2] = size
         title_icon_style.color = color
     end
 
     if arrow_icon_style then
+        local arrow_offset = arrow_icon_style.offset
+        local arrow_size_tbl = arrow_icon_style.size
         local arrow_size = math_max(6, math_floor(size * 0.45 + 1))
         local overlap = math_floor(arrow_size * 0.5 + 1) + 2
 
-        arrow_icon_style.offset[1] = icon_style.offset[1] + size - overlap
-        arrow_icon_style.offset[2] = icon_style.offset[2] + size - overlap
-        arrow_icon_style.offset[3] = (icon_style.offset[3] or 0) + 2
-        arrow_icon_style.size[1] = arrow_size
-        arrow_icon_style.size[2] = arrow_size
+        arrow_offset[1] = icon_offset[1] + size - overlap
+        arrow_offset[2] = icon_offset[2] + size - overlap
+        arrow_offset[3] = icon_z + 3
+        arrow_size_tbl[1] = arrow_size
+        arrow_size_tbl[2] = arrow_size
         arrow_icon_style.color = WHITE_WIDGET_COLOR
     end
 end
@@ -1524,35 +1811,75 @@ local function _tech_remnant_value_text(target, draw_cache)
     return tostring(math_floor(value + 0.5))
 end
 
+local function _is_boss_distance_text_kind(kind)
+    return kind == "enemy_monstrosity"
+        or kind == "enemy_captain"
+        or kind == "enemy_karnak_twin"
+end
+
+local function _boss_distance_text(target, draw_cache)
+    local show_distance_text = draw_cache and draw_cache.show_boss_distance_text or
+        (mod:get("show_boss_distance_text") == true)
+
+    if not show_distance_text or not _is_boss_distance_text_kind(target and target.kind) then
+        return nil
+    end
+
+    local distance_sq_3d = target and tonumber(target.distance_sq_3d) or nil
+
+    if not distance_sq_3d or distance_sq_3d < 0 then
+        return nil
+    end
+
+    return math_floor(math_sqrt(distance_sq_3d) + 0.5) .. " m"
+end
+
+local BOSS_DISTANCE_TEXT_WIDGET_COLOR = { 255, 255, 225, 0 }
+
 local function _apply_target_specific_visual_overrides(target, visual, draw_cache)
     if not visual then
         return nil
     end
 
-    if not _is_tech_remnant_kind(target and target.kind) then
-        return visual
+    local kind = target and target.kind
+
+    if _is_tech_remnant_kind(kind) then
+        local mode = draw_cache and draw_cache.expedition_loot_marker_mode or
+            (mod.get_expedition_loot_marker_mode and mod:get_expedition_loot_marker_mode() or "default")
+        local meta = target and target.meta or nil
+        local base_size = visual.size or 14
+        local should_scale = mode == "scaled" or (meta and meta.is_tech_remnant_cluster == true) or false
+        local scaled_size = should_scale and _tech_remnant_scaled_size(base_size, _tech_remnant_target_value(target)) or
+            base_size
+        local value_text = _tech_remnant_value_text(target, draw_cache)
+
+        if scaled_size == base_size and value_text == nil and visual.value_text == nil then
+            return visual
+        end
+
+        local result = _copy_visual(visual)
+
+        if should_scale then
+            result.size = scaled_size
+        end
+
+        result.value_text = value_text
+
+        return result
     end
 
-    local mode = draw_cache and draw_cache.expedition_loot_marker_mode or
-        (mod.get_expedition_loot_marker_mode and mod:get_expedition_loot_marker_mode() or "default")
-    local meta = target and target.meta or {}
-    local base_size = visual.size or 14
-    local should_scale = mode == "scaled" or meta.is_tech_remnant_cluster == true
-    local scaled_size = should_scale and _tech_remnant_scaled_size(base_size, _tech_remnant_target_value(target)) or
-        base_size
-    local value_text = _tech_remnant_value_text(target, draw_cache)
+    local boss_distance_text = _boss_distance_text(target, draw_cache)
 
-    if scaled_size == base_size and value_text == nil and visual.value_text == nil then
+    if boss_distance_text == nil then
         return visual
     end
 
     local result = _copy_visual(visual)
-
-    if should_scale then
-        result.size = scaled_size
-    end
-
-    result.value_text = value_text
+    result.value_text = boss_distance_text
+    result.value_text_color = BOSS_DISTANCE_TEXT_WIDGET_COLOR
+    result.value_text_anchor = "bottom_center"
+    result.value_text_offset_x = 3
+    result.value_text_offset_y = -3
 
     return result
 end
@@ -1579,8 +1906,9 @@ local function _artwork_mode_icon_visual(kind, draw_cache)
 end
 
 local function _expedition_objective_visual(target, draw_cache)
-    local meta = target and target.meta or {}
-    local player_slot = tonumber(meta.marked_by_player_slot)
+    local meta = target and target.meta or nil
+    local marked_by_player_slot = meta and meta.marked_by_player_slot or nil
+    local player_slot = tonumber(marked_by_player_slot)
     local slot_colors = draw_cache and draw_cache.slot_colors or (UISettings and UISettings.player_slot_colors)
     local player_color = player_slot and slot_colors and slot_colors[player_slot] or nil
     local default_color = _expedition_unmarked_color(target)
@@ -1590,13 +1918,13 @@ local function _expedition_objective_visual(target, draw_cache)
     local icon = nil
 
     if target and target.kind == "expedition_loot_converter" then
-        icon = meta.objective_icon or DEFAULT_INTERACTION_ICON
+        icon = meta and meta.objective_icon or DEFAULT_INTERACTION_ICON
     else
-        local interaction_icon = meta.interaction_icon
+        local interaction_icon = meta and meta.interaction_icon or nil
         icon = interaction_icon
 
         if icon == nil or icon == DEFAULT_INTERACTION_ICON then
-            icon = meta.objective_icon or DEFAULT_INTERACTION_ICON
+            icon = meta and meta.objective_icon or DEFAULT_INTERACTION_ICON
         end
     end
 
@@ -1606,11 +1934,94 @@ local function _expedition_objective_visual(target, draw_cache)
 
     return {
         icon = icon,
-        title_icon = meta.objective_title_icon,
+        title_icon = meta and meta.objective_title_icon or nil,
         color = widget_color,
         accent_color = accent_color,
         size = 15,
     }
+end
+
+local function _same_widget_color(a, b)
+    if a == b then
+        return true
+    end
+
+    if not a or not b then
+        return false
+    end
+
+    return a[1] == b[1]
+        and a[2] == b[2]
+        and a[3] == b[3]
+        and a[4] == b[4]
+end
+
+local function _enemy_radar_visual(target, draw_cache)
+    local kind = target and target.kind
+    local cache = draw_cache and draw_cache.enemy_visual_by_kind or nil
+
+    if cache and kind ~= nil then
+        local cached = cache[kind]
+
+        if cached ~= nil then
+            return cached
+        end
+    end
+
+    local definition = mod.get_enemy_radar_definition and mod:get_enemy_radar_definition(kind)
+
+    if not definition then
+        return nil
+    end
+
+    local definition_size = tonumber(definition.size)
+    local background_size = tonumber(definition.background_size) or definition_size or 10
+    local icon_size = tonumber(definition.icon_size) or definition_size or background_size
+    local bracket_size = tonumber(definition.bracket_size)
+    local icon = definition.icon
+    local icon_color = _any_to_widget_color(definition.icon_color)
+    local background_icon = definition.background_icon
+    local background_color = definition.background_color and _any_to_widget_color(definition.background_color) or nil
+    local should_compose = definition.category ~= "horde"
+        and background_icon ~= nil
+        and background_color ~= nil
+        and icon ~= nil
+    local visual = nil
+
+    if should_compose
+        and background_icon == icon
+        and _same_widget_color(background_color, icon_color)
+        and background_size == icon_size then
+        should_compose = false
+    end
+
+    if should_compose then
+        visual = {
+            icon = background_icon,
+            color = background_color,
+            overlay_icon = icon,
+            overlay_color = icon_color,
+            background_base_size = background_size,
+            overlay_base_size = icon_size,
+            bracket_base_size = bracket_size or background_size,
+            accent_color = _with_alpha_widget(background_color, 180),
+            size = background_size,
+        }
+    else
+        visual = {
+            icon = icon or background_icon or DEFAULT_INTERACTION_ICON,
+            color = icon_color or background_color or WHITE_WIDGET_COLOR,
+            accent_color = background_color and _with_alpha_widget(background_color, 180) or nil,
+            bracket_base_size = bracket_size or icon_size,
+            size = icon_size,
+        }
+    end
+
+    if cache and kind ~= nil then
+        cache[kind] = visual
+    end
+
+    return visual
 end
 
 local function _target_visual(target, draw_cache)
@@ -1618,12 +2029,19 @@ local function _target_visual(target, draw_cache)
         return nil
     end
 
-    local debug_mode = draw_cache and draw_cache.debug_mode or mod:get("debug_mode")
+    local target_kind = target.kind
+    local enemy_visual = _enemy_radar_visual(target, draw_cache)
 
-    if target.kind == "player_teammate" then
-        local meta = target.meta or {}
-        local archetype_name = meta.archetype_name and string_lower(tostring(meta.archetype_name)) or nil
-        local player_slot = tonumber(meta.player_slot)
+    if enemy_visual then
+        return _apply_target_specific_visual_overrides(target, enemy_visual, draw_cache)
+    end
+
+    local debug_mode = draw_cache and draw_cache.debug_mode or mod:get("debug_mode")
+    local meta = target.meta or nil
+
+    if target_kind == "player_teammate" then
+        local archetype_name = meta and meta.archetype_name and string_lower(tostring(meta.archetype_name)) or nil
+        local player_slot = meta and tonumber(meta.player_slot) or nil
         local slot_colors = draw_cache and draw_cache.slot_colors or (UISettings and UISettings.player_slot_colors)
         local player_color = player_slot and slot_colors and slot_colors[player_slot] or nil
         local display_style = draw_cache and draw_cache.player_display_style or mod:get_player_display_style()
@@ -1645,37 +2063,40 @@ local function _target_visual(target, draw_cache)
             icon = icon,
             color = widget_color,
             accent_color = _with_alpha_widget(widget_color, 180),
-            size = use_dot or 15,
+            size = use_dot and 14 or 15,
         }
     end
 
-    if _is_expedition_objective_kind(target.kind) then
+    if _is_expedition_objective_kind(target_kind) then
         if debug_mode then
+            local interaction_icon = meta and meta.interaction_icon or nil
+            local objective_icon = meta and meta.objective_icon or nil
+            local objective_title_icon = meta and meta.objective_title_icon or nil
+            local marked_by_player_slot = meta and meta.marked_by_player_slot or nil
+
             _log_once(
                 _logged_visuals,
-                "expedition:" ..
-                tostring(target.kind) ..
-                ":" ..
-                tostring((target.meta or {}).interaction_icon or (target.meta or {}).objective_icon) ..
-                ":" .. tostring((target.meta or {}).objective_title_icon),
+                "expedition:" .. tostring(target_kind) .. ":" .. tostring(interaction_icon or objective_icon) .. ":" ..
+                tostring(objective_title_icon),
                 string_format("[Radar] visual expedition | kind=%s icon=%s title_icon=%s marked_by=%s",
-                    tostring(target.kind),
-                    tostring((target.meta or {}).interaction_icon or (target.meta or {}).objective_icon),
-                    tostring((target.meta or {}).objective_title_icon),
-                    tostring((target.meta or {}).marked_by_player_slot))
+                    tostring(target_kind),
+                    tostring(interaction_icon or objective_icon),
+                    tostring(objective_title_icon),
+                    tostring(marked_by_player_slot))
             )
         end
 
         return _expedition_objective_visual(target, draw_cache)
     end
 
-    local icon_visual = _artwork_mode_icon_visual(target.kind, draw_cache)
+    local icon_visual = _artwork_mode_icon_visual(target_kind, draw_cache)
+
     if icon_visual then
         if debug_mode then
             _log_once(
                 _logged_visuals,
-                "icon_mode:" .. tostring(target.kind),
-                string_format("[Radar] visual icon mode | kind=%s icon=%s", tostring(target.kind),
+                "icon_mode:" .. tostring(target_kind),
+                string_format("[Radar] visual icon mode | kind=%s icon=%s", tostring(target_kind),
                     tostring(icon_visual.icon))
             )
         end
@@ -1683,13 +2104,14 @@ local function _target_visual(target, draw_cache)
         return _apply_target_specific_visual_overrides(target, icon_visual, draw_cache)
     end
 
-    local presentation = PRESENTATIONS[target.kind]
-    if presentation then
+    local presentation = rawget(PRESENTATIONS, target_kind)
+
+    if presentation ~= nil then
         if debug_mode then
             _log_once(
                 _logged_visuals,
-                "kind:" .. tostring(target.kind),
-                string_format("[Radar] visual presentation | kind=%s icon=%s", tostring(target.kind),
+                "kind:" .. tostring(target_kind),
+                string_format("[Radar] visual presentation | kind=%s icon=%s", tostring(target_kind),
                     tostring(presentation.icon))
             )
         end
@@ -1697,19 +2119,20 @@ local function _target_visual(target, draw_cache)
         return _apply_target_specific_visual_overrides(target, presentation, draw_cache)
     end
 
-    local meta = target.meta or {}
-    if meta.interaction_icon and meta.interaction_icon ~= "" then
+    local interaction_icon = meta and meta.interaction_icon or nil
+
+    if interaction_icon and interaction_icon ~= "" then
         if debug_mode then
             _log_once(
                 _logged_visuals,
-                "interaction:" .. tostring(meta.interaction_icon),
-                string_format("[Radar] visual interaction_icon | kind=%s icon=%s", tostring(target.kind),
-                    tostring(meta.interaction_icon))
+                "interaction:" .. tostring(interaction_icon),
+                string_format("[Radar] visual interaction_icon | kind=%s icon=%s", tostring(target_kind),
+                    tostring(interaction_icon))
             )
         end
 
         return _apply_target_specific_visual_overrides(target, {
-            icon = meta.interaction_icon,
+            icon = interaction_icon,
             color = WHITE_WIDGET_COLOR,
             size = 14,
         }, draw_cache)
@@ -1718,8 +2141,8 @@ local function _target_visual(target, draw_cache)
     if debug_mode then
         _log_once(
             _logged_visuals,
-            "fallback_kind:" .. tostring(target.kind),
-            string_format("[Radar] visual fallback | kind=%s icon=%s", tostring(target.kind),
+            "fallback_kind:" .. tostring(target_kind),
+            string_format("[Radar] visual fallback | kind=%s icon=%s", tostring(target_kind),
                 tostring(PRESENTATIONS.pickup_unknown.icon))
         )
     end
@@ -1954,8 +2377,9 @@ end
 
 local function _is_world_position_occluded(camera_position, world_position)
     local physics_world = _safe_physics_world()
+    local immediate_raycast = PhysicsWorld and PhysicsWorld.immediate_raycast
 
-    if not physics_world or not PhysicsWorld or not PhysicsWorld.immediate_raycast then
+    if not physics_world or not immediate_raycast then
         return false
     end
 
@@ -1964,22 +2388,23 @@ local function _is_world_position_occluded(camera_position, world_position)
     local dz = world_position.z - camera_position.z
     local distance = math_sqrt(dx * dx + dy * dy + dz * dz)
 
-    if not _is_finite_number(distance) or distance <= 0.05 then
+    if not _is_finite_number(distance) or distance <= OCCLUSION_EPSILON then
         return false
     end
 
     local origin = Vector3(camera_position.x, camera_position.y, camera_position.z)
     local direction = Vector3(dx / distance, dy / distance, dz / distance)
+    local threshold = distance - OCCLUSION_EPSILON
 
-    for i = 1, #OCCLUSION_RAYCAST_FILTERS do
+    for i = 1, OCCLUSION_RAYCAST_FILTER_COUNT do
         local ok, a, b, c, d = pcall(
-            PhysicsWorld.immediate_raycast,
+            immediate_raycast,
             physics_world,
             origin,
             direction,
             distance,
-            "closest",
-            "collision_filter",
+            OCCLUSION_RAYCAST_MODE,
+            OCCLUSION_COLLISION_FILTER,
             OCCLUSION_RAYCAST_FILTERS[i]
         )
 
@@ -1987,7 +2412,7 @@ local function _is_world_position_occluded(camera_position, world_position)
             local hit_distance = _extract_raycast_distance(a, b, c, d)
 
             if hit_distance ~= nil then
-                return hit_distance < distance - 0.05
+                return hit_distance < threshold
             end
         end
     end
@@ -2177,6 +2602,17 @@ HudElementRadar.update = function(self, dt, t)
     return
 end
 
+local function _snap_center(value)
+    return math_floor((tonumber(value) or 0) + 0.5)
+end
+
+local function _top_left_from_center(center_value, size)
+    local snapped_center = _snap_center(center_value)
+    local snapped_size = math_max(1, math_floor((tonumber(size) or 0) + 0.5))
+
+    return snapped_center - math_floor(snapped_size * 0.5)
+end
+
 local function _draw_internal(self, ui_renderer, snapshot, render_settings, input_service, dt)
     _ensure_marker_widgets(self)
 
@@ -2187,6 +2623,19 @@ local function _draw_internal(self, ui_renderer, snapshot, render_settings, inpu
     local x, y, z, radius = mod:get_radar_origin(size)
     local center_x = x + radius
     local center_y = y + radius
+    local debug_mode = draw_cache.debug_mode
+    local UIWidget_draw = UIWidget.draw
+    local apply_marker_widget = _apply_marker_widget
+    local target_visual = _target_visual
+    local target_icon_size = _target_icon_size
+    local target_bracket_size = _target_bracket_size
+    local should_draw_marker_brackets = _should_draw_marker_brackets
+    local draw_marker_brackets = _draw_marker_brackets
+    local draw_marker_value_text = _draw_marker_value_text
+    local snap_center = _snap_center
+    local top_left_from_center = _top_left_from_center
+    local base_icon_z = z + 5
+    local projection_radius = radius - 8
 
     _draw_radar_frame(ui_renderer, x, y, z + 1, size)
 
@@ -2209,17 +2658,18 @@ local function _draw_internal(self, ui_renderer, snapshot, render_settings, inpu
         local self_visual = _self_visual
         self_visual.color = _any_to_widget_color(player_color, WHITE_WIDGET_COLOR)
 
-        local self_icon_size = _scaled_icon_size(self_visual.size, draw_cache.icon_scale)
+        local self_scale = (draw_cache.icon_scale or 1) * _cached_group_icon_scale("player_teammate", draw_cache)
+        local self_icon_size = _scaled_icon_size(self_visual.size, self_scale, 10, 40)
         local self_draw_x = center_x - self_icon_size / 2
         local self_draw_y = center_y - self_icon_size / 2
         local self_widget = marker_widgets[next_widget_index]
 
-        _apply_marker_widget(self_widget, self_visual, self_draw_x, self_draw_y, z + 5, nil, self_icon_size)
-        UIWidget.draw(self_widget, ui_renderer)
+        apply_marker_widget(self_widget, self_visual, self_draw_x, self_draw_y, base_icon_z, nil, self_icon_size)
+        UIWidget_draw(self_widget, ui_renderer)
 
         next_widget_index = next_widget_index + 1
 
-        if target_count > max_markers then
+        if debug_mode and target_count > max_markers then
             _log_once(
                 _logged_draws,
                 "marker_pool_overflow:" .. tostring(max_markers),
@@ -2235,46 +2685,86 @@ local function _draw_internal(self, ui_renderer, snapshot, render_settings, inpu
             end
 
             local target = targets[i]
-            local px, py = project_target_to_radar(mod, player_pos, projection_rotation, target.position, radius - 8,
-                range, target.ignore_radar_range)
+            local px, py = project_target_to_radar(
+                mod,
+                player_pos,
+                projection_rotation,
+                target.position,
+                projection_radius,
+                range,
+                target.ignore_radar_range
+            )
 
             if px and py then
-                local visual = _target_visual(target, draw_cache)
-                local icon_size = _scaled_icon_size(visual and visual.size or 14, draw_cache.icon_scale)
-                local draw_x = center_x + px - icon_size / 2
-                local draw_y = center_y + py - icon_size / 2
-                local widget = marker_widgets[next_widget_index]
+                local visual = target_visual(target, draw_cache)
+                local marker_size = target_icon_size(target, visual, draw_cache)
+                local bracket_size = target_bracket_size(target, visual, draw_cache, marker_size)
+                local marker_center_x = snap_center(center_x + px)
+                local marker_center_y = snap_center(center_y + py)
 
-                if visual and visual.accent_color and _should_draw_marker_brackets(target, draw_cache) then
-                    _draw_marker_brackets(ui_renderer, draw_x, draw_y, z + 4, icon_size, visual.accent_color)
+                local draw_x = top_left_from_center(marker_center_x, marker_size)
+                local draw_y = top_left_from_center(marker_center_y, marker_size)
+                local bracket_x = top_left_from_center(marker_center_x, bracket_size)
+                local bracket_y = top_left_from_center(marker_center_y, bracket_size)
+
+                local widget = marker_widgets[next_widget_index]
+                local render_layer = tonumber(target.render_layer) or 0
+                local bracket_z = z + 4 + render_layer
+                local icon_z = base_icon_z + render_layer
+                local accent_color = visual and visual.accent_color or nil
+                local visual_icon = visual and visual.icon or nil
+                local visual_title_icon = visual and visual.title_icon or nil
+                local value_text = visual and visual.value_text or nil
+                local value_text_color = visual and visual.value_text_color or nil
+                local value_text_anchor = visual and visual.value_text_anchor or nil
+                local value_text_offset_x = visual and visual.value_text_offset_x or nil
+                local value_text_offset_y = visual and visual.value_text_offset_y or nil
+
+                if accent_color and should_draw_marker_brackets(target, draw_cache) then
+                    draw_marker_brackets(ui_renderer, bracket_x, bracket_y, bracket_z, bracket_size, accent_color)
                 end
 
-                _apply_marker_widget(widget, visual, draw_x, draw_y, z + 5, target, icon_size)
+                apply_marker_widget(widget, visual, draw_x, draw_y, icon_z, target, marker_size)
 
-                _log_once(
-                    _logged_draws,
-                    "widget_material:" .. tostring(visual and visual.icon),
-                    string_format("[Radar] widget material scheduled | material=%s title_material=%s",
-                        tostring(visual and visual.icon),
-                        tostring(visual and visual.title_icon))
-                )
-
-                local widget_ok, widget_err = pcall(UIWidget.draw, widget, ui_renderer)
-
-                if not widget_ok then
+                if debug_mode then
                     _log_once(
                         _logged_draws,
-                        "widget_draw_fail:" .. tostring(visual and visual.icon),
-                        string_format("[Radar] widget draw failed | material=%s err=%s",
-                            tostring(visual and visual.icon), tostring(widget_err))
+                        "widget_material:" .. tostring(visual_icon),
+                        string_format("[Radar] widget material scheduled | material=%s title_material=%s",
+                            tostring(visual_icon),
+                            tostring(visual_title_icon))
                     )
-                    _draw_box(ui_renderer, draw_x, draw_y, z + 5, icon_size, icon_size,
+                end
+
+                local widget_ok, widget_err = pcall(UIWidget_draw, widget, ui_renderer)
+
+                if not widget_ok then
+                    if debug_mode then
+                        _log_once(
+                            _logged_draws,
+                            "widget_draw_fail:" .. tostring(visual_icon),
+                            string_format("[Radar] widget draw failed | material=%s err=%s",
+                                tostring(visual_icon), tostring(widget_err))
+                        )
+                    end
+
+                    _draw_box(ui_renderer, draw_x, draw_y, base_icon_z, marker_size, marker_size,
                         _widget_to_color(visual and visual.color or nil))
                 end
 
-                _draw_marker_value_text(ui_renderer, visual and visual.value_text or nil, draw_x, draw_y, z + 5,
-                    icon_size,
-                    target and target.vertical_state ~= nil)
+                draw_marker_value_text(
+                    ui_renderer,
+                    value_text,
+                    draw_x,
+                    draw_y,
+                    base_icon_z,
+                    marker_size,
+                    target.vertical_state ~= nil,
+                    value_text_color,
+                    value_text_anchor,
+                    value_text_offset_x,
+                    value_text_offset_y
+                )
 
                 next_widget_index = next_widget_index + 1
             end
@@ -2283,9 +2773,16 @@ local function _draw_internal(self, ui_renderer, snapshot, render_settings, inpu
 
     _draw_screen_highlights(self, ui_renderer, snapshot, z + 40)
 
-    for i = next_widget_index, #marker_widgets do
-        _clear_marker_widget(marker_widgets[i])
+    local last_active_marker_widget_index = next_widget_index - 1
+    local previous_active_marker_widget_index = self._last_active_marker_widget_index or 0
+
+    if previous_active_marker_widget_index > last_active_marker_widget_index then
+        for i = last_active_marker_widget_index + 1, previous_active_marker_widget_index do
+            _clear_marker_widget(marker_widgets[i])
+        end
     end
+
+    self._last_active_marker_widget_index = last_active_marker_widget_index
 end
 
 HudElementRadar.draw = function(self, dt, t, ui_renderer, render_settings, input_service)
