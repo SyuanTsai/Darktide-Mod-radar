@@ -92,6 +92,14 @@ local function _color(a, r, g, b)
 end
 
 local WHITE_WIDGET_COLOR = { 255, 255, 255, 255 }
+local AUSPEX_BACKGROUND_MATERIAL = "content/ui/materials/backgrounds/scanner/scanner_map_background"
+local AUSPEX_BACKGROUND_NOISE_MATERIAL = "content/ui/materials/backgrounds/scanner/scanner_background_noise"
+local AUSPEX_SCAN_NOISE_MATERIAL = "content/ui/materials/backgrounds/scanner/scanner_noise"
+local AUSPEX_SWEEP_MATERIAL = "content/ui/materials/backgrounds/scanner/scanner_map_radar"
+local AUSPEX_BACKGROUND_WIDGET_COLOR = _widget_color(255, 0, 255, 0)
+local AUSPEX_BACKGROUND_NOISE_WIDGET_COLOR = _widget_color(255, 0, 255, 0)
+local AUSPEX_SCAN_NOISE_WIDGET_COLOR = _widget_color(90, 0, 255, 0)
+local AUSPEX_SWEEP_WIDGET_COLOR = _widget_color(128, 0, 255, 0)
 local OCCLUSION_RAYCAST_FILTERS = {
     "filter_player_character_shooting",
     "filter_ray_projectile",
@@ -132,6 +140,48 @@ local function _with_alpha_widget(color, alpha)
     local c = _any_to_widget_color(color)
     c[1] = alpha or c[1] or 255
     return c
+end
+
+local function _scaled_alpha(alpha, scale)
+    local base_alpha = tonumber(alpha) or 0
+    local alpha_scale = tonumber(scale) or 1
+
+    return math_max(0, math_min(255, math_floor(base_alpha * alpha_scale + 0.5)))
+end
+
+local function _normalized_radar_style(value)
+    value = tostring(value or "square")
+
+    if value ~= "circle" and value ~= "auspex" then
+        value = "square"
+    end
+
+    return value
+end
+
+local function _current_radar_style()
+    local value = mod:get("radar_style")
+
+    if value == nil and mod.get_radar_style then
+        value = mod:get_radar_style()
+    end
+
+    return _normalized_radar_style(value)
+end
+
+local function _safe_yaw(rotation)
+    if not rotation or not Quaternion or not Quaternion.yaw then
+        return nil
+    end
+
+    local ok, yaw = pcall(Quaternion.yaw, rotation)
+    yaw = ok and tonumber(yaw) or nil
+
+    if type(yaw) ~= "number" or yaw ~= yaw or yaw == math_huge or yaw == -math_huge then
+        return nil
+    end
+
+    return yaw
 end
 
 local function _is_finite_number(v)
@@ -760,24 +810,131 @@ local function _draw_circle_outline(ui_renderer, center_x, center_y, z, radius, 
 end
 
 local function _draw_hline_dotted(ui_renderer, x, y, z, length, thickness, color, dash, gap)
-    local step = dash + gap
-    local i = 0
+    length = math_max(0, _round(length))
+    dash = math_max(1, _round(dash or 1))
+    gap = math_max(0, _round(gap or 0))
 
-    while i < length do
-        local segment = math_min(dash, length - i)
-        _draw_box(ui_renderer, x + i, y, z, segment, thickness, color)
-        i = i + step
+    if length <= 0 then
+        return
+    end
+
+    if length <= dash then
+        local offset = math_floor((length - math_min(dash, length)) * 0.5 + 0.5)
+        _draw_box(ui_renderer, x + offset, y, z, math_min(dash, length), thickness, color)
+
+        return
+    end
+
+    local dash_count = math_max(1, math_floor((length + gap) / (dash + gap)))
+
+    if dash_count <= 1 then
+        local offset = math_floor((length - dash) * 0.5 + 0.5)
+        _draw_box(ui_renderer, x + offset, y, z, dash, thickness, color)
+
+        return
+    end
+
+    local total_dash_length = dash_count * dash
+    local total_gap_length = math_max(0, length - total_dash_length)
+    local gap_count = dash_count - 1
+    local base_gap = math_floor(total_gap_length / gap_count)
+    local gap_remainder = total_gap_length - base_gap * gap_count
+    local cursor = x
+
+    for i = 1, dash_count do
+        _draw_box(ui_renderer, cursor, y, z, dash, thickness, color)
+        cursor = cursor + dash
+
+        if i < dash_count then
+            local current_gap = base_gap + (i <= gap_remainder and 1 or 0)
+            cursor = cursor + current_gap
+        end
     end
 end
 
 local function _draw_vline_dotted(ui_renderer, x, y, z, thickness, length, color, dash, gap)
-    local step = dash + gap
-    local i = 0
+    length = math_max(0, _round(length))
+    dash = math_max(1, _round(dash or 1))
+    gap = math_max(0, _round(gap or 0))
 
-    while i < length do
-        local segment = math_min(dash, length - i)
-        _draw_box(ui_renderer, x, y + i, z, thickness, segment, color)
-        i = i + step
+    if length <= 0 then
+        return
+    end
+
+    if length <= dash then
+        local offset = math_floor((length - math_min(dash, length)) * 0.5 + 0.5)
+        _draw_box(ui_renderer, x, y + offset, z, thickness, math_min(dash, length), color)
+
+        return
+    end
+
+    local dash_count = math_max(1, math_floor((length + gap) / (dash + gap)))
+
+    if dash_count <= 1 then
+        local offset = math_floor((length - dash) * 0.5 + 0.5)
+        _draw_box(ui_renderer, x, y + offset, z, thickness, dash, color)
+
+        return
+    end
+
+    local total_dash_length = dash_count * dash
+    local total_gap_length = math_max(0, length - total_dash_length)
+    local gap_count = dash_count - 1
+    local base_gap = math_floor(total_gap_length / gap_count)
+    local gap_remainder = total_gap_length - base_gap * gap_count
+    local cursor = y
+
+    for i = 1, dash_count do
+        _draw_box(ui_renderer, x, cursor, z, thickness, dash, color)
+        cursor = cursor + dash
+
+        if i < dash_count then
+            local current_gap = base_gap + (i <= gap_remainder and 1 or 0)
+            cursor = cursor + current_gap
+        end
+    end
+end
+
+local function _draw_square_outline_dotted_cornered(ui_renderer, x, y, z, size, thickness, color, dash, gap)
+    x = _round(x)
+    y = _round(y)
+    size = math_max(1, _round(size))
+    thickness = math_max(1, _round(thickness))
+    dash = math_max(1, _round(dash or 1))
+    gap = math_max(0, _round(gap or 0))
+
+    local max_corner_length = math_max(thickness, math_floor(size / 3))
+    local corner_length = math_min(max_corner_length, math_max(dash, thickness * 2))
+    local vertical_arm_length = math_max(0, corner_length - thickness)
+
+    _draw_box(ui_renderer, x, y, z, corner_length, thickness, color)
+    if vertical_arm_length > 0 then
+        _draw_box(ui_renderer, x, y + thickness, z, thickness, vertical_arm_length, color)
+    end
+
+    _draw_box(ui_renderer, x + size - corner_length, y, z, corner_length, thickness, color)
+    if vertical_arm_length > 0 then
+        _draw_box(ui_renderer, x + size - thickness, y + thickness, z, thickness, vertical_arm_length, color)
+    end
+
+    _draw_box(ui_renderer, x, y + size - thickness, z, corner_length, thickness, color)
+    if vertical_arm_length > 0 then
+        _draw_box(ui_renderer, x, y + size - corner_length, z, thickness, vertical_arm_length, color)
+    end
+
+    _draw_box(ui_renderer, x + size - corner_length, y + size - thickness, z, corner_length, thickness, color)
+    if vertical_arm_length > 0 then
+        _draw_box(ui_renderer, x + size - thickness, y + size - corner_length, z, thickness, vertical_arm_length, color)
+    end
+
+    local edge_start = corner_length + gap
+    local edge_length = size - edge_start * 2
+
+    if edge_length > 0 then
+        _draw_hline_dotted(ui_renderer, x + edge_start, y, z, edge_length, thickness, color, dash, gap)
+        _draw_hline_dotted(ui_renderer, x + edge_start, y + size - thickness, z, edge_length, thickness, color, dash, gap)
+        _draw_vline_dotted(ui_renderer, x, y + edge_start, z, thickness, edge_length, color, dash, gap)
+        _draw_vline_dotted(ui_renderer, x + size - thickness, y + edge_start, z, thickness, edge_length, color, dash, gap)
     end
 end
 
@@ -800,10 +957,16 @@ local function _draw_square_outline(ui_renderer, x, y, z, size, thickness, color
     size = math_max(1, _round(size))
     thickness = math_max(1, _round(thickness))
 
+    if size <= thickness * 2 then
+        _draw_box(ui_renderer, x, y, z, size, size, color)
+
+        return
+    end
+
     _draw_box(ui_renderer, x, y, z, size, thickness, color)
     _draw_box(ui_renderer, x, y + size - thickness, z, size, thickness, color)
-    _draw_box(ui_renderer, x, y, z, thickness, size, color)
-    _draw_box(ui_renderer, x + size - thickness, y, z, thickness, size, color)
+    _draw_box(ui_renderer, x, y + thickness, z, thickness, size - thickness * 2, color)
+    _draw_box(ui_renderer, x + size - thickness, y + thickness, z, thickness, size - thickness * 2, color)
 end
 
 local function _draw_square_fill_soft(ui_renderer, x, y, z, size, color)
@@ -848,7 +1011,6 @@ local function _draw_diagonal_line(ui_renderer, x1, y1, x2, y2, z, color)
     local sy = _round(y1 * scale)
     local ex = _round(x2 * scale)
     local ey = _round(y2 * scale)
-
     local dx = math_abs(ex - sx)
     local dy = math_abs(ey - sy)
     local step_x = sx < ex and 1 or -1
@@ -1074,18 +1236,12 @@ local function _draw_radar_frame_square(ui_renderer, x, y, z, size, outline_styl
     _draw_square_fill_soft(ui_renderer, x, y, z, size, fill_color)
 
     if outline_style == "solid" then
-        _draw_box(ui_renderer, x, y, z + 1, size, thickness, outline_color)
-        _draw_box(ui_renderer, x, y + size - thickness, z + 1, size, thickness, outline_color)
-        _draw_box(ui_renderer, x, y, z + 1, thickness, size, outline_color)
-        _draw_box(ui_renderer, x + size - thickness, y, z + 1, thickness, size, outline_color)
+        _draw_square_outline(ui_renderer, x, y, z + 1, size, thickness, outline_color)
     elseif outline_style == "dotted" then
         local dash = 8
         local gap = 5
 
-        _draw_hline_dotted(ui_renderer, x, y, z + 1, size, thickness, outline_color, dash, gap)
-        _draw_hline_dotted(ui_renderer, x, y + size - thickness, z + 1, size, thickness, outline_color, dash, gap)
-        _draw_vline_dotted(ui_renderer, x, y, z + 1, thickness, size, outline_color, dash, gap)
-        _draw_vline_dotted(ui_renderer, x + size - thickness, y, z + 1, thickness, size, outline_color, dash, gap)
+        _draw_square_outline_dotted_cornered(ui_renderer, x, y, z + 1, size, thickness, outline_color, dash, gap)
     end
 end
 
@@ -1104,9 +1260,135 @@ local function _draw_radar_frame_circle(ui_renderer, x, y, z, size, outline_styl
     end
 end
 
-local function _draw_radar_frame(ui_renderer, x, y, z, size)
+local function _apply_frame_layer_style(style, x, y, z, size, color)
+    if not style then
+        return
+    end
+
+    local layer_offset = style.offset
+    local layer_size = style.size
+    local rounded_x = math_floor((tonumber(x) or 0) + 0.5)
+    local rounded_y = math_floor((tonumber(y) or 0) + 0.5)
+    local rounded_z = math_floor((tonumber(z) or 0) + 0.5)
+    local rounded_size = math_max(1, math_floor((tonumber(size) or 0) + 0.5))
+
+    layer_offset[1] = rounded_x
+    layer_offset[2] = rounded_y
+    layer_offset[3] = rounded_z
+    layer_size[1] = rounded_size
+    layer_size[2] = rounded_size
+    style.color = color or WHITE_WIDGET_COLOR
+end
+
+local function _draw_radar_frame_auspex(self, ui_renderer, x, y, z, size, camera_rotation)
+    local frame_widget = self._frame_widget
+    if not frame_widget then
+        return
+    end
+
+    local fill_alpha = mod.get_background_opacity and mod:get_background_opacity() or 90
+    local animated_sweep_enabled = mod:get("auspex_animated_sweep") ~= false
     local outline_style = mod.get_radar_outline and mod:get_radar_outline() or "solid"
-    local is_circle = mod:get_radar_style() == "circle"
+    local camera_yaw = _safe_yaw(camera_rotation)
+    local fill_color = _color(fill_alpha, 0, 0, 0)
+    local background_inset = outline_style ~= "off" and 5 or 0
+    local background_size = math_max(1, size - background_inset * 2)
+    local background_x = x + background_inset
+    local background_y = y + background_inset
+
+    _draw_square_fill_soft(ui_renderer, x, y, z - 1, size, fill_color)
+
+    frame_widget.content.background_material = AUSPEX_BACKGROUND_MATERIAL
+    frame_widget.content.noise_material = AUSPEX_BACKGROUND_NOISE_MATERIAL
+    frame_widget.content.scan_noise_material = AUSPEX_SCAN_NOISE_MATERIAL
+    frame_widget.content.sweep_material = animated_sweep_enabled and AUSPEX_SWEEP_MATERIAL or nil
+
+    _apply_frame_layer_style(
+        frame_widget.style.background,
+        background_x,
+        background_y,
+        z,
+        background_size,
+        AUSPEX_BACKGROUND_WIDGET_COLOR
+    )
+    do
+        local background_style = frame_widget.style.background
+        local background_size = background_style and background_style.size
+        local background_pivot = background_style and background_style.pivot
+
+        if background_style and not background_pivot then
+            background_pivot = { 0, 0 }
+            background_style.pivot = background_pivot
+        end
+
+        if background_pivot and background_size then
+            background_pivot[1] = (background_size[1] or 0) * 0.5
+            background_pivot[2] = (background_size[2] or 0) * 0.5
+        end
+
+        if background_style then
+            background_style.angle = camera_yaw and -camera_yaw or 0
+        end
+    end
+    _apply_frame_layer_style(
+        frame_widget.style.noise,
+        x,
+        y,
+        z + 1,
+        size,
+        AUSPEX_BACKGROUND_NOISE_WIDGET_COLOR
+    )
+    _apply_frame_layer_style(
+        frame_widget.style.scan_noise,
+        x,
+        y,
+        z + 2,
+        size,
+        AUSPEX_SCAN_NOISE_WIDGET_COLOR
+    )
+    _apply_frame_layer_style(
+        frame_widget.style.sweep,
+        background_x,
+        background_y,
+        z + 3,
+        background_size,
+        animated_sweep_enabled and AUSPEX_SWEEP_WIDGET_COLOR or WHITE_WIDGET_COLOR
+    )
+
+    UIWidget.draw(frame_widget, ui_renderer)
+
+    if outline_style == "solid" then
+        local thickness = math_max(1, math_floor(size * 0.012 + 0.5))
+        local inset = thickness + 2
+        local frame_color = _color(210, 0, 255, 0)
+        local inner_glow_color = _color(80, 0, 255, 0)
+
+        _draw_square_outline(ui_renderer, x, y, z + 4, size, thickness, frame_color)
+
+        if size > inset * 2 + 2 then
+            _draw_square_outline(ui_renderer, x + inset, y + inset, z + 3, size - inset * 2, 1, inner_glow_color)
+        end
+    elseif outline_style == "dotted" then
+        local thickness = math_max(1, math_floor(size * 0.01 + 0.5))
+        local dash = math_max(6, math_floor(size * 0.06 + 0.5))
+        local gap = math_max(4, math_floor(size * 0.04 + 0.5))
+        local frame_color = _color(190, 0, 255, 0)
+
+        _draw_square_outline_dotted_cornered(ui_renderer, x, y, z + 4, size, thickness, frame_color, dash, gap)
+    end
+end
+
+local function _draw_radar_frame(self, ui_renderer, x, y, z, size, camera_rotation)
+    local radar_style = _current_radar_style()
+
+    if radar_style == "auspex" then
+        _draw_radar_frame_auspex(self, ui_renderer, x, y, z, size, camera_rotation)
+
+        return
+    end
+
+    local outline_style = mod.get_radar_outline and mod:get_radar_outline() or "solid"
+    local is_circle = radar_style == "circle"
 
     if is_circle then
         _draw_radar_frame_circle(ui_renderer, x, y, z, size, outline_style)
@@ -1131,6 +1413,84 @@ end
 
 local function _has_arrow_icon(content)
     return content.arrow_icon ~= nil and content.arrow_icon ~= ""
+end
+
+local function _has_background_material(content)
+    return content.background_material ~= nil and content.background_material ~= ""
+end
+
+local function _has_noise_material(content)
+    return content.noise_material ~= nil and content.noise_material ~= ""
+end
+
+local function _has_scan_noise_material(content)
+    return content.scan_noise_material ~= nil and content.scan_noise_material ~= ""
+end
+
+local function _has_sweep_material(content)
+    return content.sweep_material ~= nil and content.sweep_material ~= ""
+end
+
+local function _frame_definition()
+    return UIWidget.create_definition({
+        {
+            pass_type = "rotated_texture",
+            value_id = "background_material",
+            style_id = "background",
+            style = {
+                angle = 0,
+                hdr = true,
+                vertical_alignment = "top",
+                horizontal_alignment = "left",
+                offset = { 0, 0, 1 },
+                size = { 16, 16 },
+                color = WHITE_WIDGET_COLOR,
+            },
+            visibility_function = _has_background_material,
+        },
+        {
+            pass_type = "texture",
+            value_id = "noise_material",
+            style_id = "noise",
+            style = {
+                hdr = true,
+                vertical_alignment = "top",
+                horizontal_alignment = "left",
+                offset = { 0, 0, 2 },
+                size = { 16, 16 },
+                color = WHITE_WIDGET_COLOR,
+            },
+            visibility_function = _has_noise_material,
+        },
+        {
+            pass_type = "texture",
+            value_id = "scan_noise_material",
+            style_id = "scan_noise",
+            style = {
+                hdr = true,
+                vertical_alignment = "top",
+                horizontal_alignment = "left",
+                offset = { 0, 0, 3 },
+                size = { 16, 16 },
+                color = WHITE_WIDGET_COLOR,
+            },
+            visibility_function = _has_scan_noise_material,
+        },
+        {
+            pass_type = "texture",
+            value_id = "sweep_material",
+            style_id = "sweep",
+            style = {
+                hdr = true,
+                vertical_alignment = "top",
+                horizontal_alignment = "left",
+                offset = { 0, 0, 4 },
+                size = { 16, 16 },
+                color = WHITE_WIDGET_COLOR,
+            },
+            visibility_function = _has_sweep_material,
+        },
+    }, "screen")
 end
 
 local function _marker_definition()
@@ -1192,8 +1552,19 @@ end
 
 local MAX_RADAR_MARKERS = 200
 
+local function _create_frame_widget()
+    return UIWidget.init("RadarFrame_Auspex", _frame_definition())
+end
+
 local function _create_marker_widget(index)
     return UIWidget.init("RadarMarker_" .. index, _marker_definition())
+end
+
+local function _clear_frame_widget(widget)
+    widget.content.background_material = nil
+    widget.content.noise_material = nil
+    widget.content.scan_noise_material = nil
+    widget.content.sweep_material = nil
 end
 
 local function _clear_marker_widget(widget)
@@ -1202,6 +1573,15 @@ local function _clear_marker_widget(widget)
     widget.content.title_icon = nil
     widget.content.arrow_icon = nil
     widget.content.value_text = ""
+end
+
+local function _ensure_frame_widget(self)
+    if self._frame_widget then
+        return
+    end
+
+    self._frame_widget = _create_frame_widget()
+    _clear_frame_widget(self._frame_widget)
 end
 
 local function _ensure_marker_widgets(self)
@@ -2595,6 +2975,7 @@ end
 HudElementRadar.init = function(self, parent, draw_layer, start_scale, optional_context)
     HudElementRadar.super.init(self, parent, draw_layer, start_scale, Definitions)
     _sync_screen_scenegraph(self)
+    _ensure_frame_widget(self)
     _ensure_marker_widgets(self)
 end
 
@@ -2636,8 +3017,10 @@ local function _draw_internal(self, ui_renderer, snapshot, render_settings, inpu
     local top_left_from_center = _top_left_from_center
     local base_icon_z = z + 5
     local projection_radius = radius - 8
+    local live_camera_rotation = _safe_player_camera_rotation(self)
+    local projection_rotation = live_camera_rotation or (snapshot and snapshot.player_rotation) or nil
 
-    _draw_radar_frame(ui_renderer, x, y, z + 1, size)
+    _draw_radar_frame(self, ui_renderer, x, y, z + 1, size, projection_rotation)
 
     local next_widget_index = 1
     local max_markers = mod:get_max_radar_markers()
@@ -2647,8 +3030,6 @@ local function _draw_internal(self, ui_renderer, snapshot, render_settings, inpu
         local player_pos = snapshot.player_position
         local targets = snapshot.targets or {}
         local target_count = #targets
-        local live_camera_rotation = _safe_player_camera_rotation(self)
-        local projection_rotation = live_camera_rotation or snapshot.player_rotation
         local project_target_to_radar = mod.project_target_to_radar
 
         local player_slot = tonumber(snapshot.player_slot)
