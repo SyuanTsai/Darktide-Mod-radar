@@ -2,46 +2,34 @@
 
 Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu.
 
-## What's New in 2.0.0
+## What's New in 2.1.0
 
-- Adds optional nearby item highlights as small screen-space brackets for supported marker groups, with per-category toggles, range tuning, occlusion darkening, and suppression when the related radar marker is turned off. [PR #61](https://github.com/LucLeto/darktide-mods-radar/pull/61)
-- Adds per-game-mode radar toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**, and switches dynamically at runtime without requiring a restart. [PR #62](https://github.com/LucLeto/darktide-mods-radar/pull/62)
-- Adds optional tech-remnant scaling, nearby clustering, value badges, and player-tunable horizontal and vertical cluster radii for expedition loot. [PR #63](https://github.com/LucLeto/darktide-mods-radar/pull/63)
-- Optimizes hot-path Lua code in the radar update and draw loops conservatively, while preserving behavior and existing functionality. [PR #66](https://github.com/LucLeto/darktide-mods-radar/pull/66)
-- Fixes stale radar markers for picked up, destroyed, hidden, or otherwise invalid world items, including expedition loot, opened crates, and destroyed idols. [PR #67](https://github.com/LucLeto/darktide-mods-radar/pull/67)
-- Fixes ultrawide radar positioning and adds an unrestricted positioning fallback for layouts where normal UI clamping is still too restrictive. [PR #69](https://github.com/LucLeto/darktide-mods-radar/pull/69)
-- Adds a data-driven enemy radar with per-enemy toggles, group and per-category scaling, optional boss distance text, improved render priority, documentation icons, and higher marker capacity. [PR #71](https://github.com/LucLeto/darktide-mods-radar/pull/71)
+- Adds the new **Auspex** radar style, including an optional animated sweep, with documentation previews for the solid, dotted, off, and no-sweep variants. [PR #93](https://github.com/LucLeto/darktide-mods-radar/pull/93)
+- Fixes radar visibility while the comms wheel is open, so the radar remains usable during live callouts. [PR #94](https://github.com/LucLeto/darktide-mods-radar/pull/94)
+- Splits teammate visibility from the local player center dot, so both can now be toggled independently. [PR #95](https://github.com/LucLeto/darktide-mods-radar/pull/95)
+- Adds radar support for player smart tags and pings, including dedicated display-style and distance-text settings. [PR #96](https://github.com/LucLeto/darktide-mods-radar/pull/96)
+- Removes player tag elevation support from the radar to keep smart tag presentation cleaner and more predictable. [PR #97](https://github.com/LucLeto/darktide-mods-radar/pull/97)
 
-**Full Changelog**: https://github.com/LucLeto/darktide-mods-radar/compare/Radar-1.3.0...Radar-2.0.0
+**Full Changelog**: https://github.com/LucLeto/darktide-mods-radar/compare/Radar-2.0.2...Radar-2.1.0
 
 ## Feature Overview
 
-- Tracks nearby pickups, materials, mission items, event items, deployables, environment interactables, expedition points of interest, teammates, boss targets, and now optional broader enemy categories on a single radar.
-- Projects markers relative to your current facing, so the radar rotates with your view instead of acting like a fixed minimap.
-- Supports **square** and **circle** radar frames, plus configurable **outline** and **guide** styles for both shapes.
-- Lets you adjust **radar size**, **scan range**, **radar background opacity**, **vertical arrow range**, **vertical hide threshold**, **nearby highlight range**, and **maximum marker count**.
-- Supports optional **icon scaling with radar size**.
-- Adds per-category **Icon size (%)** sliders for common pickups, materials, objective items, expedition markers, deployables, enemies, players, event items, and debug markers, plus dedicated enemy sub-category sliders for bosses, horde, common, shooters, elites, specials, and ritualists.
-- Supports separate marker styles for **enemies** and **teammates**. Bosses and enemy groups use **Icon only** or **Marked icon**, teammates support **Icon only**, **Marked icon**, **Dot only**, and **Marked dot**.
-- Includes a **toggle radar on or off** keybind, so you can hide or restore the radar during a mission without opening the options menu.
-- Supports per-mode radar enable toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**.
-- Supports anchor-based **radar positioning** with **Radar anchor**, **Horizontal offset**, **Vertical offset**, **Steps per input**, dedicated movement keybinds for nudging the radar, and an optional **unrestricted positioning** fallback for advanced placements and ultrawide layouts.
-- Adds small **up** and **down** arrows to supported item markers when they are above or below you and still within the configured arrow range.
-- Lets you hide supported item markers that are far above or below your current level, which helps reduce clutter in multi-level areas.
-- Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups, using the same semantic colors as the radar markers and darkening when the target is occluded.
-- Adds dedicated **Expedition POI** support for numbered **Sites of Interest** opportunity markers, plus dedicated icons for **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**, with an option to ignore the normal range limit for these markers.
-- Adds tech-remnant loot modes for **Default**, **Scale by value**, and **Merge nearby piles**, plus optional value badges and cluster radius tuning.
-- Adds environment markers for **Medicae Station**, **Power Socket**, and **Heretic Idol**, and active heretic idols now appear reliably on the radar.
-- Supports per-marker display mode dropdowns for supported artwork-based markers with **Artwork**, **Icon**, and **Off** modes. **Artwork** remains the default, and older boolean settings are migrated automatically.
-- Recolors the remaining formerly white pickup icons with more semantic colors, including ammo, grenades, medicae-related markers, power sockets, and heretic idols.
-- Colors the radar center dot from the local player HUD slot color.
-- Supports class-icon and dot-based teammate presentations instead of a single fixed teammate marker style.
-- Adds an optional **Infinite** boss marker range mode and optional **boss distance text** for bosses except the daemonhost.
-- Includes optional **debug logs** and an **unknown pickups** toggle for discovery and troubleshooting.
+- Tracks nearby pickups, materials, mission items, deployables, environment interactables, expedition POIs, teammates, player smart tags, and high-priority enemies on a single camera-oriented radar.
+- Supports **Square**, **Circle**, and **Auspex** radar styles. Square and Circle use configurable **outline** and **guide** options, while **Auspex** adds an optional animated sweep.
+- Lets you tune **radar size**, **range**, **background opacity**, **maximum marker count**, **nearby highlight range**, and supported vertical filtering behavior.
+- Supports per-category **Icon size (%)** sliders across item, player, enemy, event, and debug marker groups, plus dedicated enemy sub-category scaling.
+- Supports separate display controls for **bosses**, **enemy groups**, **teammates**, **player smart tags**, and the local **player center dot**.
+- Includes a mission-ready **toggle radar on or off** keybind, plus per-mode enable toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**.
+- Supports anchor-based **radar positioning** with offsets, movement keybinds, configurable movement step size, and an optional unrestricted positioning fallback for ultrawide or advanced layouts.
+- Supports **Artwork**, **Icon**, and **Off** display modes for the supported artwork-based pickup families, with automatic migration from older boolean settings.
+- Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups.
+- Adds dedicated **Expedition POI** support for numbered **Sites of Interest**, **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**.
+- Supports tech-remnant loot modes for **Default**, **Scale by value**, and **Merge nearby piles**, plus optional cluster value text and radius tuning.
+- Includes optional **boss distance text**, **Infinite** boss range, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
 
 ## In-Game Radar Examples
 
-The screenshots below show both radar styles during an expedition mission. They illustrate the camera-oriented layout, mixed pickup categories, teammate markers, expedition POIs, and priority targets in live gameplay.
+The screenshots below show the live radar styles in gameplay. Together they illustrate the camera-oriented layout, mixed pickup categories, teammate markers, expedition POIs, smart tag support, and priority targets.
 
 ### Circle Radar
 
@@ -59,9 +47,28 @@ The screenshots below show both radar styles during an expedition mission. They 
   <img src="doc/img/square_radar_3.png" width="31%" alt="Square radar example 3" />
 </p>
 
+### Auspex Radar
+
+The new **Auspex** style provides a more diegetic scanner look. It supports the same gameplay marker data as the other radar styles, plus an optional animated sweep that can be disabled independently.
+
+<p>
+  <img src="doc/img/auspex_radar_solid.gif" width="24%" alt="Auspex radar solid variant" />
+  <img src="doc/img/auspex_radar_dotted.gif" width="24%" alt="Auspex radar dotted variant" />
+  <img src="doc/img/auspex_radar_off.gif" width="24%" alt="Auspex radar outline off variant" />
+  <img src="doc/img/auspex_radar_no_sweep.gif" width="24%" alt="Auspex radar with sweep disabled" />
+</p>
+
+### Nearby highlight example
+
+Nearby highlights add small screen-space brackets for supported non-enemy markers when they are close enough to matter. They reuse the marker family color and darken when the target is occluded.
+
+<p>
+  <img src="doc/img/highlight_example.png" width="70%" alt="Nearby highlight example" />
+</p>
+
 ### Vertical item arrows
 
-The new vertical item arrows add a small **up** or **down** overlay to supported item markers when the item is on a different level but still close enough horizontally to matter. You can also tune when these arrows appear and when vertically distant items are hidden entirely.
+The vertical item arrows add a small **up** or **down** overlay to supported item markers when the item is on a different level but still close enough horizontally to matter. You can also tune when these arrows appear and when vertically distant items are hidden entirely.
 
 <p>
   <img src="doc/img/material_expeditions_loot.png" width="50" alt="Same-level item marker example" />
@@ -71,7 +78,9 @@ The new vertical item arrows add a small **up** or **down** overlay to supported
 
 ## Display and Behavior
 
-Both radar shapes support the same outline and guide options, and the frame rendering is tuned so crosshairs fit the active frame, view guides reach the border cleanly, circle range rings stay thin and solid, circle outlines remain visually continuous, and square dotted outlines render as proper dots.
+**Square** and **Circle** radar styles support the same outline and guide options, and the frame rendering is tuned so crosshairs fit the active frame, view guides reach the border cleanly, circle range rings stay thin and solid, circle outlines remain visually continuous, and square dotted outlines render as proper dots.
+
+The **Auspex** style is a separate presentation layer rather than another outline or guide combination. It uses its own frame treatment and can optionally render with an animated sweep.
 
 ### Square radar variants
 | Guide | Solid | Dotted | Off |
@@ -122,6 +131,15 @@ Supported artwork-based markers now use dropdowns instead of simple booleans. Ea
 | Modified Grenade | <img src="doc/img/pocketable_big_grenade.png"  width="80" alt="Modified grenade artwork mode" /> | <img src="doc/img/pocketable_big_grenade_alternative.png"  width="80" alt="Modified grenade icon mode" /> | Hidden |
 | Fire-Support Signal Marker | <img src="doc/img/pocketable_valkyrie_hover.png"  width="80" alt="Valkyrie hover artwork mode" /> | <img src="doc/img/pocketable_valkyrie_hover_alternative.png"  width="80" alt="Valkyrie hover icon mode" /> | Hidden |
 
+### Tech-Remnant cluster example
+
+The example below shows **Tech-Remnant marker mode** set to **Merge nearby piles**. In this mode, nearby piles are combined into a single clustered radar marker, which helps reduce clutter in dense expedition loot areas.
+Also for reference **Show tech-remnant value text** is set to **true**.
+
+<p>
+  <img src="doc/img/tech-remnants_scale_amount_example.png" width="70%" alt="Tech-Remnant cluster example with Merge nearby piles enabled" />
+</p>
+
 ## Radar Controls
 
 | Option | What it controls |
@@ -138,15 +156,21 @@ Supported artwork-based markers now use dropdowns instead of simple booleans. Ea
 | Hide items above/below (m) | Adjustable from **8 m** to **50 m**. Supported item markers with a larger vertical separation are hidden. |
 | Max radar markers | Adjustable from **10** to **200**. |
 | Scale icons with radar size | Keeps marker size fixed or scales it with the radar. The final combined icon size is capped at **4.0x**. |
-| Radar style | **Square** or **Circle**. |
-| Radar outline | **Solid**, **Dotted**, or **Off**. |
-| Radar guides | **Crosshair**, **View guides**, **Range rings**, or **Off**. |
+| Radar style | **Square**, **Circle**, or **Auspex**. |
+| Radar outline | **Solid**, **Dotted**, or **Off**. Only used by the **Square** and **Circle** radar styles. |
+| Radar guides | **Crosshair**, **View guides**, **Range rings**, or **Off**. Only used by the **Square** and **Circle** radar styles. |
 | Radar background opacity | Adjustable from **0** to **255**. Controls the alpha of the radar background without changing marker readability. |
+| Animated radar sweep | Enables or disables the animated sweep used by the **Auspex** radar style. |
 | Nearby highlight range (m) | Adjustable from **5 m** to **20 m**. Controls how close supported items must be before their screen-space bracket highlights appear. |
 | Boss marker style | **Icon only** or **Marked icon**. |
 | Boss marker range | **Normal** or **Infinite**. Lets boss-type markers follow the normal radar range or stay visible at any distance. |
 | Show boss distance text | Shows yellow distance text in meters for bosses except the daemonhost. |
+| Teammates | Shows or hides teammate markers on the radar. |
+| Player center dot | Shows or hides your own center point on the radar. |
 | Player marker style | **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. |
+| Player Tags | Shows or hides player smart tags and pings on the radar. |
+| Show player tag distance text | Shows the current distance in meters next to player tag markers. |
+| Player tag display style | **Icon only** or **Marked icon**. |
 | Radar anchor | **Top left**, **Top right**, **Bottom left**, or **Bottom right**. Sets the corner the radar offsets from. |
 | Allow unrestricted radar positioning | Removes the normal UI-space clamping fallback, which is useful for ultrawide or highly customized layouts. |
 | Horizontal offset | Sets the radar's horizontal offset from the selected anchor. |
@@ -256,28 +280,15 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 
 ### Positioning and Toggle Use
 
-- Use **Toggle radar on or off** to quickly hide or restore the radar while staying in the mission.
-- Use the per-mode enable toggles when you want the radar active in some modes but completely absent in others.
-- Use **Radar anchor** first to choose the screen corner the radar should stick to.
-- Use **Horizontal offset** and **Vertical offset** when you want to place the radar precisely relative to that anchor.
-- Use **Move radar left**, **right**, **up**, and **down** when you want to fine-tune the placement in live gameplay with key presses.
-- **Steps per input** controls how large each movement increment is, which makes it easier to do either quick repositioning or small adjustments.
-- Normal anchor-based placement stays clamped against the current UI space, so the widget remains visible after changing size or resolution scale.
-- **Allow unrestricted radar positioning** is available when Darktide safe-area or HUD-space clamping still prevents the placement you want, especially on ultrawide displays.
+- Use **Toggle radar on or off** for quick in-mission HUD control, or the per-mode enable toggles if you want Radar active only in selected activities.
+- Use **Radar anchor**, **Horizontal offset**, and **Vertical offset** for stable placement, then fine-tune with the movement keybinds and **Steps per input**.
+- Standard placement stays clamped to the visible UI space, while **Allow unrestricted radar positioning** is available for ultrawide or advanced layouts.
 
 ### Marker Rules
 
-- **Enemies** use category-appropriate radar icons and, in marked mode, a red enemy background and bracket accent.
-- **Bosses** support **Icon only** or **Marked icon**, optional **Infinite** range, and optional yellow distance text for bosses except the daemonhost.
-- **Horde enemies** use a single simple icon-style toggle instead of per-unit dropdowns.
-- **Teammates** use archetype icons or dot presentations, plus their runtime HUD slot color.
-- **The center dot** uses the local player HUD color instead of a fixed green.
-- **Supported artwork-based markers** can switch between artwork mode, simplified icon mode, or be disabled entirely.
-- **Supported item markers** can show a small **up** or **down** arrow when they are above or below you within the configured arrow range, and can be hidden entirely when they are too far above or below your level.
-- **Nearby highlights** appear as small screen-space brackets for supported categories, reuse the family color of the corresponding radar marker, darken when the target is occluded, and are suppressed when the matching radar marker category is turned off.
-- **Environment markers** cover medicae stations, power sockets, and heretic idols, and active idols now appear reliably on the radar.
-- **Tech-Remnants** can keep their default behavior, scale by pile value, or merge nearby piles into larger clustered markers while preserving nearby highlights for the individual nearby items.
-- **Expedition POIs** use numbered scanner-map glyphs for opportunity markers, can also reflect player-marked states in expedition colors, use dedicated icons for transition, harvester, main objective, extraction, and arrival locations, can optionally ignore the normal radar range limit, and are filtered to the active expedition section so outdated location markers do not linger after section changes.
+- **Enemies**, **teammates**, and **player smart tags** each use their own display rules and style settings. The local **center dot** also has its own toggle now.
+- Supported item markers can show vertical **up** and **down** arrows, be hidden when vertical separation becomes too large, and use nearby highlight brackets when enabled.
+- **Expedition POIs**, **environment markers**, and **tech-remnant clusters** follow their own category-specific rules so outdated markers clear correctly and context-sensitive markers only appear when relevant.
 
 ## Target Markers
 
@@ -375,7 +386,7 @@ Left: **Icon only**. Right: **Marked icon**.
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/player_teammate_sample.png"  width="80" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. |
+| <img src="doc/img/player_teammate_sample.png"  width="80" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. Teammates can now be toggled independently from the local player center dot. |
 
 Display style example for teammate markers:
 
@@ -383,7 +394,7 @@ Display style example for teammate markers:
   <img src="doc/img/player_teammate_icon_only_sample.png"  width="80" alt="Teammate icon only example" />
   <img src="doc/img/player_teammate_sample.png"  width="80" alt="Teammate marked icon example" />
   <img src="doc/img/player_teammate_dot_only_sample.png"  width="80" alt="Teammate dot only example" />
-  <img src="doc/img/player_teammate_marked_dot_sample.png.png"  width="80" alt="Teammate marked dot example" />
+  <img src="doc/img/player_teammate_marked_dot_sample.png"  width="80" alt="Teammate marked dot example" />
 </p>
 
 Left to right:
@@ -399,6 +410,24 @@ Supported class icon mappings in the HUD:
 </p>
 
 From left to right: **Veteran**, **Zealot**, **Psyker**, **Ogryn**, **Arbitrator**, **Hive Scum**.
+
+### Player Tags
+
+| Preview | Marker | Notes |
+| --- | --- | --- |
+| <img src="doc/img/player_tag_enemy_marked.png" width="80" alt="Enemy player tag marker" /> | Enemy | Radar support for enemy callout tags. Uses the dedicated **Player tag display style** setting and can optionally show distance text. |
+| <img src="doc/img/player_tag_go_there_marked.png" width="80" alt="Go there player tag marker" /> | Go There | Radar support for movement and positioning callouts placed by players. |
+| <img src="doc/img/player_tag_look_there_marked.png" width="80" alt="Look there player tag marker" /> | Look There | Radar support for attention and look-here callouts placed by players. |
+
+Display style example for player tags:
+
+| Tag | Icon only | Marked icon |
+| --- | --- | --- |
+| Enemy | <img src="doc/img/player_tag_enemy.png" width="80" alt="Enemy player tag icon only" /> | <img src="doc/img/player_tag_enemy_marked.png" width="80" alt="Enemy player tag marked icon" /> |
+| Go There | <img src="doc/img/player_tag_go_there.png" width="80" alt="Go there player tag icon only" /> | <img src="doc/img/player_tag_go_there_marked.png" width="80" alt="Go there player tag marked icon" /> |
+| Look There | <img src="doc/img/player_tag_look_there.png" width="80" alt="Look there player tag icon only" /> | <img src="doc/img/player_tag_look_there_marked.png" width="80" alt="Look there player tag marked icon" /> |
+
+Player tags intentionally stay flatter and cleaner than supported item markers. They do not use the item-style elevation arrow presentation.
 
 ### Common Pickups
 
@@ -591,16 +620,9 @@ Not every radar marker uses a fixed readme tint:
 ## Notes
 
 - The radar is intended for active gameplay and suppresses itself outside valid runtime states such as hub and menu contexts.
+- The radar now remains visible while the comms wheel is open, which makes live callouts and tag placement easier to track.
+- **Auspex** is a full radar style with an optional animated sweep, and the included documentation GIFs show the solid, dotted, off, and no-sweep variants.
+- Teammates, the local player center dot, and player smart tags now have separate controls, so ally information can be tuned more precisely.
+- Player smart tags support optional distance text, but no longer use player-tag elevation arrows or related elevation hiding behavior.
 - Expedition POIs are filtered to the active expedition section, and **Data Reliquary Harvesters** are only shown inside the relevant **Deadsider Sanctuary** where they can actually be used.
-- Artwork-based markers now use localized **Artwork**, **Icon**, and **Off** dropdowns where supported, and older saved boolean settings are migrated automatically.
-- Supported item markers can show vertical **up** and **down** arrows within the configured range, and can be hidden when they are too far above or below your current level.
-- The **Environment** group adds dedicated toggles for **Medicae Station**, **Power Socket**, and **Heretic Idol**, and active heretic idols now appear reliably on the radar.
-- Anchor-based positioning uses a corner anchor plus horizontal and vertical offsets, which makes radar placement more consistent across different screen layouts, and an unrestricted fallback is available for ultrawide or advanced setups.
-- Each major marker group now includes an **Icon size (%)** slider, including dedicated enemy sub-category sliders, and the final combined marker size is capped at **4.0x**.
-- Boss markers can use **Normal** or **Infinite** range, and can optionally show yellow distance text for bosses except the daemonhost.
-- Nearby highlight brackets are live for the supported non-enemy marker groups and use the configured nearby highlight range.
 - Marker previews in this readme were generated from the included template assets and documentation images so the legend matches the mod's configured presentations as closely as possible.
-- The gameplay screenshots in this readme were captured during an expedition mission and show both radar frame styles in live use.
-- Per-mode radar toggles let the mod stay enabled only in the activities where you actually want it, including Regular Missions, Havoc, Mortis Trials, and Expeditions.
-- Tech-Remnant markers can scale by value or merge nearby piles, and stale expedition loot markers are cleaned up when the underlying world items disappear.
-- Localization entries are included for the new positioning, icon size, vertical arrow, boss range, and background opacity settings, so the new options show up consistently with the rest of the translated mod menu.
