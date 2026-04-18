@@ -5,7 +5,6 @@ return function(env)
 
     local pcall = pcall
     local pairs = pairs
-    local ipairs = ipairs
     local tonumber = tonumber
     local tostring = tostring
     local rawget = rawget
@@ -1156,13 +1155,17 @@ return function(env)
     end
 
     local function _migrate_marker_display_mode_settings()
-        for _, setting_id in ipairs(ARTWORK_MODE_SETTING_IDS) do
-            local value = mod:get(setting_id)
+        local mod_get = mod.get
+        local mod_set = mod.set
+
+        for i = 1, #ARTWORK_MODE_SETTING_IDS do
+            local setting_id = ARTWORK_MODE_SETTING_IDS[i]
+            local value = mod_get(mod, setting_id)
 
             if value == true then
-                mod:set(setting_id, "artwork")
+                mod_set(mod, setting_id, "artwork")
             elseif value == false then
-                mod:set(setting_id, "off")
+                mod_set(mod, setting_id, "off")
             end
         end
     end
@@ -1182,29 +1185,32 @@ return function(env)
         _migrate_marker_display_mode_settings()
         _migrate_player_visibility_settings()
 
+        local debug_mode = mod:get("debug_mode") == true
+
         -- Preload icon packages
         local function load_package(package_name)
             local ok, err = pcall(function()
-                if not Managers or not Managers.package then
+                local managers = Managers
+                local package_manager = managers and managers.package
+
+                if not package_manager then
                     error("Managers.package unavailable")
                 end
 
-                if not Managers.package:has_loaded(package_name) then
-                    Managers.package:load(package_name, "Radar", nil, true)
-                    if mod:get("debug_mode") then
+                if not package_manager:has_loaded(package_name) then
+                    package_manager:load(package_name, "Radar", nil, true)
+                    if debug_mode then
                         mod:echo(string_format("[Radar] package load requested | %s", tostring(package_name)))
                     end
                 else
-                    if mod:get("debug_mode") then
+                    if debug_mode then
                         mod:echo(string_format("[Radar] package already loaded | %s", tostring(package_name)))
                     end
                 end
             end)
 
-            if not ok then
-                if mod:get("debug_mode") then
-                    mod:echo(string_format("[Radar] package load failed | %s | %s", tostring(package_name), tostring(err)))
-                end
+            if not ok and debug_mode then
+                mod:echo(string_format("[Radar] package load failed | %s | %s", tostring(package_name), tostring(err)))
             end
         end
 
@@ -1223,7 +1229,7 @@ return function(env)
         load_package("packages/ui/views/scanner_display_view/scanner_display_view")
         load_package("packages/ui/material_sets/circumstances")
 
-        if mod:get("debug_mode") then
+        if debug_mode then
             mod:echo("Packages loaded")
         end
     end

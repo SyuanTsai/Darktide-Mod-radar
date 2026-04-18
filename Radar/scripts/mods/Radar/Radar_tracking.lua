@@ -42,8 +42,11 @@ return function(env)
         end
 
         local local_player = _local_player()
+        local players = player_manager:players()
+        local script_unit = ScriptUnit
+        local has_extension = script_unit and script_unit.has_extension
 
-        for _, player in pairs(player_manager:players()) do
+        for _, player in pairs(players) do
             local unit = player.player_unit
             if unit and _safe_unit_alive(unit) and player ~= local_player then
                 local archetype_name = nil
@@ -60,7 +63,7 @@ return function(env)
                     archetype_name = profile.archetype.name
                 end
 
-                local unit_data_extension = ScriptUnit.has_extension(unit, "unit_data_system")
+                local unit_data_extension = has_extension and has_extension(unit, "unit_data_system")
                 if unit_data_extension and unit_data_extension.archetype_name then
                     local ok_archetype, value = pcall(unit_data_extension.archetype_name, unit_data_extension)
                     if ok_archetype and value ~= nil then
@@ -956,14 +959,15 @@ return function(env)
         local player_unit = _player_unit()
         local player_state = _safe_player_character_state_name(player_unit)
 
-        local signature = table_concat({
+        local signature = string_format(
+            "%s|%s|%s|%s|%s|%s",
             tostring(reason),
             tostring(mission_name),
             tostring(activity),
             tostring(mechanism_name),
             tostring(gameplay_t),
-            tostring(player_state),
-        }, "|")
+            tostring(player_state)
+        )
 
         if signature == mod._last_block_signature then
             return
@@ -1445,7 +1449,9 @@ return function(env)
         local anchor = self:get_radar_anchor()
         local resolved_x, resolved_y = _get_radar_origin_from_offsets(anchor, offset_x, offset_y, radar_size)
 
-        if mod:get("debug_mode") == true then
+        local debug_mode = mod:get("debug_mode") == true
+
+        if debug_mode then
             self:notify(
                 "Radar anchor %s | offset X %d | offset Y %d | origin X %d | origin Y %d",
                 anchor,
@@ -1475,7 +1481,9 @@ return function(env)
         self:set("radar_pos_x", offset_x)
         self:set("radar_pos_y", offset_y)
 
-        if mod:get("debug_mode") == true then
+        local debug_mode = mod:get("debug_mode") == true
+
+        if debug_mode then
             self:notify(
                 "Radar anchor %s | offset X %d | offset Y %d | origin X %d | origin Y %d",
                 anchor,
@@ -1524,7 +1532,9 @@ return function(env)
             self._radar_snapshot = nil
         end
 
-        if mod:get("debug_mode") == true then
+        local debug_mode = mod:get("debug_mode") == true
+
+        if debug_mode then
             self:notify("Radar %s", is_enabled and "enabled" or "disabled")
         end
 

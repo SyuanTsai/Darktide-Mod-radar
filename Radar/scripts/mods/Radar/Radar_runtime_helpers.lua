@@ -41,7 +41,14 @@ return function(env)
             return "<dead>"
         end
 
-        local ok, result = pcall(Unit.debug_name, unit, false)
+        local unit_api = Unit
+        local debug_name = unit_api and unit_api.debug_name
+
+        if not debug_name then
+            return tostring(unit)
+        end
+
+        local ok, result = pcall(debug_name, unit, false)
         if ok and result then
             return tostring(result)
         end
@@ -65,9 +72,17 @@ return function(env)
         end
 
         local vector3 = Vector3
-        local ok_x, x = pcall(vector3.x, vec)
-        local ok_y, y = pcall(vector3.y, vec)
-        local ok_z, z = pcall(vector3.z, vec)
+        local vector3_x = vector3 and vector3.x
+        local vector3_y = vector3 and vector3.y
+        local vector3_z = vector3 and vector3.z
+
+        if not vector3_x or not vector3_y or not vector3_z then
+            return nil, nil, nil
+        end
+
+        local ok_x, x = pcall(vector3_x, vec)
+        local ok_y, y = pcall(vector3_y, vec)
+        local ok_z, z = pcall(vector3_z, vec)
 
         if ok_x and ok_y and ok_z then
             return x, y, z
@@ -104,17 +119,19 @@ return function(env)
 
     function _safe_unit_data_string(unit, field_name)
         local unit_api = Unit
+        local has_data = unit_api and unit_api.has_data
+        local get_data = unit_api and unit_api.get_data
 
-        if not unit or not field_name or not unit_api or not unit_api.has_data or not unit_api.get_data then
+        if not unit or not field_name or not has_data or not get_data then
             return nil
         end
 
-        local ok_has_data, has_data = pcall(unit_api.has_data, unit, field_name)
-        if not ok_has_data or not has_data then
+        local ok_has_data, has_value = pcall(has_data, unit, field_name)
+        if not ok_has_data or not has_value then
             return nil
         end
 
-        local ok_value, value = pcall(unit_api.get_data, unit, field_name)
+        local ok_value, value = pcall(get_data, unit, field_name)
         if ok_value and value ~= nil then
             return _safe_lower_string(value)
         end
@@ -331,13 +348,15 @@ return function(env)
         end
 
         local unit_api = Unit
-        if not unit_api or not unit_api.world_position then
+        local world_position = unit_api and unit_api.world_position
+
+        if not world_position then
             return nil
         end
 
-        local ok, world_position = pcall(unit_api.world_position, unit, 1)
-        if ok and world_position then
-            return _copy_vector3(world_position)
+        local ok, result = pcall(world_position, unit, 1)
+        if ok and result then
+            return _copy_vector3(result)
         end
 
         return nil
@@ -458,7 +477,14 @@ return function(env)
             return nil
         end
 
-        local ok, rotation = pcall(Unit.world_rotation, unit, node or 1)
+        local unit_api = Unit
+        local world_rotation = unit_api and unit_api.world_rotation
+
+        if not world_rotation then
+            return nil
+        end
+
+        local ok, rotation = pcall(world_rotation, unit, node or 1)
         if ok then
             return rotation
         end
@@ -490,7 +516,10 @@ return function(env)
     end
 
     function _safe_forward_xy(rotation)
-        return _safe_flat_direction_xy(Quaternion.forward, rotation)
+        local quaternion = Quaternion
+        local forward = quaternion and quaternion.forward
+
+        return _safe_flat_direction_xy(forward, rotation)
     end
 
     function _safe_mission_name()

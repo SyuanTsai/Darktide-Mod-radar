@@ -216,6 +216,10 @@ local function _vector3_components(vec)
         return vec.x, vec.y, vec.z
     end
 
+    if not Vector3 or not Vector3.x or not Vector3.y or not Vector3.z then
+        return nil, nil, nil
+    end
+
     local ok_x, x = pcall(Vector3.x, vec)
     local ok_y, y = pcall(Vector3.y, vec)
     local ok_z, z = pcall(Vector3.z, vec)
@@ -1652,6 +1656,7 @@ local _draw_cache = {
 
 local function _build_draw_cache()
     local draw_cache = _draw_cache
+    local get = mod.get
 
     table_clear(draw_cache.marker_display_mode_by_kind)
     table_clear(draw_cache.enemy_marker_mode_by_kind)
@@ -1660,19 +1665,19 @@ local function _build_draw_cache()
     table_clear(draw_cache.enemy_visual_by_kind)
 
     draw_cache.icon_scale = _icon_scale_factor()
-    draw_cache.player_display_style = _normalized_player_display_style(mod:get("player_display_style"))
-    draw_cache.player_tag_display_style = _normalized_enemy_display_style(mod:get("player_tag_display_style"))
+    draw_cache.player_display_style = _normalized_player_display_style(get(mod, "player_display_style"))
+    draw_cache.player_tag_display_style = _normalized_enemy_display_style(get(mod, "player_tag_display_style"))
     draw_cache.show_player_center_dot = mod.get_show_player_center_dot and mod:get_show_player_center_dot() or
-        mod:get("show_player_center_dot") ~= false
-    draw_cache.show_player_tag_distance_text = mod:get("show_player_tag_distance_text") == true
-    draw_cache.boss_display_style = _normalized_enemy_display_style(mod:get("boss_display_style"))
+        get(mod, "show_player_center_dot") ~= false
+    draw_cache.show_player_tag_distance_text = get(mod, "show_player_tag_distance_text") == true
+    draw_cache.boss_display_style = _normalized_enemy_display_style(get(mod, "boss_display_style"))
     draw_cache.expedition_loot_marker_mode = mod.get_expedition_loot_marker_mode and
         mod:get_expedition_loot_marker_mode() or "default"
     draw_cache.show_expedition_loot_value_text = mod.get_show_expedition_loot_value_text and
         mod:get_show_expedition_loot_value_text() or false
-    draw_cache.show_boss_distance_text = mod:get("show_boss_distance_text") == true
+    draw_cache.show_boss_distance_text = get(mod, "show_boss_distance_text") == true
     draw_cache.slot_colors = UISettings and UISettings.player_slot_colors or nil
-    draw_cache.debug_mode = mod:get("debug_mode") == true
+    draw_cache.debug_mode = get(mod, "debug_mode") == true
 
     return draw_cache
 end
@@ -1716,7 +1721,8 @@ local function _cached_group_icon_scale(kind, draw_cache)
         return 1
     end
 
-    local group_name = mod.get_marker_scale_group and mod:get_marker_scale_group(kind)
+    local get_marker_scale_group = mod.get_marker_scale_group
+    local group_name = get_marker_scale_group and get_marker_scale_group(mod, kind)
 
     if not group_name then
         return 1
@@ -1731,13 +1737,15 @@ local function _cached_group_icon_scale(kind, draw_cache)
             return cached
         end
 
-        cached = mod.get_marker_scale_factor and mod:get_marker_scale_factor(group_name) or 1
+        local get_marker_scale_factor = mod.get_marker_scale_factor
+        cached = get_marker_scale_factor and get_marker_scale_factor(mod, group_name) or 1
         cache[group_name] = cached
 
         return cached
     end
 
-    return mod.get_marker_scale_factor and mod:get_marker_scale_factor(group_name) or 1
+    local get_marker_scale_factor = mod.get_marker_scale_factor
+    return get_marker_scale_factor and get_marker_scale_factor(mod, group_name) or 1
 end
 
 local function _cached_enemy_category_icon_scale(kind, draw_cache)
@@ -1754,13 +1762,15 @@ local function _cached_enemy_category_icon_scale(kind, draw_cache)
             return cached
         end
 
-        cached = mod.get_enemy_category_scale_factor and mod:get_enemy_category_scale_factor(kind) or 1
+        local get_enemy_category_scale_factor = mod.get_enemy_category_scale_factor
+        cached = get_enemy_category_scale_factor and get_enemy_category_scale_factor(mod, kind) or 1
         cache[kind] = cached
 
         return cached
     end
 
-    return mod.get_enemy_category_scale_factor and mod:get_enemy_category_scale_factor(kind) or 1
+    local get_enemy_category_scale_factor = mod.get_enemy_category_scale_factor
+    return get_enemy_category_scale_factor and get_enemy_category_scale_factor(mod, kind) or 1
 end
 
 local function _resolved_icon_scale_for_target(target, draw_cache)
@@ -1779,7 +1789,8 @@ local function _resolved_icon_scale_for_target(target, draw_cache)
 end
 
 local function _enemy_icon_size_limits(kind)
-    local definition = mod.get_enemy_radar_definition and mod:get_enemy_radar_definition(kind)
+    local get_enemy_radar_definition = mod.get_enemy_radar_definition
+    local definition = get_enemy_radar_definition and get_enemy_radar_definition(mod, kind)
     local category = definition and definition.category or nil
 
     if category == "special" or category == "elite" or category == "misc" then
@@ -1836,11 +1847,9 @@ local function _is_enemy_kind(kind)
         return false
     end
 
-    if type(kind) == "string" then
-        return string_sub(kind, 1, 6) == "enemy_"
-    end
+    kind = type(kind) == "string" and kind or tostring(kind)
 
-    return string_sub(tostring(kind), 1, 6) == "enemy_"
+    return string_sub(kind, 1, 6) == "enemy_"
 end
 
 local function _is_expedition_objective_kind(kind)
@@ -1875,7 +1884,8 @@ local function _enemy_marker_mode_for_kind(kind, draw_cache)
         local mode = cache[kind]
 
         if mode == nil then
-            mode = mod.get_enemy_marker_mode and mod:get_enemy_marker_mode(kind) or "off"
+            local get_enemy_marker_mode = mod.get_enemy_marker_mode
+            mode = get_enemy_marker_mode and get_enemy_marker_mode(mod, kind) or "off"
             mode = _normalized_enemy_marker_mode(mode)
             cache[kind] = mode
         end
@@ -1883,7 +1893,8 @@ local function _enemy_marker_mode_for_kind(kind, draw_cache)
         return mode
     end
 
-    return _normalized_enemy_marker_mode(mod.get_enemy_marker_mode and mod:get_enemy_marker_mode(kind) or "off")
+    local get_enemy_marker_mode = mod.get_enemy_marker_mode
+    return _normalized_enemy_marker_mode(get_enemy_marker_mode and get_enemy_marker_mode(mod, kind) or "off")
 end
 
 local function _display_style_for_kind(kind, draw_cache)
@@ -2331,11 +2342,13 @@ local function _artwork_mode_icon_visual(kind, draw_cache)
         mode = draw_cache.marker_display_mode_by_kind[kind]
 
         if mode == nil then
-            mode = mod.get_marker_display_mode and mod:get_marker_display_mode(kind) or false
+            local get_marker_display_mode = mod.get_marker_display_mode
+            mode = get_marker_display_mode and get_marker_display_mode(mod, kind) or false
             draw_cache.marker_display_mode_by_kind[kind] = mode
         end
     else
-        mode = mod.get_marker_display_mode and mod:get_marker_display_mode(kind) or nil
+        local get_marker_display_mode = mod.get_marker_display_mode
+        mode = get_marker_display_mode and get_marker_display_mode(mod, kind) or nil
     end
 
     if mode ~= "icon" then
@@ -2408,7 +2421,8 @@ local function _enemy_radar_visual(target, draw_cache)
         end
     end
 
-    local definition = mod.get_enemy_radar_definition and mod:get_enemy_radar_definition(kind)
+    local get_enemy_radar_definition = mod.get_enemy_radar_definition
+    local definition = get_enemy_radar_definition and get_enemy_radar_definition(mod, kind)
 
     if not definition then
         return nil
