@@ -5499,7 +5499,7 @@ return {
             "Also include enemies while they have a supported ability or smart-tag outline such as \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5507,7 +5507,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" or \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\". Their brackets use the highest-priority supported outline color when one is available, they ignore the radar range limit, and \"Tagged enemies only\" will not hide them.",
@@ -5515,7 +5515,7 @@ return {
             "Inclut également les ennemis tant qu’ils ont un contour pris en charge provenant d’une capacité ou d’un smart tag, comme \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5523,7 +5523,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" ou \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\". Leurs crochets utilisent la couleur de contour prise en charge ayant la priorité la plus élevée lorsqu’elle est disponible, ils ignorent la limite de portée du radar, et \"Ennemis marqués uniquement\" ne les masquera pas.",
@@ -5531,7 +5531,7 @@ return {
             "Berücksichtigt Gegner auch dann, wenn sie eine unterstützte Umrandung durch eine Fähigkeit oder einen Smart-Tag haben, wie zum Beispiel \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5539,7 +5539,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" oder \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\". Ihre Klammern verwenden die unterstützte Umrandungsfarbe mit der höchsten Priorität, sofern verfügbar, sie ignorieren die Radarreichweitenbegrenzung, und \"Nur markierte Gegner\" blendet sie nicht aus.",
@@ -5547,7 +5547,7 @@ return {
             "Include anche i nemici finché hanno un contorno supportato da abilità o smart tag, come \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5555,7 +5555,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" o \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\". Le loro parentesi usano il colore del contorno supportato con la priorità più alta quando disponibile, ignorano il limite di portata del radar e \"Solo nemici segnalati\" non li nasconderà.",
@@ -5563,7 +5563,7 @@ return {
             "También incluye a los enemigos mientras tengan un contorno compatible de habilidad o smart tag, como \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5571,7 +5571,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" o \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\". Sus corchetes usan el color de contorno compatible de mayor prioridad cuando está disponible, ignoran el límite de alcance del radar y \"Solo enemigos marcados\" no los ocultará.",
@@ -5579,7 +5579,7 @@ return {
             "Uwzględnia także wrogów, gdy mają obsługiwaną obwódkę zdolności lub inteligentnego oznaczenia, taką jak \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5587,7 +5587,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" lub \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\". Ich nawiasy używają obsługiwanego koloru obwódki o najwyższym priorytecie, jeśli jest dostępny, ignorują limit zasięgu radaru, a opcja \"Tylko oznaczeni wrogowie\" ich nie ukryje.",
@@ -5595,7 +5595,7 @@ return {
             "Também inclui inimigos enquanto eles tiverem um contorno compatível de habilidade ou marcação inteligente, como \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5603,7 +5603,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" ou \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\". Os colchetes deles usam a cor de contorno compatível de maior prioridade quando disponível, ignoram o limite de alcance do radar, e \"Somente inimigos marcados\" não vai ocultá-los.",
@@ -5611,7 +5611,7 @@ return {
             "Также включает врагов, пока на них есть поддерживаемая обводка способности или умной метки, например \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5619,7 +5619,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" или \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\". Их скобки используют поддерживаемый цвет обводки с наивысшим приоритетом, если он доступен, они игнорируют ограничение дальности радара, и опция \"Только отмеченные враги\" не будет их скрывать.",
@@ -5627,7 +5627,7 @@ return {
             "また、\"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5635,7 +5635,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" や \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\" のような、サポートされているアビリティまたはスマートタグのアウトラインが付いている敵も対象に含めます。ブラケットには利用可能な場合、優先度が最も高いサポート済みアウトライン色が使われ、レーダー範囲制限を無視し、\"タグ付けされた敵のみ\" でも非表示になりません。",
@@ -5643,7 +5643,7 @@ return {
             "\"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5651,7 +5651,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" 또는 \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\" 같은 지원되는 능력 또는 스마트 태그 외곽선이 있는 동안의 적도 포함합니다. 해당 괄호 표시는 사용 가능할 때 가장 높은 우선순위의 지원 외곽선 색상을 사용하고, 레이더 거리 제한을 무시하며, \"태그된 적만\" 옵션으로도 숨겨지지 않습니다.",
@@ -5659,7 +5659,7 @@ return {
             "敌人在拥有受支持的技能或智能标记描边时也会被包含在内，例如 \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5667,7 +5667,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" 或 \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\"。它们的括号会在可用时使用优先级最高的受支持描边颜色，忽略雷达距离限制，并且“仅显示已标记敌人”也不会隐藏它们。",
@@ -5675,7 +5675,7 @@ return {
             "敵人在具有受支援的技能或智慧標記外框時也會被納入顯示，例如 \"" ..
             Localize("loc_talent_psyker_marked_enemies_passive") ..
             "\", \"" ..
-            Localize("loc_talent_broker_keystone_vultures_mark_on_kill") ..
+            Localize("loc_talent_broker_ability_focus_improved") ..
             "\", \"" ..
             Localize("loc_talent_veteran_improved_tag") ..
             "\", \"" ..
@@ -5683,7 +5683,7 @@ return {
             "\", \"" ..
             Localize("loc_talent_adamant_exterminator") ..
             "\", \"" ..
-            Localize("loc_talent_veteran_2_combat_ability") ..
+            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
             "\" 或 \"" ..
             Localize("loc_ability_ogryn_taunt_shout") ..
             "\"。它們的括號會在可用時使用優先度最高的受支援外框顏色，忽略雷達距離限制，而且「僅顯示已標記敵人」也不會將它們隱藏。",

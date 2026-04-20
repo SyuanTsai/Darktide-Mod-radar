@@ -2,27 +2,27 @@
 
 Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu.
 
-## What's New in 2.1.0
+## What's New in 2.1.5
 
-- Adds the new **Auspex** radar style, including an optional animated sweep, with documentation previews for the solid, dotted, off, and no-sweep variants. [PR #93](https://github.com/LucLeto/darktide-mods-radar/pull/93)
-- Fixes radar visibility while the comms wheel is open, so the radar remains usable during live callouts. [PR #94](https://github.com/LucLeto/darktide-mods-radar/pull/94)
-- Splits teammate visibility from the local player center dot, so both can now be toggled independently. [PR #95](https://github.com/LucLeto/darktide-mods-radar/pull/95)
-- Adds radar support for player smart tags and pings, including dedicated display-style and distance-text settings. [PR #96](https://github.com/LucLeto/darktide-mods-radar/pull/96)
-- Removes player tag elevation support from the radar to keep smart tag presentation cleaner and more predictable. [PR #97](https://github.com/LucLeto/darktide-mods-radar/pull/97)
+- Adds **Tagged enemies only** and **Tagged items only** filters, so radar markers can be restricted to actively tagged targets while tagged enemies and items also ignore the normal radar range limit for as long as the in-game tag remains active. [PR #98](https://github.com/LucLeto/darktide-mods-radar/pull/98)
+- Adds optional radar support for supported **ability-marked** and **smart-tag outline** enemies, so temporary gameplay outlines from talents and callout systems can also drive enemy radar visibility when enabled. [PR #100](https://github.com/LucLeto/darktide-mods-radar/pull/100)
+- Gates shared `special_target` outline handling behind the local owning context, which avoids picking up unrelated shared outlines and makes the new ability-outline support more reliable. [PR #101](https://github.com/LucLeto/darktide-mods-radar/pull/101)
+- Adds a dedicated **Nearby highlights** settings group with per-category highlight toggles, optional screen-space and radar distance text, adjustable highlight thickness and opacity, plus an optional custom highlight color override. [PR #102](https://github.com/LucLeto/darktide-mods-radar/pull/102)
+- Improves nearby highlight placement for scaled HUD layouts by aligning highlights with Darktide interaction marker positions and using a more stable fallback anchor when no interaction marker is active. [PR #103](https://github.com/LucLeto/darktide-mods-radar/pull/103)
 
-**Full Changelog**: https://github.com/LucLeto/darktide-mods-radar/compare/Radar-2.0.2...Radar-2.1.0
+**Full Changelog**: https://github.com/LucLeto/darktide-mods-radar/compare/Radar-2.1.0...Radar-2.1.5
 
 ## Feature Overview
 
-- Tracks nearby pickups, materials, mission items, deployables, environment interactables, expedition POIs, teammates, player smart tags, and high-priority enemies on a single camera-oriented radar.
+- Tracks nearby pickups, materials, mission items, deployables, environment interactables, expedition POIs, teammates, player smart tags, tagged targets, supported ability-outlined enemies, and high-priority enemies on a single camera-oriented radar.
 - Supports **Square**, **Circle**, and **Auspex** radar styles. Square and Circle use configurable **outline** and **guide** options, while **Auspex** adds an optional animated sweep.
-- Lets you tune **radar size**, **range**, **background opacity**, **maximum marker count**, **nearby highlight range**, and supported vertical filtering behavior.
+- Lets you tune **radar size**, **range**, **background opacity**, **maximum marker count**, **nearby highlight range**, supported vertical filtering behavior, and the dedicated nearby-highlight presentation settings.
 - Supports per-category **Icon size (%)** sliders across item, player, enemy, event, and debug marker groups, plus dedicated enemy sub-category scaling.
-- Supports separate display controls for **bosses**, **enemy groups**, **teammates**, **player smart tags**, and the local **player center dot**.
+- Supports separate display controls for **bosses**, **enemy groups**, **teammates**, **player smart tags**, **tagged-only enemy and item filtering**, supported **ability outlines**, and the local **player center dot**.
 - Includes a mission-ready **toggle radar on or off** keybind, plus per-mode enable toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**.
 - Supports anchor-based **radar positioning** with offsets, movement keybinds, configurable movement step size, and an optional unrestricted positioning fallback for ultrawide or advanced layouts.
 - Supports **Artwork**, **Icon**, and **Off** display modes for the supported artwork-based pickup families, with automatic migration from older boolean settings.
-- Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups.
+- Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups, with configurable thickness, opacity, color override, and optional distance labels on the screen highlight, the radar marker, or both.
 - Adds dedicated **Expedition POI** support for numbered **Sites of Interest**, **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**.
 - Supports tech-remnant loot modes for **Default**, **Scale by value**, and **Merge nearby piles**, plus optional cluster value text and radius tuning.
 - Includes optional **boss distance text**, **Infinite** boss range, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
@@ -162,6 +162,11 @@ Also for reference **Show tech-remnant value text** is set to **true**.
 | Radar background opacity | Adjustable from **0** to **255**. Controls the alpha of the radar background without changing marker readability. |
 | Animated radar sweep | Enables or disables the animated sweep used by the **Auspex** radar style. |
 | Nearby highlight range (m) | Adjustable from **5 m** to **20 m**. Controls how close supported items must be before their screen-space bracket highlights appear. |
+| Highlight thickness | Adjusts the line thickness used by nearby screen-space highlight brackets. |
+| Highlight opacity | Adjusts the opacity of nearby screen-space highlight brackets. |
+| Custom highlight color | Lets nearby highlight brackets use an override color instead of the default per-marker color behavior. |
+| Show distance above nearby highlights | Shows item distance text above supported nearby screen-space highlights. |
+| Show distance on radar markers | Shows distance text on supported nearby radar markers. |
 | Boss marker style | **Icon only** or **Marked icon**. |
 | Boss marker range | **Normal** or **Infinite**. Lets boss-type markers follow the normal radar range or stay visible at any distance. |
 | Show boss distance text | Shows yellow distance text in meters for bosses except the daemonhost. |
@@ -170,6 +175,9 @@ Also for reference **Show tech-remnant value text** is set to **true**.
 | Player marker style | **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. |
 | Player Tags | Shows or hides player smart tags and pings on the radar. |
 | Show player tag distance text | Shows the current distance in meters next to player tag markers. |
+| Ability-marked enemies | Also includes supported ability-marked and smart-tag outlined enemies such as keystone, passive, and callout-driven outline states. |
+| Tagged enemies only | Only shows enemy markers while the enemy has an active in-game tag. Tagged enemies also ignore the normal radar range limit while tagged. |
+| Tagged items only | Only shows supported item markers while the item has an active in-game tag. Tagged items also ignore the normal radar range limit while tagged. |
 | Player tag display style | **Icon only** or **Marked icon**. |
 | Radar anchor | **Top left**, **Top right**, **Bottom left**, or **Bottom right**. Sets the corner the radar offsets from. |
 | Allow unrestricted radar positioning | Removes the normal UI-space clamping fallback, which is useful for ultrawide or highly customized layouts. |
@@ -225,6 +233,7 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 | Option | What it controls |
 | --- | --- |
 | Monstrosities | Shows daemonhost and generic monstrosity markers. |
+| Ability-marked enemies | Also includes enemies while they have a supported ability or smart-tag outline, subject to the normal enemy display rules. |
 | Captains | Shows captain markers. |
 | Karnak Twins | Shows the dedicated Karnak Twins marker. |
 | Horde enemies | Single toggle for horde markers. Horde enemies stay on or off rather than using per-unit display modes. |
@@ -235,6 +244,15 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 | Ritualist | Dedicated toggle under the misc enemy category. |
 
 ### Nearby highlight controls
+
+| Option | What it controls |
+| --- | --- |
+| Highlight thickness | Adjusts the line thickness used by nearby screen-space highlight brackets. |
+| Highlight opacity | Adjusts the opacity used by nearby screen-space highlight brackets. |
+| Use custom highlight color | Enables a shared override color for nearby highlights instead of the default per-marker color behavior. |
+| Nearby highlight color | Sets the override color used when custom highlight color is enabled. |
+| Show distance above nearby highlights | Shows item distance text above supported nearby screen-space highlights. |
+| Show distance on radar markers | Shows distance text on supported nearby radar markers. |
 
 | Option group | What it controls |
 | --- | --- |
@@ -287,12 +305,27 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 ### Marker Rules
 
 - **Enemies**, **teammates**, and **player smart tags** each use their own display rules and style settings. The local **center dot** also has its own toggle now.
-- Supported item markers can show vertical **up** and **down** arrows, be hidden when vertical separation becomes too large, and use nearby highlight brackets when enabled.
+- Supported enemies can also be surfaced through active ability-mark or smart-tag outline states when **Ability-marked enemies** is enabled.
+- **Tagged enemies only** and **Tagged items only** restrict visibility to actively tagged targets, and those tagged targets ignore the usual radar range limit while the tag remains active.
+- Supported item markers can show vertical **up** and **down** arrows, be hidden when vertical separation becomes too large, and use nearby highlight brackets plus optional distance text when enabled.
 - **Expedition POIs**, **environment markers**, and **tech-remnant clusters** follow their own category-specific rules so outdated markers clear correctly and context-sensitive markers only appear when relevant.
 
 ## Target Markers
 
 The legend below follows the option groups exposed by `Radar_data.lua`. Enemy markers are listed in the same gameplay-oriented order used by the enemy settings: bosses, horde, common, shooters, elites, specials, and misc. The preview tiles were generated from the included `doc/img` assets and the ARGB values used by the HUD presentations.
+
+### Ability outline and smart-tag examples
+
+These examples show supported outline states that can optionally count as radar-visible enemy targets when **Ability-marked enemies** is enabled.
+
+| Preview | Source | Notes                                                                                                                            |
+| --- | --- |----------------------------------------------------------------------------------------------------------------------------------|
+| <img src="doc/img/adamant_mark_target.png" width="80" alt="Adamant marked target outline" /> | Adamant mark target | Example of Arbitrator's "Execution Order" target outline.                                                                        |
+| <img src="doc/img/adamant_smart_tag.png" width="80" alt="Adamant smart tag outline" /> | Adamant smart tag | Example of a Cyber-Mastiff attack order style outline state.                                                                     |
+| <img src="doc/img/broker_proximity_target.png" width="80" alt="Broker proximity target outline" /> | Broker proximity target | Example of a Hive Scum's "Enhanced Desperado" outline state.                                                                     |
+| <img src="doc/img/psyker_marked_target.png" width="80" alt="Psyker marked target outline" /> | Psyker marked target | Example of a Psyker's "Disrupt Destiny" effect.                                                                                  |
+| <img src="doc/img/veteran_smart_tag.png" width="80" alt="Veteran smart tag outline" /> | Veteran smart tag | Example of a Veteran's "Focus Target!" outline state.                                                                            |
+| <img src="doc/img/veteran_special_target.png" width="80" alt="Veteran special target outline" /> | Veteran special target | Example of a Veteran's "Executioner's Stance" outline state, with local-owning-context gating to avoid unrelated shared outlines. |
 
 ### High-Priority Enemies
 
@@ -624,5 +657,8 @@ Not every radar marker uses a fixed readme tint:
 - **Auspex** is a full radar style with an optional animated sweep, and the included documentation GIFs show the solid, dotted, off, and no-sweep variants.
 - Teammates, the local player center dot, and player smart tags now have separate controls, so ally information can be tuned more precisely.
 - Player smart tags support optional distance text, but no longer use player-tag elevation arrows or related elevation hiding behavior.
+- Supported ability-marked and smart-tag outlined enemies can optionally be treated as radar-visible targets, and shared `special_target` outline handling is gated to the local owning context so unrelated outlines do not leak into radar visibility.
+- Nearby highlights now support thickness, opacity, optional custom color override, and optional distance labels, and their placement was adjusted to stay aligned more reliably under scaled HUD layouts.
+- **Tagged enemies only** and **Tagged items only** are filters, not new marker families. They reuse the game's active tag state and let tagged targets ignore the normal radar range limit while tagged.
 - Expedition POIs are filtered to the active expedition section, and **Data Reliquary Harvesters** are only shown inside the relevant **Deadsider Sanctuary** where they can actually be used.
 - Marker previews in this readme were generated from the included template assets and documentation images so the legend matches the mod's configured presentations as closely as possible.
