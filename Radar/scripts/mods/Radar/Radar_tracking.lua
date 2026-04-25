@@ -58,6 +58,9 @@ return function(env)
     local _scratch_render_layer_cache = {}
     local _scratch_selection_priority_cache = {}
     local _scratch_priority_target_cache = {}
+    local _scratch_seen_interactees = {}
+    local _scratch_seen_chests = {}
+    local _scratch_seen_destructibles = {}
     local OVERVIEW_MIN_ZOOM_RANGE = 25
     local OVERVIEW_MAX_ZOOM_RANGE = 500
     local OVERVIEW_DEFAULT_ZOOM_RANGE = OVERVIEW_MAX_ZOOM_RANGE
@@ -135,35 +138,44 @@ return function(env)
     end
 
     local function _raw_device_button_held(device, local_name)
-        if not device or not local_name or not device.button_index or not device.button then
+        if not device or not local_name then
             return false
         end
 
-        local ok_index, index = pcall(device.button_index, local_name)
+        local button_index = device.button_index
+        local button = device.button
+
+        if not button_index or not button then
+            return false
+        end
+
+        local ok_index, index = pcall(button_index, local_name)
 
         if (not ok_index or not index) and string_find(local_name, "_", 1, true) then
-            ok_index, index = pcall(device.button_index, string_gsub(local_name, "_", " "))
+            ok_index, index = pcall(button_index, string_gsub(local_name, "_", " "))
         end
 
         if not ok_index or not index then
             return false
         end
 
-        local ok_value, value = pcall(device.button, index)
+        local ok_value, value = pcall(button, index)
 
         return ok_value and (tonumber(value) or 0) > 0.5
     end
 
     local function _keyboard_modifier_alias_held(name)
+        local keyboard = Keyboard
+
         if name == "shift" then
-            return _raw_device_button_held(Keyboard, "left shift")
-                or _raw_device_button_held(Keyboard, "right shift")
+            return _raw_device_button_held(keyboard, "left shift")
+                or _raw_device_button_held(keyboard, "right shift")
         elseif name == "ctrl" or name == "control" then
-            return _raw_device_button_held(Keyboard, "left ctrl")
-                or _raw_device_button_held(Keyboard, "right ctrl")
+            return _raw_device_button_held(keyboard, "left ctrl")
+                or _raw_device_button_held(keyboard, "right ctrl")
         elseif name == "alt" then
-            return _raw_device_button_held(Keyboard, "left alt")
-                or _raw_device_button_held(Keyboard, "right alt")
+            return _raw_device_button_held(keyboard, "left alt")
+                or _raw_device_button_held(keyboard, "right alt")
         end
 
         return false
@@ -184,16 +196,19 @@ return function(env)
         raw_name = string_gsub(raw_name, "^%s+", "")
         raw_name = string_gsub(raw_name, "%s+$", "")
 
+        local keyboard = Keyboard
+        local mouse = Mouse
+
         if string_find(raw_name, "keyboard_", 1, true) == 1 then
-            return _raw_device_button_held(Keyboard, string_sub(raw_name, 10))
+            return _raw_device_button_held(keyboard, string_sub(raw_name, 10))
         elseif string_find(raw_name, "mouse_", 1, true) == 1 then
-            return _raw_device_button_held(Mouse, string_sub(raw_name, 7))
+            return _raw_device_button_held(mouse, string_sub(raw_name, 7))
         end
 
-        return _raw_device_button_held(Keyboard, raw_name)
-            or _raw_device_button_held(Keyboard, normalized)
-            or _raw_device_button_held(Mouse, raw_name)
-            or _raw_device_button_held(Mouse, normalized)
+        return _raw_device_button_held(keyboard, raw_name)
+            or _raw_device_button_held(keyboard, normalized)
+            or _raw_device_button_held(mouse, raw_name)
+            or _raw_device_button_held(mouse, normalized)
     end
 
     local function _raw_input_combo_held(binding_entry)
@@ -790,7 +805,8 @@ return function(env)
 
         local player_unit = _player_unit()
         local tracked_units = mod._tracked_units
-        local seen_interactees = {}
+        local seen_interactees = _scratch_seen_interactees
+        table_clear(seen_interactees)
 
         for unit, extension in pairs(interactee_map) do
             if _safe_unit_alive(unit) and extension then
@@ -860,8 +876,9 @@ return function(env)
         end
 
         local tracked_units = mod._tracked_units
-        local seen_chests = {}
+        local seen_chests = _scratch_seen_chests
         local track_item_tags = mod:get_show_only_tagged_items()
+        table_clear(seen_chests)
 
         for unit, extension in pairs(chest_map) do
             if _safe_unit_alive(unit) and extension then
@@ -966,8 +983,9 @@ return function(env)
         end
 
         local tracked_units = mod._tracked_units
-        local seen_destructibles = {}
+        local seen_destructibles = _scratch_seen_destructibles
         local track_item_tags = mod:get_show_only_tagged_items()
+        table_clear(seen_destructibles)
 
         for unit, extension in pairs(destructible_map) do
             if _safe_unit_alive(unit) and extension then
@@ -1374,21 +1392,6 @@ return function(env)
         return pass_through_targets
     end
 
-    local function _compare_radar_targets_by_distance(a, b)
-        return (a.distance_sq or math_huge) < (b.distance_sq or math_huge)
-    end
-
-    local function _compare_radar_targets_boss_first(a, b)
-        local a_is_boss = _is_boss_marker_kind(a.kind)
-        local b_is_boss = _is_boss_marker_kind(b.kind)
-
-        if a_is_boss ~= b_is_boss then
-            return a_is_boss
-        end
-
-        return (a.distance_sq or math_huge) < (b.distance_sq or math_huge)
-    end
-
     local function _compare_radar_targets_for_display(a, b)
         local a_priority = a and a.selection_priority or 0
         local b_priority = b and b.selection_priority or 0
@@ -1410,12 +1413,12 @@ return function(env)
     local function _collect_radar_targets()
         local player_unit = _player_unit()
         if not _safe_unit_alive(player_unit) then
-            return {}
+            return _reuse_or_new_table(mod._radar_targets)
         end
 
         local player_pos = _safe_unit_position(player_unit)
         if not player_pos then
-            return {}
+            return _reuse_or_new_table(mod._radar_targets)
         end
 
         local max_range = mod:get_radar_collection_range()
@@ -1837,7 +1840,7 @@ return function(env)
         return mod.is_radar_runtime_game_mode_allowed and mod:is_radar_runtime_game_mode_allowed()
     end
 
-    local function _update_internal(dt, t)
+    local function _update_internal(t)
         if mod:get("enable_radar") == false and not mod:is_overview_mode_active() then
             _reset_runtime_output_tables()
             return
@@ -1972,7 +1975,7 @@ return function(env)
 
     mod:hook_safe("StateGameplay", "update", function(self, dt, t, ...)
         mod._last_state_gameplay = self
-        _update_internal(dt, t)
+        _update_internal(t)
     end)
 
     mod:hook_safe("CollectiblesManager", "rpc_player_destroyed_destructible_collectible",
@@ -1997,12 +2000,12 @@ return function(env)
             end
         end)
 
-    mod.update = function(dt)
+    mod.update = function()
         if not mod._gameplay_run then
             return
         end
 
-        _update_internal(dt, _safe_gameplay_time())
+        _update_internal(_safe_gameplay_time())
     end
 
     local previous_on_setting_changed = mod.on_setting_changed
@@ -2551,7 +2554,7 @@ return function(env)
     function mod:get_radar_style()
         local value = tostring(self:get("radar_style") or "square")
 
-        if value ~= "circle" then
+        if value ~= "circle" and value ~= "auspex" then
             value = "square"
         end
 
@@ -2571,7 +2574,8 @@ return function(env)
     function mod:get_radar_guides()
         local value = tostring(self:get("radar_guides") or "crosshair")
 
-        if value ~= "crosshair" and value ~= "view_guides" and value ~= "range_rings" and value ~= "off" then
+        if value ~= "crosshair" and value ~= "view_guides" and value ~= "range_rings"
+            and value ~= "auspex_background" and value ~= "off" then
             value = "crosshair"
         end
 
@@ -2871,10 +2875,10 @@ return function(env)
         self:set("enable_radar", is_enabled)
 
         if not is_enabled then
-            self._radar_targets = {}
-            self._screen_highlight_targets = {}
-            self._highlight_source_radar_targets = {}
-            self._unclustered_radar_targets = {}
+            self._radar_targets = _reuse_or_new_table(self._radar_targets)
+            self._screen_highlight_targets = _reuse_or_new_table(self._screen_highlight_targets)
+            self._highlight_source_radar_targets = _reuse_or_new_table(self._highlight_source_radar_targets)
+            self._unclustered_radar_targets = _reuse_or_new_table(self._unclustered_radar_targets)
             self._radar_snapshot = nil
         end
 

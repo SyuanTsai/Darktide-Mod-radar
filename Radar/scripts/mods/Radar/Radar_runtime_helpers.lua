@@ -1037,27 +1037,6 @@ return function(env)
         }
     end
 
-    function _outline_color_vector3(color)
-        local src = color or DEFAULT_COLOR_ARRAY_WHITE
-
-        return Vector3(
-            (src[2] or 255) / 255,
-            (src[3] or 255) / 255,
-            (src[4] or 255) / 255
-        )
-    end
-
-    function _nearby_outline_color_signature(color)
-        local src = color or DEFAULT_COLOR_ARRAY_WHITE
-
-        return string_format(
-            "%d:%d:%d",
-            src[2] or 255,
-            src[3] or 255,
-            src[4] or 255
-        )
-    end
-
     SCREEN_HIGHLIGHT_Z_OFFSET_BY_KIND = {
         material_diamantine = 0.1,
         material_plasteel = 0.1,
@@ -1323,9 +1302,14 @@ return function(env)
             return nil
         end
 
-        local ok_forward, forward = pcall(Quaternion.forward, rotation)
-        local ok_right, right = pcall(Quaternion.right, rotation)
-        local ok_up, up = pcall(Quaternion.up, rotation)
+        local quaternion = Quaternion
+        local quaternion_forward = quaternion.forward
+        local quaternion_right = quaternion.right
+        local quaternion_up = quaternion.up
+
+        local ok_forward, forward = pcall(quaternion_forward, rotation)
+        local ok_right, right = pcall(quaternion_right, rotation)
+        local ok_up, up = pcall(quaternion_up, rotation)
 
         if not ok_forward or not ok_right or not ok_up or not forward or not right or not up then
             return nil
@@ -1398,80 +1382,34 @@ return function(env)
         return nil
     end
 
-    function _extract_hud_raycast_distance(a, b, c, d)
-        local value = a
-
+    local function _extract_hud_raycast_distance_from_value(value)
         if type(value) == "number" and _is_finite_number(value) then
             return value
         end
 
         if type(value) == "table" then
-            if _is_finite_number(value.distance) then
-                return value.distance
+            local distance = value.distance
+
+            if _is_finite_number(distance) then
+                return distance
             end
 
             local first = value[1]
+            distance = type(first) == "table" and first.distance or nil
 
-            if type(first) == "table" and _is_finite_number(first.distance) then
-                return first.distance
-            end
-        end
-
-        value = b
-
-        if type(value) == "number" and _is_finite_number(value) then
-            return value
-        end
-
-        if type(value) == "table" then
-            if _is_finite_number(value.distance) then
-                return value.distance
-            end
-
-            local first = value[1]
-
-            if type(first) == "table" and _is_finite_number(first.distance) then
-                return first.distance
-            end
-        end
-
-        value = c
-
-        if type(value) == "number" and _is_finite_number(value) then
-            return value
-        end
-
-        if type(value) == "table" then
-            if _is_finite_number(value.distance) then
-                return value.distance
-            end
-
-            local first = value[1]
-
-            if type(first) == "table" and _is_finite_number(first.distance) then
-                return first.distance
-            end
-        end
-
-        value = d
-
-        if type(value) == "number" and _is_finite_number(value) then
-            return value
-        end
-
-        if type(value) == "table" then
-            if _is_finite_number(value.distance) then
-                return value.distance
-            end
-
-            local first = value[1]
-
-            if type(first) == "table" and _is_finite_number(first.distance) then
-                return first.distance
+            if _is_finite_number(distance) then
+                return distance
             end
         end
 
         return nil
+    end
+
+    function _extract_hud_raycast_distance(a, b, c, d)
+        return _extract_hud_raycast_distance_from_value(a)
+            or _extract_hud_raycast_distance_from_value(b)
+            or _extract_hud_raycast_distance_from_value(c)
+            or _extract_hud_raycast_distance_from_value(d)
     end
 
     function mod:is_hud_world_position_occluded(camera_position, world_position)
@@ -1855,33 +1793,6 @@ return function(env)
         end
 
         return nil
-    end
-
-    function _safe_unit_outline_lookup(unit, outline_extension_map)
-        local extension = _safe_unit_outline_extension(unit, outline_extension_map)
-
-        if not extension then
-            return nil
-        end
-
-        local outlines = rawget(extension, "outlines")
-
-        if type(outlines) ~= "table" then
-            return nil
-        end
-
-        local outline_lookup = nil
-
-        for _, outline in pairs(outlines) do
-            local outline_name = outline and outline.name
-
-            if outline_name ~= nil then
-                outline_lookup = outline_lookup or {}
-                outline_lookup[tostring(outline_name)] = true
-            end
-        end
-
-        return outline_lookup
     end
 
     function _safe_game_mode_manager()
