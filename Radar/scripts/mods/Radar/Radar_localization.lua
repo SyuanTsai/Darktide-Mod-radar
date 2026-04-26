@@ -1,3 +1,166 @@
+local _localization_languages = {
+    "en",
+    "fr",
+    "de",
+    "it",
+    "es",
+    "pl",
+    "pt-br",
+    "ru",
+    "ja",
+    "ko",
+    "zh-cn",
+    "zh-tw",
+}
+
+local function _localized_text_for_all_languages(text)
+    local localization = {}
+
+    for i = 1, #_localization_languages do
+        localization[_localization_languages[i]] = text
+    end
+
+    return localization
+end
+
+local function _localized_game_text(localization_key)
+    return _localized_text_for_all_languages(Localize(localization_key))
+end
+
+local function _localized_game_names(localization_keys)
+    local localized_names = {}
+
+    for i = 1, #localization_keys do
+        localized_names[i] = Localize(localization_keys[i])
+    end
+
+    return localized_names
+end
+
+local function _join_localized_names(localized_names, conjunction)
+    local count = #localized_names
+
+    if count == 0 then
+        return ""
+    end
+
+    if count == 1 then
+        return localized_names[1]
+    end
+
+    if count == 2 then
+        return localized_names[1] .. " " .. conjunction .. " " .. localized_names[2]
+    end
+
+    local result = localized_names[1]
+
+    for i = 2, count - 1 do
+        result = result .. ", " .. localized_names[i]
+    end
+
+    return result .. " " .. conjunction .. " " .. localized_names[count]
+end
+
+local function _enemy_examples_tooltip(localization_keys)
+    local localized_names = _localized_game_names(localization_keys)
+
+    return {
+        en = "like " .. _join_localized_names(localized_names, "and"),
+        fr = "par ex. " .. _join_localized_names(localized_names, "et"),
+        de = "z. B. " .. _join_localized_names(localized_names, "und"),
+        it = "ad es. " .. _join_localized_names(localized_names, "e"),
+        es = "p. ej. " .. _join_localized_names(localized_names, "y"),
+        pl = "np. " .. _join_localized_names(localized_names, "i"),
+        ["pt-br"] = "ex.: " .. _join_localized_names(localized_names, "e"),
+        ["ru"] = "например " .. _join_localized_names(localized_names, "и"),
+        ja = "例: " .. table.concat(localized_names, "、"),
+        ko = "예: " .. _join_localized_names(localized_names, "및"),
+        ["zh-cn"] = "例如 " .. _join_localized_names(localized_names, "和"),
+        ["zh-tw"] = "例如 " .. _join_localized_names(localized_names, "與"),
+    }
+end
+
+local function _enemy_marker_display_tooltip(localization_key)
+    local enemy_name = Localize(localization_key)
+
+    return {
+        en = "Choose how markers for " .. enemy_name .. " are shown on the radar: icon only, marked icon, or disabled.",
+        fr = "Choisissez comment les marqueurs de " .. enemy_name .. " sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
+        de = "Legt fest, wie Markierungen für " .. enemy_name .. " auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
+        it = "Scegli come mostrare sul radar i marcatori di " .. enemy_name .. ": solo icona, icona contrassegnata o disattivato.",
+        es = "Elige cómo se muestran en el radar los marcadores de " .. enemy_name .. ": solo icono, icono marcado o desactivado.",
+        pl = "Wybierz, jak znaczniki " .. enemy_name .. " mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
+        ["pt-br"] = "Escolha como os marcadores de " .. enemy_name .. " são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
+        ["ru"] = "Выберите, как на радаре будут отображаться метки " .. enemy_name .. ": только значок, отмеченный значок или отключено.",
+        ja = enemy_name .. " のマーカーをレーダー上でどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
+        ko = "레이더에서 " .. enemy_name .. " 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
+        ["zh-cn"] = "选择雷达上 " .. enemy_name .. " 标记的显示方式: 仅图标、已标记图标或禁用。",
+        ["zh-tw"] = "選擇雷達上 " .. enemy_name .. " 標記的顯示方式: 僅圖示、已標記圖示或停用。",
+    }
+end
+
+local _ability_marked_enemy_outline_localization_keys = {
+    "loc_talent_psyker_marked_enemies_passive",
+    "loc_talent_broker_ability_focus_improved",
+    "loc_talent_veteran_improved_tag",
+    "loc_talent_arbites_mastiff_target_description",
+    "loc_talent_adamant_exterminator",
+    "loc_talent_veteran_combat_ability_elite_and_special_outlines",
+    "loc_ability_ogryn_taunt_shout",
+}
+
+local function _quoted_localized_game_names(localization_keys)
+    local quoted_names = {}
+
+    for i = 1, #localization_keys do
+        quoted_names[i] = "\"" .. Localize(localization_keys[i]) .. "\""
+    end
+
+    return quoted_names
+end
+
+local function _ability_marked_enemies_tooltip()
+    local ability_outline_names = _quoted_localized_game_names(_ability_marked_enemy_outline_localization_keys)
+
+    return {
+        en = "Also include enemies while they have a supported ability or smart-tag outline such as " ..
+            _join_localized_names(ability_outline_names, "or") ..
+            ". Their brackets use the highest-priority supported outline color when one is available, they ignore the radar range limit, and \"Tagged enemies only\" will not hide them.",
+        fr = "Inclut également les ennemis tant qu’ils ont un contour pris en charge provenant d’une capacité ou d’un smart tag, comme " ..
+            _join_localized_names(ability_outline_names, "ou") ..
+            ". Leurs crochets utilisent la couleur de contour prise en charge ayant la priorité la plus élevée lorsqu’elle est disponible, ils ignorent la limite de portée du radar, et \"Ennemis marqués uniquement\" ne les masquera pas.",
+        de = "Berücksichtigt Gegner auch dann, wenn sie eine unterstützte Umrandung durch eine Fähigkeit oder einen Smart-Tag haben, wie zum Beispiel " ..
+            _join_localized_names(ability_outline_names, "oder") ..
+            ". Ihre Klammern verwenden die unterstützte Umrandungsfarbe mit der höchsten Priorität, sofern verfügbar, sie ignorieren die Radarreichweitenbegrenzung, und \"Nur markierte Gegner\" blendet sie nicht aus.",
+        it = "Include anche i nemici finché hanno un contorno supportato da abilità o smart tag, come " ..
+            _join_localized_names(ability_outline_names, "o") ..
+            ". Le loro parentesi usano il colore del contorno supportato con la priorità più alta quando disponibile, ignorano il limite di portata del radar e \"Solo nemici segnalati\" non li nasconderà.",
+        es = "También incluye a los enemigos mientras tengan un contorno compatible de habilidad o smart tag, como " ..
+            _join_localized_names(ability_outline_names, "o") ..
+            ". Sus corchetes usan el color de contorno compatible de mayor prioridad cuando está disponible, ignoran el límite de alcance del radar y \"Solo enemigos marcados\" no los ocultará.",
+        pl = "Uwzględnia także wrogów, gdy mają obsługiwaną obwódkę zdolności lub inteligentnego oznaczenia, taką jak " ..
+            _join_localized_names(ability_outline_names, "lub") ..
+            ". Ich nawiasy używają obsługiwanego koloru obwódki o najwyższym priorytecie, jeśli jest dostępny, ignorują limit zasięgu radaru, a opcja \"Tylko oznaczeni wrogowie\" ich nie ukryje.",
+        ["pt-br"] = "Também inclui inimigos enquanto eles tiverem um contorno compatível de habilidade ou marcação inteligente, como " ..
+            _join_localized_names(ability_outline_names, "ou") ..
+            ". Os colchetes deles usam a cor de contorno compatível de maior prioridade quando disponível, ignoram o limite de alcance do radar, e \"Somente inimigos marcados\" não vai ocultá-los.",
+        ["ru"] = "Также включает врагов, пока на них есть поддерживаемая обводка способности или умной метки, например " ..
+            _join_localized_names(ability_outline_names, "или") ..
+            ". Их скобки используют поддерживаемый цвет обводки с наивысшим приоритетом, если он доступен, они игнорируют ограничение дальности радара, и опция \"Только отмеченные враги\" не будет их скрывать.",
+        ja = "また、" ..
+            _join_localized_names(ability_outline_names, "や") ..
+            " のような、サポートされているアビリティまたはスマートタグのアウトラインが付いている敵も対象に含めます。ブラケットには利用可能な場合、優先度が最も高いサポート済みアウトライン色が使われ、レーダー範囲制限を無視し、\"タグ付けされた敵のみ\" でも非表示になりません。",
+        ko = _join_localized_names(ability_outline_names, "또는") ..
+            " 같은 지원되는 능력 또는 스마트 태그 외곽선이 있는 동안의 적도 포함합니다. 해당 괄호 표시는 사용 가능할 때 가장 높은 우선순위의 지원 외곽선 색상을 사용하고, 레이더 거리 제한을 무시하며, \"태그된 적만\" 옵션으로도 숨겨지지 않습니다.",
+        ["zh-cn"] = "敌人在拥有受支持的技能或智能标记描边时也会被包含在内，例如 " ..
+            _join_localized_names(ability_outline_names, "或") ..
+            "。它们的括号会在可用时使用优先级最高的受支持描边颜色，忽略雷达距离限制，并且“仅显示已标记敌人”也不会隐藏它们。",
+        ["zh-tw"] = "敵人在具有受支援的技能或智慧標記外框時也會被納入顯示，例如 " ..
+            _join_localized_names(ability_outline_names, "或") ..
+            "。它們的括號會在可用時使用優先度最高的受支援外框顏色，忽略雷達距離限制，而且「僅顯示已標記敵人」也不會將它們隱藏。",
+    }
+end
+
 return {
     mod_name = {
         en = "Radar",
@@ -2570,20 +2733,7 @@ return {
         ["zh-cn"] = "射手",
         ["zh-tw"] = "射手",
     },
-    shooter_enemies_tooltip = {
-        en = "like Scab Shooter, Dreg and Scab Stalker",
-        fr = "par ex. Tireur Scab, Traqueur Dreg et Traqueur Scab",
-        de = "z. B. Scab-Schütze, Dreg-Stalker und Scab-Stalker",
-        it = "ad es. Tiratore Scab, Segugio Dreg e Segugio Scab",
-        es = "p. ej. Tirador Scab, Acechador Dreg y Acechador Scab",
-        pl = "np. Strzelec Scab, Tropiciel Dreg i Tropiciel Scab",
-        ["pt-br"] = "ex.: Atirador Scab, Perseguidor Dreg e Perseguidor Scab",
-        ru = "например Скаб-стрелок, Дрег-сталкер и Скаб-сталкер",
-        ja = "例: スカブ・シューター、ドレッグ・ストーカー、スカブ・ストーカー",
-        ko = "예: 스캡 슈터, 드렉 스토커, 스캡 스토커",
-        ["zh-cn"] = "例如 斯卡布射手、德雷格潜猎者 和 斯卡布潜猎者",
-        ["zh-tw"] = "例如 斯卡布射手、德雷格潛獵者 與 斯卡布潛獵者",
-    },
+    shooter_enemies_tooltip = _enemy_examples_tooltip({ "loc_breed_display_name_renegade_rifleman", "loc_breed_display_name_cultist_assault", "loc_breed_display_name_renegade_assault" }),
     show_enemy_common = {
         en = "Common enemies",
         fr = "Ennemis communs",
@@ -2598,20 +2748,7 @@ return {
         ["zh-cn"] = "普通敌人",
         ["zh-tw"] = "普通敵人",
     },
-    common_tooltip = {
-        en = "like Dreg and Scab Bruiser",
-        fr = "par ex. Cogneur Dreg et Cogneur Scab",
-        de = "z. B. Dreg-Schläger und Scab-Schläger",
-        it = "ad es. Picchiatore Dreg e Picchiatore Scab",
-        es = "p. ej. Bruto Dreg y Bruto Scab",
-        pl = "np. Dreg Oprych i Scab Oprych",
-        ["pt-br"] = "ex.: Brutamontes Dreg e Brutamontes Scab",
-        ru = "например Дрег-громила и Скаб-громила",
-        ja = "例: ドレッグ・ブルーザー、スカブ・ブルーザー",
-        ko = "예: 드렉 브루저, 스캡 브루저",
-        ["zh-cn"] = "例如 德雷格打手 和 斯卡布打手",
-        ["zh-tw"] = "例如 德雷格打手 與 斯卡布打手",
-    },
+    common_tooltip = _enemy_examples_tooltip({ "loc_breed_display_name_cultist_melee", "loc_breed_display_name_renegade_melee" }),
     show_enemy_horde = {
         en = "Horde enemies",
         fr = "Ennemis de horde",
@@ -2626,328 +2763,29 @@ return {
         ["zh-cn"] = "群怪敌人",
         ["zh-tw"] = "群怪敵人",
     },
-    horde_tooltip = {
-        en = "like Groaner, Moebian 21st, Poxwalkers (regular, lesser mutated and mutated)",
-        fr = "par ex. Grogneur, 21e Moebien et Poxwalkers (normaux, peu mutés et mutés)",
-        de = "z. B. Groaner, Moebian 21st und Poxwalker (normal, gering mutiert und mutiert)",
-        it = "ad es. Groaner, Moebian 21st e Poxwalker (normali, poco mutati e mutati)",
-        es = "p. ej. Groaner, Moebian 21st y Poxwalkers (normales, poco mutados y mutados)",
-        pl = "np. Groaner, Moebian 21st i Poxwalkery (zwykłe, lekko zmutowane i zmutowane)",
-        ["pt-br"] = "ex.: Groaner, Moebian 21st e Poxwalkers (normais, pouco mutados e mutados)",
-        ru = "например Гроунер, Мёбианский 21-й и Поксволкеры (обычные, слабо мутировавшие и мутировавшие)",
-        ja = "例: グローナー、モエビアン第21連隊、ポックスウォーカー（通常、軽度変異、変異）",
-        ko = "예: 그로너, 모에비안 21연대, 폭스워커(일반, 약변이, 변이)",
-        ["zh-cn"] = "例如 呻吟者、莫比安第21团 和 瘟疫行者（普通、轻度变异、变异）",
-        ["zh-tw"] = "例如 呻吟者、莫比亞第21團 與 瘟疫行者（普通、輕度變異、變異）",
-    },
-    show_enemy_renegade_grenadier = {
-        en = "Scab Bomber",
-        fr = "Bombardier Scab",
-        de = "Scab-Bomber",
-        it = "Bombardiere Scab",
-        es = "Bombardero Scab",
-        pl = "Bombiarz Scab",
-        ["pt-br"] = "Bombardeiro Scab",
-        ru = "Скаб-бомбер",
-        ja = "スカブ・ボンバー",
-        ko = "스캡 봄버",
-        ["zh-cn"] = "斯卡布轰炸兵",
-        ["zh-tw"] = "斯卡布轟炸兵",
-    },
-    show_enemy_cultist_grenadier = {
-        en = "Dreg Tox Bomber",
-        fr = "Bombardier toxique Dreg",
-        de = "Dreg-Tox-Bomber",
-        it = "Bombardiere tossico Dreg",
-        es = "Bombardero tóxico Dreg",
-        pl = "Toksyczny bombiarz Dreg",
-        ["pt-br"] = "Bombardeiro tóxico Dreg",
-        ru = "Дрег-токс-бомбер",
-        ja = "ドレッグ・トックス・ボンバー",
-        ko = "드렉 톡스 봄버",
-        ["zh-cn"] = "德雷格剧毒轰炸兵",
-        ["zh-tw"] = "德雷格劇毒轟炸兵",
-    },
-    show_enemy_cultist_gunner = {
-        en = "Dreg Gunner",
-        fr = "Mitrailleur Dreg",
-        de = "Dreg-Schütze",
-        it = "Mitragliere Dreg",
-        es = "Artillero Dreg",
-        pl = "Strzelec Dreg",
-        ["pt-br"] = "Artilheiro Dreg",
-        ru = "Дрег-пулеметчик",
-        ja = "ドレッグ・ガンナー",
-        ko = "드렉 거너",
-        ["zh-cn"] = "德雷格机枪手",
-        ["zh-tw"] = "德雷格機槍手",
-    },
-    show_enemy_renegade_gunner = {
-        en = "Scab Gunner",
-        fr = "Mitrailleur Scab",
-        de = "Scab-Schütze",
-        it = "Mitragliere Scab",
-        es = "Artillero Scab",
-        pl = "Strzelec Scab",
-        ["pt-br"] = "Artilheiro Scab",
-        ru = "Скаб-пулеметчик",
-        ja = "スカブ・ガンナー",
-        ko = "스캡 거너",
-        ["zh-cn"] = "斯卡布机枪手",
-        ["zh-tw"] = "斯卡布機槍手",
-    },
-    show_enemy_renegade_plasma_gunner = {
-        en = "Scab Plasma Gunner",
-        fr = "Mitrailleur à plasma Scab",
-        de = "Scab-Plasmaschütze",
-        it = "Mitragliere al plasma Scab",
-        es = "Artillero de plasma Scab",
-        pl = "Strzelec plazmowy Scab",
-        ["pt-br"] = "Artilheiro de plasma Scab",
-        ru = "Скаб-плазма-пулеметчик",
-        ja = "スカブ・プラズマガンナー",
-        ko = "스캡 플라즈마 거너",
-        ["zh-cn"] = "斯卡布等离子机枪手",
-        ["zh-tw"] = "斯卡布電漿機槍手",
-    },
-    show_enemy_chaos_ogryn_gunner = {
-        en = "Ogryn - Reaper",
-        fr = "Ogryn - Faucheur",
-        de = "Ogryn - Reaper",
-        it = "Ogryn - Mietitore",
-        es = "Ogrete - Segador",
-        pl = "Ogryn - Żniwiarz",
-        ["pt-br"] = "Ogryn - Ceifador",
-        ru = "Огрин - Жнец",
-        ja = "オグリン - リーパー",
-        ko = "오그린 - 리퍼",
-        ["zh-cn"] = "欧格林 - 收割者",
-        ["zh-tw"] = "奧格林 - 收割者",
-    },
-    show_enemy_chaos_hound = {
-        en = "Pox Hound",
-        fr = "Chien Pox",
-        de = "Poxhund",
-        it = "Segugio Pox",
-        es = "Sabueso Pox",
-        pl = "Ogar Pox",
-        ["pt-br"] = "Cão Pox",
-        ru = "Покс-пес",
-        ja = "ポックス・ハウンド",
-        ko = "폭스 하운드",
-        ["zh-cn"] = "瘟疫猎犬",
-        ["zh-tw"] = "瘟疫獵犬",
-    },
-    show_enemy_chaos_armored_hound = {
-        en = "Armored Pox Hound",
-        fr = "Chien Pox blindé",
-        de = "Gepanzerter Poxhund",
-        it = "Segugio Pox corazzato",
-        es = "Sabueso Pox blindado",
-        pl = "Opancerzony ogar Pox",
-        ["pt-br"] = "Cão Pox blindado",
-        ru = "Бронированный Покс-пес",
-        ja = "装甲ポックス・ハウンド",
-        ko = "장갑 폭스 하운드",
-        ["zh-cn"] = "装甲瘟疫猎犬",
-        ["zh-tw"] = "裝甲瘟疫獵犬",
-    },
-    show_enemy_chaos_poxwalker_bomber = {
-        en = "Poxburster",
-        fr = "Poxburster",
-        de = "Poxburster",
-        it = "Poxburster",
-        es = "Poxburster",
-        pl = "Poxburster",
-        ["pt-br"] = "Poxburster",
-        ru = "Поксбурстер",
-        ja = "ポックスバースター",
-        ko = "폭스버스터",
-        ["zh-cn"] = "瘟爆者",
-        ["zh-tw"] = "瘟爆者",
-    },
-    show_enemy_renegade_executor = {
-        en = "Scab Mauler",
-        fr = "Briseur Scab",
-        de = "Scab-Mauler",
-        it = "Demolitore Scab",
-        es = "Demoledor Scab",
-        pl = "Miażdżyciel Scab",
-        ["pt-br"] = "Esmagador Scab",
-        ru = "Скаб-мясник",
-        ja = "スカブ・モーラー",
-        ko = "스캡 마울러",
-        ["zh-cn"] = "斯卡布重锤兵",
-        ["zh-tw"] = "斯卡布重錘兵",
-    },
-    show_enemy_cultist_berzerker = {
-        en = "Dreg Rager",
-        fr = "Enragé Dreg",
-        de = "Dreg-Rager",
-        it = "Dreg Furioso",
-        es = "Rabioso Dreg",
-        pl = "Furiat Dreg",
-        ["pt-br"] = "Furioso Dreg",
-        ru = "Дрег-берсерк",
-        ja = "ドレッグ・レイジャー",
-        ko = "드렉 광전사",
-        ["zh-cn"] = "德雷格狂徒",
-        ["zh-tw"] = "德雷格狂徒",
-    },
-    show_enemy_renegade_berzerker = {
-        en = "Scab Rager",
-        fr = "Enragé Scab",
-        de = "Scab-Rager",
-        it = "Scab Furioso",
-        es = "Rabioso Scab",
-        pl = "Furiat Scab",
-        ["pt-br"] = "Furioso Scab",
-        ru = "Скаб-берсерк",
-        ja = "スカブ・レイジャー",
-        ko = "스캡 광전사",
-        ["zh-cn"] = "斯卡布狂徒",
-        ["zh-tw"] = "斯卡布狂徒",
-    },
-    show_enemy_cultist_shocktrooper = {
-        en = "Dreg Shotgunner",
-        fr = "Fusilier à pompe Dreg",
-        de = "Dreg-Schrotflintenschütze",
-        it = "Fuciliere a pompa Dreg",
-        es = "Escopetero Dreg",
-        pl = "Strzelec ze strzelby Dreg",
-        ["pt-br"] = "Escopeteiro Dreg",
-        ru = "Дрег-шотганнер",
-        ja = "ドレッグ・ショットガンナー",
-        ko = "드렉 샷거너",
-        ["zh-cn"] = "德雷格霰弹枪手",
-        ["zh-tw"] = "德雷格霰彈槍手",
-    },
-    show_enemy_renegade_shocktrooper = {
-        en = "Scab Shotgunner",
-        fr = "Fusilier à pompe Scab",
-        de = "Scab-Schrotflintenschütze",
-        it = "Fuciliere a pompa Scab",
-        es = "Escopetero Scab",
-        pl = "Strzelec ze strzelby Scab",
-        ["pt-br"] = "Escopeteiro Scab",
-        ru = "Скаб-шотганнер",
-        ja = "スカブ・ショットガンナー",
-        ko = "스캡 샷거너",
-        ["zh-cn"] = "斯卡布霰弹枪手",
-        ["zh-tw"] = "斯卡布霰彈槍手",
-    },
-    show_enemy_renegade_sniper = {
-        en = "Sniper",
-        fr = "Sniper",
-        de = "Scharfschütze",
-        it = "Cecchino",
-        es = "Francotirador",
-        pl = "Snajper",
-        ["pt-br"] = "Atirador de elite",
-        ru = "Снайпер",
-        ja = "スナイパー",
-        ko = "스나이퍼",
-        ["zh-cn"] = "狙击手",
-        ["zh-tw"] = "狙擊手",
-    },
-    show_enemy_cultist_flamer = {
-        en = "Dreg Tox Flamer",
-        fr = "Lance-flammes toxique Dreg",
-        de = "Dreg-Tox-Flammenwerfer",
-        it = "Lanciafiamme tossico Dreg",
-        es = "Lanzallamas tóxico Dreg",
-        pl = "Toksyczny miotacz ognia Dreg",
-        ["pt-br"] = "Incendiário tóxico Dreg",
-        ru = "Дрег-токс-флеймер",
-        ja = "ドレッグ・トックス・フレイマー",
-        ko = "드렉 톡스 플레이머",
-        ["zh-cn"] = "德雷格剧毒喷火兵",
-        ["zh-tw"] = "德雷格劇毒噴火兵",
-    },
-    show_enemy_renegade_flamer = {
-        en = "Scab Flamer",
-        fr = "Lance-flammes Scab",
-        de = "Scab-Flammenwerfer",
-        it = "Lanciafiamme Scab",
-        es = "Lanzallamas Scab",
-        pl = "Miotacz ognia Scab",
-        ["pt-br"] = "Incendiário Scab",
-        ru = "Скаб-флеймер",
-        ja = "スカブ・フレイマー",
-        ko = "스캡 플레이머",
-        ["zh-cn"] = "斯卡布喷火兵",
-        ["zh-tw"] = "斯卡布噴火兵",
-    },
-    show_enemy_cultist_mutant = {
-        en = "Mutant",
-        fr = "Mutant",
-        de = "Mutant",
-        it = "Mutante",
-        es = "Mutante",
-        pl = "Mutant",
-        ["pt-br"] = "Mutante",
-        ru = "Мутант",
-        ja = "ミュータント",
-        ko = "뮤턴트",
-        ["zh-cn"] = "变种人",
-        ["zh-tw"] = "變種人",
-    },
-    show_enemy_chaos_ogryn_executor = {
-        en = "Ogryn - Crusher",
-        fr = "Ogryn - Broyeur",
-        de = "Ogryn - Crusher",
-        it = "Ogryn - Demolitore",
-        es = "Ogrete - Triturador",
-        pl = "Ogryn - Kruszyciel",
-        ["pt-br"] = "Ogryn - Esmagador",
-        ru = "Огрин - Крушитель",
-        ja = "オグリン - クラッシャー",
-        ko = "오그린 - 크러셔",
-        ["zh-cn"] = "欧格林 - 粉碎者",
-        ["zh-tw"] = "奧格林 - 粉碎者",
-    },
-    show_enemy_chaos_ogryn_bulwark = {
-        en = "Ogryn - Bulwark",
-        fr = "Ogryn - Rempart",
-        de = "Ogryn - Bulwark",
-        it = "Ogryn - Baluardo",
-        es = "Ogrete - Baluarte",
-        pl = "Ogryn - Bastion",
-        ["pt-br"] = "Ogryn - Baluarte",
-        ru = "Огрин - Бастион",
-        ja = "オグリン - ブルワーク",
-        ko = "오그린 - 불워크",
-        ["zh-cn"] = "欧格林 - 壁垒",
-        ["zh-tw"] = "奧格林 - 壁壘",
-    },
-    show_enemy_renegade_netgunner = {
-        en = "Trapper",
-        fr = "Trappeur",
-        de = "Trapper",
-        it = "Intrappolatore",
-        es = "Atrapador",
-        pl = "Traper",
-        ["pt-br"] = "Capturador",
-        ru = "Траппер",
-        ja = "トラッパー",
-        ko = "트래퍼",
-        ["zh-cn"] = "捕网者",
-        ["zh-tw"] = "捕網者",
-    },
-    show_enemy_cultist_ritualist = {
-        en = "Ritualist",
-        fr = "Ritualiste",
-        de = "Ritualist",
-        it = "Ritualista",
-        es = "Ritualista",
-        pl = "Rytualista",
-        ["pt-br"] = "Ritualista",
-        ru = "Ритуалист",
-        ja = "儀式師",
-        ko = "의식사",
-        ["zh-cn"] = "仪式师",
-        ["zh-tw"] = "儀式師",
-    },
+    horde_tooltip = _enemy_examples_tooltip({ "loc_breed_display_name_chaos_newly_infected", "loc_chaos_armored_infected_breed_name", "loc_breed_display_name_chaos_poxwalker", "loc_breed_display_name_chaos_lesser_mutated_poxwalker", "loc_breed_display_name_chaos_mutated_poxwalker" }),
+    show_enemy_renegade_grenadier = _localized_game_text("loc_breed_display_name_renegade_grenadier"),
+    show_enemy_cultist_grenadier = _localized_game_text("loc_breed_display_name_cultist_grenadier"),
+    show_enemy_cultist_gunner = _localized_game_text("loc_breed_display_name_cultist_gunner"),
+    show_enemy_renegade_gunner = _localized_game_text("loc_breed_display_name_renegade_gunner"),
+    show_enemy_renegade_plasma_gunner = _localized_game_text("loc_breed_display_name_renegade_plasma_gunner"),
+    show_enemy_chaos_ogryn_gunner = _localized_game_text("loc_breed_display_name_chaos_ogryn_gunner"),
+    show_enemy_chaos_hound = _localized_game_text("loc_breed_display_name_chaos_hound"),
+    show_enemy_chaos_armored_hound = _localized_game_text("loc_breed_display_name_chaos_armored_hound"),
+    show_enemy_chaos_poxwalker_bomber = _localized_game_text("loc_breed_display_name_chaos_poxwalker_bomber"),
+    show_enemy_renegade_executor = _localized_game_text("loc_breed_display_name_renegade_executor"),
+    show_enemy_cultist_berzerker = _localized_game_text("loc_breed_display_name_cultist_berzerker"),
+    show_enemy_renegade_berzerker = _localized_game_text("loc_breed_display_name_renegade_berzerker"),
+    show_enemy_cultist_shocktrooper = _localized_game_text("loc_breed_display_name_cultist_shocktrooper"),
+    show_enemy_renegade_shocktrooper = _localized_game_text("loc_breed_display_name_renegade_shocktrooper"),
+    show_enemy_renegade_sniper = _localized_game_text("loc_breed_display_name_renegade_sniper"),
+    show_enemy_cultist_flamer = _localized_game_text("loc_breed_display_name_cultist_flamer"),
+    show_enemy_renegade_flamer = _localized_game_text("loc_breed_display_name_renegade_flamer"),
+    show_enemy_cultist_mutant = _localized_game_text("loc_breed_display_name_cultist_mutant"),
+    show_enemy_chaos_ogryn_executor = _localized_game_text("loc_breed_display_name_chaos_ogryn_executor"),
+    show_enemy_chaos_ogryn_bulwark = _localized_game_text("loc_breed_display_name_chaos_ogryn_bulwark"),
+    show_enemy_renegade_netgunner = _localized_game_text("loc_breed_display_name_renegade_netgunner"),
+    show_enemy_cultist_ritualist = _localized_game_text("loc_breed_display_name_cultist_ritualist"),
     enable_radar_tooltip = {
         en = "Master switch for the radar. Disabling this hides the radar entirely.",
         fr = "Interrupteur principal du radar. Le désactiver masque entièrement le radar.",
@@ -4726,314 +4564,28 @@ return {
         ["zh-cn"] = "以百分比调整杂项敌人标记的图标大小。",
         ["zh-tw"] = "以百分比調整雜項敵人標記的圖示大小。",
     },
-    show_enemy_cultist_gunner_tooltip = {
-        en = "Choose how markers for Dreg Gunner are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Tireurs Dreg sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Dreg-Schützen auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Mitragliere Dreg: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Artillero Dreg: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Dreg Gunnera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Artilheiro Dreg são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Стрелка-отродья: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でDreg Gunnerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 드렉 거너 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Dreg Gunner 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Dreg Gunner 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_cultist_berzerker_tooltip = {
-        en = "Choose how markers for Dreg Rager are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Enragés Dreg sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Dreg-Rasende auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Furioso Dreg: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Rabioso Dreg: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Dreg Ragera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Dreg Rager são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Буйного-отродья: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でDreg Ragerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 드렉 레이저 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Dreg Rager 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Dreg Rager 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_cultist_shocktrooper_tooltip = {
-        en = "Choose how markers for Dreg Shotgunner are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Fusiliers Dreg sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Dreg-Schrotflintenschützen auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Fuciliere a pompa Dreg: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Escopetero Dreg: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Dreg Shotgunnera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Escopeteiro Dreg são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Дробовикщика-отродья: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でDreg Shotgunnerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 드렉 샷거너 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Dreg Shotgunner 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Dreg Shotgunner 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_gunner_tooltip = {
-        en = "Choose how markers for Scab Gunner are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Tireurs Scab sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Scab-Schützen auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Mitragliere Scab: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Artillero Scab: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Scab Gunnera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Artilheiro Scab são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Стрелка-отступника: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でScab Gunnerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 스캡 거너 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Scab Gunner 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Scab Gunner 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_executor_tooltip = {
-        en = "Choose how markers for Scab Mauler are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Massacreurs Scab sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Scab-Mauler auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Mauler Scab: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Mauler Scab: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Scab Maulera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Scab Mauler são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Мясника-отступника: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でScab Maulerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 스캡 마울러 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Scab Mauler 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Scab Mauler 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_plasma_gunner_tooltip = {
-        en = "Choose how markers for Scab Plasma Gunner are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Tireurs plasma Scab sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Scab-Plasmaschützen auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Mitragliere al plasma Scab: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Artillero de plasma Scab: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Scab Plasma Gunnera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Artilheiro de Plasma Scab são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Плазменного стрелка-отступника: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でScab Plasma Gunnerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 스캡 플라즈마 거너 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Scab Plasma Gunner 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Scab Plasma Gunner 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_berzerker_tooltip = {
-        en = "Choose how markers for Scab Rager are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Enragés Scab sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Scab-Rasende auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Furioso Scab: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Rabioso Scab: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Scab Ragera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Scab Rager são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Буйного-отступника: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でScab Ragerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 스캡 레이저 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Scab Rager 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Scab Rager 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_shocktrooper_tooltip = {
-        en = "Choose how markers for Scab Shotgunner are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Fusiliers Scab sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Scab-Schrotflintenschützen auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Fuciliere a pompa Scab: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Escopetero Scab: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Scab Shotgunnera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Escopeteiro Scab são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Дробовикщика-отступника: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でScab Shotgunnerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 스캡 샷거너 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Scab Shotgunner 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Scab Shotgunner 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_chaos_ogryn_bulwark_tooltip = {
-        en = "Choose how markers for Ogryn - Bulwark are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Ogryns - Remparts sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Ogryn - Bulwark auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori dell'Ogryn - Bulwark: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Ogryn - Bulwark: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Ogryna - Bulwarka mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Ogryn - Bulwark são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Огрина - Щитоносца: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でOgryn - Bulwarkのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 오그린 - 불워크 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Ogryn - Bulwark 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Ogryn - Bulwark 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_chaos_ogryn_executor_tooltip = {
-        en = "Choose how markers for Ogryn - Crusher are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Ogryns - Crushers sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Ogryn - Crusher auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori dell'Ogryn - Crusher: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Ogryn - Crusher: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Ogryna - Crushera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Ogryn - Crusher são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Огрина - Крушителя: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でOgryn - Crusherのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 오그린 - 크러셔 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Ogryn - Crusher 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Ogryn - Crusher 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_chaos_ogryn_gunner_tooltip = {
-        en = "Choose how markers for Ogryn - Reaper are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Ogryns - Reapers sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Ogryn - Reaper auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori dell'Ogryn - Reaper: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Ogryn - Reaper: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Ogryna - Reapera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Ogryn - Reaper são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Огрина - Жнеца: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でOgryn - Reaperのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 오그린 - 리퍼 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Ogryn - Reaper 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Ogryn - Reaper 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_grenadier_tooltip = {
-        en = "Choose how markers for Scab Bomber are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Bombardiers Scab sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Scab-Bomber auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Bombardiere Scab: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Bombardero Scab: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Scab Bombera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Bombardeiro Scab são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Бомбиста-отступника: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でScab Bomberのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 스캡 봄버 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Scab Bomber 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Scab Bomber 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_cultist_grenadier_tooltip = {
-        en = "Choose how markers for Dreg Tox Bomber are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Bombardiers toxiques Dreg sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Dreg-Tox-Bomber auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Bombardiere tossico Dreg: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Bombardero tóxico Dreg: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Dreg Tox Bombera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Bombardeiro Tóxico Dreg são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Токс-бомбиста-отродья: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でDreg Tox Bomberのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 드렉 톡스 봄버 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Dreg Tox Bomber 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Dreg Tox Bomber 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_flamer_tooltip = {
-        en = "Choose how markers for Scab Flamer are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Flamers Scab sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Scab-Flamer auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Piromane Scab: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Lanzallamas Scab: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Scab Flamera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Scab Flamer são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Огнеметчика-отступника: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でScab Flamerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 스캡 플레머 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Scab Flamer 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Scab Flamer 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_cultist_flamer_tooltip = {
-        en = "Choose how markers for Dreg Tox Flamer are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Flamers toxiques Dreg sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Dreg-Tox-Flamer auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Piromane tossico Dreg: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Lanzallamas tóxico Dreg: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Dreg Tox Flamera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Dreg Tox Flamer são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Токс-огнеметчика-отродья: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でDreg Tox Flamerのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 드렉 톡스 플레머 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Dreg Tox Flamer 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Dreg Tox Flamer 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_cultist_mutant_tooltip = {
-        en = "Choose how markers for Mutant are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Mutants sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Mutanten auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Mutante: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Mutante: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Mutanta mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Mutante são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Мутанта: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でMutantのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 뮤턴트 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Mutant 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Mutant 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_chaos_poxwalker_bomber_tooltip = {
-        en = "Choose how markers for Poxburster are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Poxbursters sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Poxburster auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Poxburster: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Poxburster: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Poxburstera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Poxburster são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Взрывника-чумохода: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でPoxbursterのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 폭스버스터 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Poxburster 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Poxburster 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_chaos_armored_hound_tooltip = {
-        en = "Choose how markers for Armored Pox Hound are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Chiens de la vérole blindés sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Gepanzerte Poxhunde auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Segugio del vaiolo corazzato: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Sabueso de la Peste blindado: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Opancerzonego Pox Hounda mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Cão Pox Blindado são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Бронированного чумного пса: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でArmored Pox Houndのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 장갑 포كس 하운드 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Armored Pox Hound 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Armored Pox Hound 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_chaos_hound_tooltip = {
-        en = "Choose how markers for Pox Hound are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Chiens de la vérole sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Poxhunde auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Segugio del vaiolo: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Sabueso de la Peste: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Pox Hounda mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Cão Pox são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Чумного пса: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でPox Houndのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 폭스 하운드 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Pox Hound 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Pox Hound 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_sniper_tooltip = {
-        en = "Choose how markers for Sniper are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Snipers sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Scharfschützen auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Cecchino: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Francotirador: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Snajpera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Sniper são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Снайпера: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でSniperのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 스나이퍼 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Sniper 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Sniper 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_renegade_netgunner_tooltip = {
-        en = "Choose how markers for Trapper are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Trappeurs sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Trapper auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Trapper: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Trampero: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Trappera mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Trapper são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Ловчего: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でTrapperのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 트래퍼 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Trapper 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Trapper 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
-    show_enemy_cultist_ritualist_tooltip = {
-        en = "Choose how markers for Ritualist are shown on the radar: icon only, marked icon, or disabled.",
-        fr = "Choisissez comment les marqueurs des Ritualistes sont affichés sur le radar : icône seule, icône marquée ou désactivé.",
-        de = "Legt fest, wie Markierungen für Ritualisten auf dem Radar angezeigt werden: nur Symbol, markiertes Symbol oder deaktiviert.",
-        it = "Scegli come mostrare sul radar i marcatori del Ritualista: solo icona, icona contrassegnata o disattivato.",
-        es = "Elige cómo se muestran en el radar los marcadores del Ritualista: solo icono, icono marcado o desactivado.",
-        pl = "Wybierz, jak znaczniki Ritualisty mają być wyświetlane na radarze: tylko ikona, oznaczona ikona lub wyłączone.",
-        ["pt-br"] = "Escolha como os marcadores do Ritualista são exibidos no radar: apenas ícone, ícone marcado ou desativado.",
-        ["ru"] = "Выберите, как на радаре будут отображаться метки Ритуалиста: только значок, отмеченный значок или отключено.",
-        ja = "レーダー上でRitualistのマーカーをどう表示するかを選択します: アイコンのみ、マーク付きアイコン、または無効。",
-        ko = "레이더에서 리추얼리스트 마커를 어떻게 표시할지 선택합니다: 아이콘만, 표시된 아이콘 또는 비활성화.",
-        ["zh-cn"] = "选择雷达上 Ritualist 标记的显示方式: 仅图标、已标记图标或禁用。",
-        ["zh-tw"] = "選擇雷達上 Ritualist 標記的顯示方式: 僅圖示、已標記圖示或停用。",
-    },
+    show_enemy_cultist_gunner_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_cultist_gunner"),
+    show_enemy_cultist_berzerker_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_cultist_berzerker"),
+    show_enemy_cultist_shocktrooper_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_cultist_shocktrooper"),
+    show_enemy_renegade_gunner_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_gunner"),
+    show_enemy_renegade_executor_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_executor"),
+    show_enemy_renegade_plasma_gunner_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_plasma_gunner"),
+    show_enemy_renegade_berzerker_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_berzerker"),
+    show_enemy_renegade_shocktrooper_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_shocktrooper"),
+    show_enemy_chaos_ogryn_bulwark_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_chaos_ogryn_bulwark"),
+    show_enemy_chaos_ogryn_executor_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_chaos_ogryn_executor"),
+    show_enemy_chaos_ogryn_gunner_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_chaos_ogryn_gunner"),
+    show_enemy_renegade_grenadier_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_grenadier"),
+    show_enemy_cultist_grenadier_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_cultist_grenadier"),
+    show_enemy_renegade_flamer_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_flamer"),
+    show_enemy_cultist_flamer_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_cultist_flamer"),
+    show_enemy_cultist_mutant_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_cultist_mutant"),
+    show_enemy_chaos_poxwalker_bomber_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_chaos_poxwalker_bomber"),
+    show_enemy_chaos_armored_hound_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_chaos_armored_hound"),
+    show_enemy_chaos_hound_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_chaos_hound"),
+    show_enemy_renegade_sniper_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_sniper"),
+    show_enemy_renegade_netgunner_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_renegade_netgunner"),
+    show_enemy_cultist_ritualist_tooltip = _enemy_marker_display_tooltip("loc_breed_display_name_cultist_ritualist"),
     players_icon_scale_tooltip = {
         en = "Adjust the icon size for teammate markers as a percentage.",
         fr = "Ajuste la taille des icônes des marqueurs d'équipiers en pourcentage.",
@@ -5370,188 +4922,7 @@ return {
         ["zh-cn"] = "仅当敌人在游戏中具有有效标记时才显示敌人雷达标记。被标记的敌人在被标记期间也会无视雷达距离限制。现有的敌人可见性设置仍然适用。",
         ["zh-tw"] = "僅當敵人在遊戲中具有有效標記時才顯示敵人雷達標記。被標記的敵人在被標記期間也會無視雷達距離限制。現有的敵人可見性設定仍然適用。",
     },
-    show_ability_marked_enemies_tooltip = {
-        en = "Also include enemies while they have a supported ability or smart-tag outline such as \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" or \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\". Their brackets use the highest-priority supported outline color when one is available, they ignore the radar range limit, and \"Tagged enemies only\" will not hide them.",
-        fr = "Inclut également les ennemis tant qu’ils ont un contour pris en charge provenant d’une capacité ou d’un smart tag, comme \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" ou \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\". Leurs crochets utilisent la couleur de contour prise en charge ayant la priorité la plus élevée lorsqu’elle est disponible, ils ignorent la limite de portée du radar, et \"Ennemis marqués uniquement\" ne les masquera pas.",
-        de = "Berücksichtigt Gegner auch dann, wenn sie eine unterstützte Umrandung durch eine Fähigkeit oder einen Smart-Tag haben, wie zum Beispiel \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" oder \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\". Ihre Klammern verwenden die unterstützte Umrandungsfarbe mit der höchsten Priorität, sofern verfügbar, sie ignorieren die Radarreichweitenbegrenzung, und \"Nur markierte Gegner\" blendet sie nicht aus.",
-        it = "Include anche i nemici finché hanno un contorno supportato da abilità o smart tag, come \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" o \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\". Le loro parentesi usano il colore del contorno supportato con la priorità più alta quando disponibile, ignorano il limite di portata del radar e \"Solo nemici segnalati\" non li nasconderà.",
-        es = "También incluye a los enemigos mientras tengan un contorno compatible de habilidad o smart tag, como \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" o \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\". Sus corchetes usan el color de contorno compatible de mayor prioridad cuando está disponible, ignoran el límite de alcance del radar y \"Solo enemigos marcados\" no los ocultará.",
-        pl = "Uwzględnia także wrogów, gdy mają obsługiwaną obwódkę zdolności lub inteligentnego oznaczenia, taką jak \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" lub \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\". Ich nawiasy używają obsługiwanego koloru obwódki o najwyższym priorytecie, jeśli jest dostępny, ignorują limit zasięgu radaru, a opcja \"Tylko oznaczeni wrogowie\" ich nie ukryje.",
-        ["pt-br"] = "Também inclui inimigos enquanto eles tiverem um contorno compatível de habilidade ou marcação inteligente, como \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" ou \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\". Os colchetes deles usam a cor de contorno compatível de maior prioridade quando disponível, ignoram o limite de alcance do radar, e \"Somente inimigos marcados\" não vai ocultá-los.",
-        ["ru"] = "Также включает врагов, пока на них есть поддерживаемая обводка способности или умной метки, например \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" или \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\". Их скобки используют поддерживаемый цвет обводки с наивысшим приоритетом, если он доступен, они игнорируют ограничение дальности радара, и опция \"Только отмеченные враги\" не будет их скрывать.",
-        ja = "また、\"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" や \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\" のような、サポートされているアビリティまたはスマートタグのアウトラインが付いている敵も対象に含めます。ブラケットには利用可能な場合、優先度が最も高いサポート済みアウトライン色が使われ、レーダー範囲制限を無視し、\"タグ付けされた敵のみ\" でも非表示になりません。",
-        ko = "\"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" 또는 \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\" 같은 지원되는 능력 또는 스마트 태그 외곽선이 있는 동안의 적도 포함합니다. 해당 괄호 표시는 사용 가능할 때 가장 높은 우선순위의 지원 외곽선 색상을 사용하고, 레이더 거리 제한을 무시하며, \"태그된 적만\" 옵션으로도 숨겨지지 않습니다.",
-        ["zh-cn"] = "敌人在拥有受支持的技能或智能标记描边时也会被包含在内，例如 \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" 或 \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\"。它们的括号会在可用时使用优先级最高的受支持描边颜色，忽略雷达距离限制，并且“仅显示已标记敌人”也不会隐藏它们。",
-        ["zh-tw"] = "敵人在具有受支援的技能或智慧標記外框時也會被納入顯示，例如 \"" ..
-            Localize("loc_talent_psyker_marked_enemies_passive") ..
-            "\", \"" ..
-            Localize("loc_talent_broker_ability_focus_improved") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_improved_tag") ..
-            "\", \"" ..
-            Localize("loc_talent_arbites_mastiff_target_description") ..
-            "\", \"" ..
-            Localize("loc_talent_adamant_exterminator") ..
-            "\", \"" ..
-            Localize("loc_talent_veteran_combat_ability_elite_and_special_outlines") ..
-            "\" 或 \"" ..
-            Localize("loc_ability_ogryn_taunt_shout") ..
-            "\"。它們的括號會在可用時使用優先度最高的受支援外框顏色，忽略雷達距離限制，而且「僅顯示已標記敵人」也不會將它們隱藏。",
-    },
+    show_ability_marked_enemies_tooltip = _ability_marked_enemies_tooltip(),
     show_only_tagged_items_tooltip = {
         en = "Only show item radar markers while the item has an active in-game tag. Tagged items also ignore the radar range limit while tagged. This affects pickups, materials, crates, deployables, luggables, and similar item markers, but not players or expedition objective locations.",
         fr = "Affiche les marqueurs radar des objets uniquement lorsqu'un objet a un marquage actif en jeu. Les objets marqués ignorent également la limite de portée du radar tant qu'ils sont marqués. Cela affecte les objets à ramasser, matériaux, caisses, objets déployables, objets transportables et marqueurs d'objets similaires, mais pas les joueurs ni les emplacements d'objectifs d'expédition.",
