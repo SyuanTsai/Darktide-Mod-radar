@@ -17,7 +17,6 @@ return function(env)
     local math_rad = math.rad
     local math_sqrt = math.sqrt
     local math_tan = math.tan
-    local string_format = string.format
     local string_len = string.len
     local string_lower = string.lower
     local string_sub = string.sub
