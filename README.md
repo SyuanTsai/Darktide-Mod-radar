@@ -1,35 +1,34 @@
 # Radar
 
-Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu.
+Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu. A centered overview mode can also be toggled during missions when you need a wider tactical read.
 
-## What's New in 2.1.5
+## What's New in 2.2.0
 
-- Adds **Tagged enemies only** and **Tagged items only** filters, so radar markers can be restricted to actively tagged targets while tagged enemies and items also ignore the normal radar range limit for as long as the in-game tag remains active. [PR #98](https://github.com/LucLeto/darktide-mods-radar/pull/98)
-- Adds optional radar support for supported **ability-marked** and **smart-tag outline** enemies, so temporary gameplay outlines from talents and callout systems can also drive enemy radar visibility when enabled. [PR #100](https://github.com/LucLeto/darktide-mods-radar/pull/100)
-- Gates shared `special_target` outline handling behind the local owning context, which avoids picking up unrelated shared outlines and makes the new ability-outline support more reliable. [PR #101](https://github.com/LucLeto/darktide-mods-radar/pull/101)
-- Adds a dedicated **Nearby highlights** settings group with per-category highlight toggles, optional screen-space and radar distance text, adjustable highlight thickness and opacity, plus an optional custom highlight color override. [PR #102](https://github.com/LucLeto/darktide-mods-radar/pull/102)
-- Improves nearby highlight placement for scaled HUD layouts by aligning highlights with Darktide interaction marker positions and using a more stable fallback anchor when no interaction marker is active. [PR #103](https://github.com/LucLeto/darktide-mods-radar/pull/103)
+- Handles expedition marker cleanup across **Deadsider Sanctuary** transitions, so section-scoped expedition items and POIs are refreshed when moving between sanctuary and open-zone states. This also keeps player-dropped Tech-Remnants visible where appropriate while stale sanctuary fixtures are cleared. [PR #106](https://github.com/LucLeto/darktide-mods-radar/pull/106)
+- Remembers your scroll position inside the **Radar** category of the DMF options view, making long settings passes less disruptive when switching away and back. [PR #107](https://github.com/LucLeto/darktide-mods-radar/pull/107)
+- Adds a keybind-based **centered overview mode** that temporarily expands the radar into a large centered view, with dedicated zoom in, zoom out, reset, scale-legend, and marker-cap controls. Shared zoom inputs such as mouse wheel can be captured while overview mode or the normal-radar zoom modifier is active. [PR #109](https://github.com/LucLeto/darktide-mods-radar/pull/109)
+- Adds an **Auspex background** guide option for **Square** and **Circle** radar styles. When this guide is selected, the animated radar sweep setting can also apply outside the dedicated Auspex style. [PR #110](https://github.com/LucLeto/darktide-mods-radar/pull/110)
 
-**Full Changelog**: https://github.com/LucLeto/darktide-mods-radar/compare/Radar-2.1.0...Radar-2.1.5
+**Full Changelog**: https://github.com/LucLeto/darktide-mods-radar/compare/Radar-2.1.5...Radar-2.2.0
 
 ## Feature Overview
 
-- Tracks nearby pickups, materials, mission items, deployables, environment interactables, expedition POIs, teammates, player smart tags, tagged targets, supported ability-outlined enemies, and high-priority enemies on a single camera-oriented radar.
-- Supports **Square**, **Circle**, and **Auspex** radar styles. Square and Circle use configurable **outline** and **guide** options, including the Auspex guides, while **Auspex** adds an optional animated sweep.
-- Lets you tune **radar size**, **range**, **background opacity**, **maximum marker count**, **nearby highlight range**, supported vertical filtering behavior, and the dedicated nearby-highlight presentation settings.
+- Tracks nearby pickups, materials, mission items, deployables, environment interactables, expedition POIs, teammates, player smart tags, tagged targets, supported ability-outlined enemies, and high-priority enemies on a single camera-oriented radar or the temporary centered overview.
+- Supports **Square**, **Circle**, and **Auspex** radar styles. Square and Circle use configurable **outline** and **guide** options, including the Auspex background guide, while **Auspex** adds its dedicated scanner frame treatment.
+- Lets you tune **radar size**, normal radar **range**, centered overview **zoom range**, **background opacity**, **maximum marker count**, **nearby highlight range**, supported vertical filtering behavior, and the dedicated nearby-highlight presentation settings.
 - Supports per-category **Icon size (%)** sliders across item, player, enemy, event, and debug marker groups, plus dedicated enemy sub-category scaling.
 - Supports separate display controls for **bosses**, **enemy groups**, **teammates**, **player smart tags**, **tagged-only enemy and item filtering**, supported **ability outlines**, and the local **player center dot**.
-- Includes a mission-ready **toggle radar on or off** keybind, plus per-mode enable toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**.
+- Includes mission-ready keybinds for **toggle radar on or off**, **toggle overview mode**, temporary radar zoom, and radar movement, plus per-mode enable toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**.
 - Supports anchor-based **radar positioning** with offsets, movement keybinds, configurable movement step size, and an optional unrestricted positioning fallback for ultrawide or advanced layouts.
 - Supports **Artwork**, **Icon**, and **Off** display modes for the supported artwork-based pickup families, with automatic migration from older boolean settings.
 - Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups, with configurable thickness, opacity, color override, and optional distance labels on the screen highlight, the radar marker, or both.
-- Adds dedicated **Expedition POI** support for numbered **Sites of Interest**, **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**.
+- Adds dedicated **Expedition POI** support for numbered **Sites of Interest**, **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**, with cleanup across active-section and sanctuary transitions.
 - Supports tech-remnant loot modes for **Default**, **Scale by value**, and **Merge nearby piles**, plus optional cluster value text and radius tuning.
 - Includes optional **boss distance text**, **Infinite** boss range, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
 
 ## In-Game Radar Examples
 
-The screenshots below show the live radar styles in gameplay. Together they illustrate the camera-oriented layout, mixed pickup categories, teammate markers, expedition POIs, smart tag support, and priority targets.
+The screenshots below show the live radar styles in gameplay. Together they illustrate the camera-oriented layout, mixed pickup categories, teammate markers, expedition POIs, smart tag support, priority targets, and the optional centered overview mode.
 
 ### Circle Radar
 
@@ -49,7 +48,7 @@ The screenshots below show the live radar styles in gameplay. Together they illu
 
 ### Auspex Radar
 
-The new **Auspex** style provides a more diegetic scanner look. It supports the same gameplay marker data as the other radar styles, plus an optional animated sweep that can be disabled independently.
+The **Auspex** style provides a more diegetic scanner look. It supports the same gameplay marker data as the other radar styles, plus an optional animated sweep that can be disabled independently. In 2.2.0, the Auspex scanner background can also be selected as a guide option for Square and Circle radar styles.
 
 <p>
   <img src="doc/img/auspex_radar_solid.gif" width="24%" alt="Auspex radar solid variant" />
@@ -57,6 +56,10 @@ The new **Auspex** style provides a more diegetic scanner look. It supports the 
   <img src="doc/img/auspex_radar_off.gif" width="24%" alt="Auspex radar outline off variant" />
   <img src="doc/img/auspex_radar_no_sweep.gif" width="24%" alt="Auspex radar with sweep disabled" />
 </p>
+
+### Centered overview mode
+
+The keybind-based **centered overview mode** temporarily expands the radar into a larger centered tactical view. It uses its own zoom range from **25 m** to **500 m**, can show scale legends beside the radar, and has a separate marker cap so dense overview scans can be tuned independently from the normal radar.
 
 ### Nearby highlight example
 
@@ -81,6 +84,8 @@ The vertical item arrows add a small **up** or **down** overlay to supported ite
 **Square** and **Circle** radar styles support the same outline and guide options, and the frame rendering is tuned so crosshairs fit the active frame, view guides reach the border cleanly, circle range rings stay thin and solid, circle outlines remain visually continuous, and square dotted outlines render as proper dots.
 
 The **Auspex** style still provides its own frame treatment, and the same scanner background can also be used as an **Auspex background** guide on Square or Circle radar styles. The animated sweep toggle applies to both.
+
+The centered overview mode reuses the active radar presentation but moves it to the center of the screen and expands it up to the available UI space. Overview zoom is separate from the normal radar range, so you can briefly scan a wider area without permanently changing the compact HUD radar.
 
 ### Square radar variants
 | Guide | Solid | Dotted | Off |
@@ -150,11 +155,18 @@ Also for reference **Show tech-remnant value text** is set to **true**.
 | Enable in Mortis Trials | Enables or disables the radar in Mortis Trials. |
 | Enable in Expeditions | Enables or disables the radar in Expeditions. |
 | Toggle radar on or off | Assign a key to switch the radar HUD visibility during gameplay without opening the options menu. |
+| Toggle overview mode | Assign a key to switch the centered overview mode on or off during gameplay. |
+| Radar zoom modifier | Hold this key to make the radar zoom keybinds control the normal radar instead of only overview mode. While held, shared zoom inputs such as mouse wheel are captured for radar zoom only. |
+| Radar zoom in | Zooms the radar in. Works in overview mode, or on the normal radar while the radar zoom modifier is held. |
+| Radar zoom out | Zooms the radar out. Works in overview mode, or on the normal radar while the radar zoom modifier is held. |
+| Reset radar zoom | In overview mode, fits the overview scale to the currently rendered normal-range markers. On the normal radar, hold the radar zoom modifier and press this key to reset to **10 m / 2.0x**. |
+| Show scale legends | Shows overview scale legends next to the radar while centered overview mode is active. |
 | Radar size | Adjustable from **100** to **1200**. |
-| Radar range / filter distance | Adjustable from **25 m** to **100 m**. |
+| Radar range / filter distance | Adjustable from **10 m** to **200 m** for the normal radar. |
 | Show vertical arrows within range (m) | Adjustable from **25 m** to **100 m**. Supported item markers show a small **up** or **down** arrow when they are on another level and still within this horizontal range. |
 | Hide items above/below (m) | Adjustable from **8 m** to **50 m**. Supported item markers with a larger vertical separation are hidden. |
-| Max radar markers | Adjustable from **10** to **200**. |
+| Max radar markers | Adjustable from **10** to **200** for the normal radar. |
+| Max overview markers | Adjustable from **100** to **300** for centered overview mode. |
 | Scale icons with radar size | Keeps marker size fixed or scales it with the radar. The final combined icon size is capped at **4.0x**. |
 | Radar style | **Square**, **Circle**, or **Auspex**. |
 | Radar outline | **Solid**, **Dotted**, or **Off**. Only used by the **Square** and **Circle** radar styles. |
@@ -282,7 +294,7 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 | Ignore range limit for POI | Lets expedition POI markers bypass the normal radar range filter. |
 | Sites of Interest | Shows registered expedition opportunity locations, including numbered scanner-map opportunity markers. |
 | Deadsider Sanctuaries | Shows expedition transition or sanctuary locations with the dedicated transition icon. |
-| Data Reliquary Harvesters | Shows expedition loot converters with the dedicated harvester icon while inside the sanctuary where they are usable. |
+| Data Reliquary Harvesters | Shows expedition loot converters with the dedicated harvester icon while inside the sanctuary where they are usable, and clears stale harvester markers across sanctuary transitions. |
 | Main Objective | Shows expedition main objective locations with the dedicated objective icon. |
 | Valkyrie Extraction Zone | Shows extraction points with the dedicated extraction icon. |
 | Valkyrie Arrival Zone | Shows arrival points with the dedicated arrival icon. |
@@ -299,6 +311,8 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 ### Positioning and Toggle Use
 
 - Use **Toggle radar on or off** for quick in-mission HUD control, or the per-mode enable toggles if you want Radar active only in selected activities.
+- Use **Toggle overview mode** when you need a temporary centered tactical scan without changing your normal anchored radar placement.
+- Use **Radar zoom in**, **Radar zoom out**, and **Reset radar zoom** in overview mode to control the overview scale. Hold **Radar zoom modifier** to apply those same zoom controls to the normal radar instead.
 - Use **Radar anchor**, **Horizontal offset**, and **Vertical offset** for stable placement, then fine-tune with the movement keybinds and **Steps per input**.
 - Standard placement stays clamped to the visible UI space, while **Allow unrestricted radar positioning** is available for ultrawide or advanced layouts.
 
@@ -309,6 +323,7 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 - **Tagged enemies only** and **Tagged items only** restrict visibility to actively tagged targets, and those tagged targets ignore the usual radar range limit while the tag remains active.
 - Supported item markers can show vertical **up** and **down** arrows, be hidden when vertical separation becomes too large, and use nearby highlight brackets plus optional distance text when enabled.
 - **Expedition POIs**, **environment markers**, and **tech-remnant clusters** follow their own category-specific rules so outdated markers clear correctly and context-sensitive markers only appear when relevant.
+- Expedition section filtering now also handles **Deadsider Sanctuary** transitions. Store fixtures and sanctuary-only markers are cleared when moving back into open expedition zones, while active player-dropped Tech-Remnants remain eligible for radar display.
 
 ## Target Markers
 
@@ -516,7 +531,7 @@ Player tags intentionally stay flatter and cleaner than supported item markers. 
 | <img src="doc/img/expedition_objective_extraction.png"  width="80" alt="Expedition extraction marker" /> | Valkyrie Extraction Zone | Extraction location marker. |
 | <img src="doc/img/expedition_objective_arrival.png"  width="80" alt="Expedition arrival marker" /> | Valkyrie Arrival Zone | Arrival location marker. |
 
-These markers are driven by expedition navigation data rather than standard pickup scanning. **Sites of Interest** can appear as unmarked opportunity markers or player-marked variants, while the remaining expedition POIs use dedicated objective-style icons. They can optionally ignore the normal radar range limit, are filtered to the currently active expedition section, and clear outdated location markers when the active section changes.
+These markers are driven by expedition navigation data rather than standard pickup scanning. **Sites of Interest** can appear as unmarked opportunity markers or player-marked variants, while the remaining expedition POIs use dedicated objective-style icons. They can optionally ignore the normal radar range limit, are filtered to the currently active expedition section, and clear outdated location markers when the active section or Deadsider Sanctuary state changes.
 
 ### Expeditions-Specific Items
 
@@ -654,11 +669,14 @@ Not every radar marker uses a fixed readme tint:
 
 - The radar is intended for active gameplay and suppresses itself outside valid runtime states such as hub and menu contexts.
 - The radar now remains visible while the comms wheel is open, which makes live callouts and tag placement easier to track.
-- **Auspex** is a full radar style with an optional animated sweep, and the included documentation GIFs show the solid, dotted, off, and no-sweep variants.
+- The DMF options view remembers the last scroll position inside the **Radar** category while the options view remains open.
+- Centered overview mode is intended as a temporary tactical view. It has separate zoom, scale-legend, and marker-cap controls and automatically exits when the radar runtime state is no longer valid.
+- Normal radar range now supports **10 m** to **200 m**, and the zoom keybinds can temporarily control that range while the radar zoom modifier is held.
+- **Auspex** is a full radar style with an optional animated sweep, and the same Auspex scanner background can also be selected as a guide option for Square and Circle radar styles.
 - Teammates, the local player center dot, and player smart tags now have separate controls, so ally information can be tuned more precisely.
 - Player smart tags support optional distance text, but no longer use player-tag elevation arrows or related elevation hiding behavior.
 - Supported ability-marked and smart-tag outlined enemies can optionally be treated as radar-visible targets, and shared `special_target` outline handling is gated to the local owning context so unrelated outlines do not leak into radar visibility.
 - Nearby highlights now support thickness, opacity, optional custom color override, and optional distance labels, and their placement was adjusted to stay aligned more reliably under scaled HUD layouts.
 - **Tagged enemies only** and **Tagged items only** are filters, not new marker families. They reuse the game's active tag state and let tagged targets ignore the normal radar range limit while tagged.
-- Expedition POIs are filtered to the active expedition section, and **Data Reliquary Harvesters** are only shown inside the relevant **Deadsider Sanctuary** where they can actually be used.
+- Expedition POIs and section-scoped expedition items are filtered to the active expedition section. Sanctuary-state transitions now trigger cleanup so stale safe-zone markers do not leak into open zones, while active player-dropped Tech-Remnants can still be shown.
 - Marker previews in this readme were generated from the included template assets and documentation images so the legend matches the mod's configured presentations as closely as possible.
