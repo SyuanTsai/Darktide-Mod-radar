@@ -8,14 +8,14 @@ Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide
 - Supports **Square**, **Circle**, and **Auspex** radar styles. Square and Circle use configurable **outline** and **guide** options, including the Auspex background guide, while **Auspex** adds its dedicated scanner frame treatment.
 - Lets you tune **radar size**, normal radar **range**, centered overview **zoom range**, **background opacity**, **maximum marker count**, **nearby highlight range**, supported vertical filtering behavior, and the dedicated nearby-highlight presentation settings.
 - Supports per-category **Icon size (%)** sliders across item, player, enemy, event, and debug marker groups, plus dedicated enemy sub-category scaling.
-- Supports separate display controls for **bosses**, **enemy groups**, **teammates**, **player smart tags**, **tagged-only enemy and item filtering**, supported **ability outlines**, and the local **player center dot**.
+- Supports separate display and range controls for **bosses**, **enemy groups**, **teammates**, **player smart tags**, **tagged-only enemy and item filtering**, supported **ability outlines**, and the local **player center dot**, including **Infinite** marker range modes for bosses and teammates.
 - Includes mission-ready keybinds for **toggle radar on or off**, **toggle overview mode**, temporary radar zoom, and radar movement, plus per-mode enable toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**.
 - Supports anchor-based **radar positioning** with offsets, movement keybinds, configurable movement step size, and an optional unrestricted positioning fallback for ultrawide or advanced layouts.
 - Supports **Artwork**, **Icon**, and **Off** display modes for the supported artwork-based pickup families, with automatic migration from older boolean settings.
 - Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups, with configurable thickness, opacity, color override, and optional distance labels on the screen highlight, the radar marker, or both.
 - Adds dedicated **Expedition POI** support for numbered **Sites of Interest**, **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**, with per-category **Icon only**, **Icon + Distance m**, and **Off** display modes.
 - Supports tech-remnant loot modes for **Default**, **Scale by value**, and **Merge nearby piles**, plus optional cluster value text and radius tuning.
-- Includes optional distance text for bosses, player tags, nearby marker highlights, and expedition POIs, plus **Infinite** boss range, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
+- Includes optional distance text for bosses, player tags, nearby marker highlights, and expedition POIs, plus **Infinite** boss and teammate range modes, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
 
 ## In-Game Radar Examples
 
@@ -192,6 +192,7 @@ Also for reference **Show tech-remnant value text** is set to **true**.
 | Boss marker range | **Normal** or **Infinite**. Lets boss-type markers follow the normal radar range or stay visible at any distance. |
 | Show boss distance text | Shows yellow distance text in meters for bosses except the daemonhost. |
 | Teammates | Shows or hides teammate markers on the radar. |
+| Player marker range | **Normal** or **Infinite**. Lets teammate markers follow the normal radar range or stay visible at any distance. |
 | Player center dot | Shows or hides your own center point on the radar. |
 | Player marker style | **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. |
 | Player Tags | Shows or hides player smart tags and pings on the radar. |
@@ -328,7 +329,7 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 
 ### Marker Rules
 
-- **Enemies**, **teammates**, and **player smart tags** each use their own display rules and style settings. The local **center dot** also has its own toggle now.
+- **Enemies**, **teammates**, and **player smart tags** each use their own display rules and style settings. Teammates also have a **Player marker range** mode, so they can follow the normal radar range or remain visible at any distance. The local **center dot** has its own toggle and is not affected by teammate range mode.
 - Supported enemies can also be surfaced through active ability-mark or smart-tag outline states when **Ability-marked enemies** is enabled.
 - **Tagged enemies only** and **Tagged items only** restrict visibility to actively tagged targets, and those tagged targets ignore the usual radar range limit while the tag remains active.
 - Supported item markers can show vertical **up** and **down** arrows, be hidden when vertical separation becomes too large, and use nearby highlight brackets plus optional distance text when enabled.
@@ -445,7 +446,7 @@ Left: **Icon only**. Right: **Marked icon**.
 
 | Preview | Marker | Notes |
 | --- | --- | --- |
-| <img src="doc/img/player_teammate_sample.png"  width="80" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. Teammates can now be toggled independently from the local player center dot. |
+| <img src="doc/img/player_teammate_sample.png"  width="80" alt="Teammate marker sample" /> | Teammates | Uses class icons, colored by teammate slot at runtime. Can be shown as **Icon only**, **Marked icon**, **Dot only**, or **Marked dot**. **Player marker range** can be set to **Normal** or **Infinite**, and teammate visibility can be toggled independently from the local player center dot. |
 
 Display style example for teammate markers:
 
@@ -684,7 +685,7 @@ Not every radar marker uses a fixed readme tint:
 - Centered overview mode is intended as a temporary tactical view. It has separate zoom, scale-legend, and marker-cap controls and automatically exits when the radar runtime state is no longer valid.
 - Normal radar range now supports **10 m** to **200 m**, and the zoom keybinds can temporarily control that range while the radar zoom modifier is held.
 - **Auspex** is a full radar style with an optional animated sweep, and the same Auspex scanner background can also be selected as a guide option for Square and Circle radar styles.
-- Teammates, the local player center dot, and player smart tags now have separate controls, so ally information can be tuned more precisely.
+- Teammates, teammate marker range, the local player center dot, and player smart tags now have separate controls, so ally information can be tuned more precisely.
 - Player smart tags support optional distance text, but no longer use player-tag elevation arrows or related elevation hiding behavior.
 - Supported ability-marked and smart-tag outlined enemies can optionally be treated as radar-visible targets, and shared `special_target` outline handling is gated to the local owning context so unrelated outlines do not leak into radar visibility.
 - Nearby highlights now support thickness, opacity, optional custom color override, and optional distance labels, and their placement was adjusted to stay aligned more reliably under scaled HUD layouts.
