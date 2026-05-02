@@ -2,15 +2,6 @@
 
 Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu. A centered overview mode can also be toggled during missions when you need a wider tactical read.
 
-## What's New in 2.2.0
-
-- Handles expedition marker cleanup across **Deadsider Sanctuary** transitions, so section-scoped expedition items and POIs are refreshed when moving between sanctuary and open-zone states. This also keeps player-dropped Tech-Remnants visible where appropriate while stale sanctuary fixtures are cleared. [PR #106](https://github.com/LucLeto/darktide-mods-radar/pull/106)
-- Remembers your scroll position inside the **Radar** category of the DMF options view, making long settings passes less disruptive when switching away and back. [PR #107](https://github.com/LucLeto/darktide-mods-radar/pull/107)
-- Adds a keybind-based **centered overview mode** that temporarily expands the radar into a large centered view, with dedicated zoom in, zoom out, reset, scale-legend, and marker-cap controls. Shared zoom inputs such as mouse wheel can be captured while overview mode or the normal-radar zoom modifier is active. [PR #109](https://github.com/LucLeto/darktide-mods-radar/pull/109)
-- Adds an **Auspex background** guide option for **Square** and **Circle** radar styles. When this guide is selected, the animated radar sweep setting can also apply outside the dedicated Auspex style. [PR #110](https://github.com/LucLeto/darktide-mods-radar/pull/110)
-
-**Full Changelog**: https://github.com/LucLeto/darktide-mods-radar/compare/Radar-2.1.5...Radar-2.2.0
-
 ## Feature Overview
 
 - Tracks nearby pickups, materials, mission items, deployables, environment interactables, expedition POIs, teammates, player smart tags, tagged targets, supported ability-outlined enemies, and high-priority enemies on a single camera-oriented radar or the temporary centered overview.
@@ -22,9 +13,9 @@ Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide
 - Supports anchor-based **radar positioning** with offsets, movement keybinds, configurable movement step size, and an optional unrestricted positioning fallback for ultrawide or advanced layouts.
 - Supports **Artwork**, **Icon**, and **Off** display modes for the supported artwork-based pickup families, with automatic migration from older boolean settings.
 - Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups, with configurable thickness, opacity, color override, and optional distance labels on the screen highlight, the radar marker, or both.
-- Adds dedicated **Expedition POI** support for numbered **Sites of Interest**, **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**, with cleanup across active-section and sanctuary transitions.
+- Adds dedicated **Expedition POI** support for numbered **Sites of Interest**, **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**, with per-category **Icon only**, **Icon + Distance m**, and **Off** display modes.
 - Supports tech-remnant loot modes for **Default**, **Scale by value**, and **Merge nearby piles**, plus optional cluster value text and radius tuning.
-- Includes optional **boss distance text**, **Infinite** boss range, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
+- Includes optional distance text for bosses, player tags, nearby marker highlights, and expedition POIs, plus **Infinite** boss range, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
 
 ## In-Game Radar Examples
 
@@ -102,6 +93,24 @@ The centered overview mode reuses the active radar presentation but moves it to 
 | View Guides | <img src="doc/img/radar_2_circle_solid_view_guides.png" width="200" /> | <img src="doc/img/radar_2_circle_dotted_view_guides.png" width="200" /> | <img src="doc/img/radar_2_circle_off_view_guides.png" width="200" /> |
 | Rings | <img src="doc/img/radar_3_circle_solid_rings.png" width="200" /> | <img src="doc/img/radar_2_circle_dotted_rings.png" width="200" /> | <img src="doc/img/radar_3_circle_off_rings.png" width="200" /> |
 | Off | <img src="doc/img/radar_4_circle_solid_off.png" width="200" /> | <img src="doc/img/radar_2_circle_dotted_off.png" width="200" /> | <img src="doc/img/radar_4_circle_off_off.png" width="200" /> |
+
+## Expedition POI display modes
+
+Expedition POI settings use dropdown display modes instead of simple on/off toggles. Each supported POI category can be configured independently.
+
+- **Icon only** shows the POI icon without distance text.
+- **Icon + Distance m** shows the POI icon together with its current distance in meters.
+- **Off** hides that POI category.
+- Existing saved boolean settings are migrated automatically, with old `true` values becoming **Icon only** and old `false` values becoming **Off**.
+
+| POI category | Default display mode |
+| --- | --- |
+| Sites of Interest | **Icon + Distance m** |
+| Deadsider Sanctuaries | **Icon only** |
+| Data Reliquary Harvesters | **Icon only** |
+| Main Objective | **Icon only** |
+| Valkyrie Extraction Zone | **Icon only** |
+| Valkyrie Arrival Zone | **Icon only** |
 
 ## Artwork, Icon, Off display modes
 
@@ -209,6 +218,7 @@ Also for reference **Show tech-remnant value text** is set to **true**.
 | Common Pickups | Crates | **Artwork**, **Icon**, **Off** |
 | Collectable Materials | Diamantine, Plasteel | **Artwork**, **Icon**, **Off** |
 | Expeditions-Specific Items | Salvage, Tech-Remnants, Dropped Tech-Remnants, Servo-Triggered Mine, Purgation Snare, Voltaic Snare, Void Shell, Bombing Run Signal Marker, Artillery Locator Beacon, Modified Grenade, Fire-Support Signal Marker | **Artwork**, **Icon**, **Off** |
+| Expedition POIs | Sites of Interest, Deadsider Sanctuaries, Data Reliquary Harvesters, Main Objective, Valkyrie Extraction Zone, Valkyrie Arrival Zone | **Icon only**, **Icon + Distance m**, **Off** |
 | Enemy bosses | Daemonhost, Monstrosities, Captains, Karnak Twins | **Icon only**, **Marked icon** |
 | Enemy groups | Common enemies and Shooters | **Icon only**, **Marked icon**, **Off** |
 | Individual enemy toggles | Elite, Special, and Misc enemies listed below | **Icon only**, **Marked icon**, **Off** |
@@ -288,16 +298,16 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 
 ### Expedition POI Controls
 
-| Option | What it controls |
-| --- | --- |
-| Expeditions POI | Group of toggles for expedition location markers. |
-| Ignore range limit for POI | Lets expedition POI markers bypass the normal radar range filter. |
-| Sites of Interest | Shows registered expedition opportunity locations, including numbered scanner-map opportunity markers. |
-| Deadsider Sanctuaries | Shows expedition transition or sanctuary locations with the dedicated transition icon. |
-| Data Reliquary Harvesters | Shows expedition loot converters with the dedicated harvester icon while inside the sanctuary where they are usable, and clears stale harvester markers across sanctuary transitions. |
-| Main Objective | Shows expedition main objective locations with the dedicated objective icon. |
-| Valkyrie Extraction Zone | Shows extraction points with the dedicated extraction icon. |
-| Valkyrie Arrival Zone | Shows arrival points with the dedicated arrival icon. |
+| Option | Modes / default | What it controls |
+| --- | --- | --- |
+| Expeditions POI | Option group | Contains independent display mode dropdowns for expedition location markers. |
+| Ignore range limit for POI | Checkbox, default on | Lets expedition POI markers bypass the normal radar range filter. |
+| Sites of Interest | **Icon only**, **Icon + Distance m**, **Off**. Default: **Icon + Distance m**. | Controls registered expedition opportunity locations, including numbered scanner-map opportunity markers. |
+| Deadsider Sanctuaries | **Icon only**, **Icon + Distance m**, **Off**. Default: **Icon only**. | Controls expedition transition or sanctuary locations with the dedicated transition icon. |
+| Data Reliquary Harvesters | **Icon only**, **Icon + Distance m**, **Off**. Default: **Icon only**. | Controls expedition loot converters with the dedicated harvester icon while inside the sanctuary where they are usable, and clears stale harvester markers across sanctuary transitions. |
+| Main Objective | **Icon only**, **Icon + Distance m**, **Off**. Default: **Icon only**. | Controls expedition main objective locations with the dedicated objective icon. |
+| Valkyrie Extraction Zone | **Icon only**, **Icon + Distance m**, **Off**. Default: **Icon only**. | Controls extraction points with the dedicated extraction icon. |
+| Valkyrie Arrival Zone | **Icon only**, **Icon + Distance m**, **Off**. Default: **Icon only**. | Controls arrival points with the dedicated arrival icon. |
 
 ### Environment Controls
 
@@ -323,7 +333,8 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 - **Tagged enemies only** and **Tagged items only** restrict visibility to actively tagged targets, and those tagged targets ignore the usual radar range limit while the tag remains active.
 - Supported item markers can show vertical **up** and **down** arrows, be hidden when vertical separation becomes too large, and use nearby highlight brackets plus optional distance text when enabled.
 - **Expedition POIs**, **environment markers**, and **tech-remnant clusters** follow their own category-specific rules so outdated markers clear correctly and context-sensitive markers only appear when relevant.
-- Expedition section filtering now also handles **Deadsider Sanctuary** transitions. Store fixtures and sanctuary-only markers are cleared when moving back into open expedition zones, while active player-dropped Tech-Remnants remain eligible for radar display.
+- Expedition POIs can be shown as **Icon only**, **Icon + Distance m**, or **Off** per category. Existing boolean settings migrate to **Icon only** for enabled markers and **Off** for disabled markers.
+- Expedition section filtering also handles **Deadsider Sanctuary** transitions. Store fixtures and sanctuary-only markers are cleared when moving back into open expedition zones, while active player-dropped Tech-Remnants remain eligible for radar display.
 
 ## Target Markers
 
@@ -531,7 +542,7 @@ Player tags intentionally stay flatter and cleaner than supported item markers. 
 | <img src="doc/img/expedition_objective_extraction.png"  width="80" alt="Expedition extraction marker" /> | Valkyrie Extraction Zone | Extraction location marker. |
 | <img src="doc/img/expedition_objective_arrival.png"  width="80" alt="Expedition arrival marker" /> | Valkyrie Arrival Zone | Arrival location marker. |
 
-These markers are driven by expedition navigation data rather than standard pickup scanning. **Sites of Interest** can appear as unmarked opportunity markers or player-marked variants, while the remaining expedition POIs use dedicated objective-style icons. They can optionally ignore the normal radar range limit, are filtered to the currently active expedition section, and clear outdated location markers when the active section or Deadsider Sanctuary state changes.
+These markers are driven by expedition navigation data rather than standard pickup scanning. **Sites of Interest** can appear as unmarked opportunity markers or player-marked variants, while the remaining expedition POIs use dedicated objective-style icons. Each POI category supports **Icon only**, **Icon + Distance m**, and **Off**. Sites of Interest default to distance text, while the other POI categories default to icon-only markers. Expedition POIs can optionally ignore the normal radar range limit, are filtered to the currently active expedition section, and clear outdated location markers when the active section or Deadsider Sanctuary state changes.
 
 ### Expeditions-Specific Items
 
@@ -678,5 +689,5 @@ Not every radar marker uses a fixed readme tint:
 - Supported ability-marked and smart-tag outlined enemies can optionally be treated as radar-visible targets, and shared `special_target` outline handling is gated to the local owning context so unrelated outlines do not leak into radar visibility.
 - Nearby highlights now support thickness, opacity, optional custom color override, and optional distance labels, and their placement was adjusted to stay aligned more reliably under scaled HUD layouts.
 - **Tagged enemies only** and **Tagged items only** are filters, not new marker families. They reuse the game's active tag state and let tagged targets ignore the normal radar range limit while tagged.
-- Expedition POIs and section-scoped expedition items are filtered to the active expedition section. Sanctuary-state transitions now trigger cleanup so stale safe-zone markers do not leak into open zones, while active player-dropped Tech-Remnants can still be shown.
+- Expedition POIs and section-scoped expedition items are filtered to the active expedition section. POI categories can independently show icon-only markers, include meter distance text, or be hidden. Sanctuary-state transitions trigger cleanup so stale safe-zone markers do not leak into open zones, while active player-dropped Tech-Remnants can still be shown.
 - Marker previews in this readme were generated from the included template assets and documentation images so the legend matches the mod's configured presentations as closely as possible.
