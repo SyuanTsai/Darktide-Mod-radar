@@ -1,21 +1,21 @@
 # Radar
 
-Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, and high-priority enemies, while keeping the presentation configurable from the mod options menu. A centered overview mode can also be toggled during missions when you need a wider tactical read.
+Radar adds a compact, camera-oriented HUD radar for **Warhammer 40,000: Darktide**. It is built to surface the targets that matter most during live missions, nearby pickups, objective items, deployed support tools, environment interactables, expedition points of interest, teammates, player smart tags, tagged targets, supported ability-outlined enemies, and high-priority enemies, while keeping the presentation configurable from the mod options menu. A centered overview mode can also be toggled during missions when you need a wider tactical read.
 
 ## Feature Overview
 
 - Tracks nearby pickups, materials, mission items, deployables, environment interactables, expedition POIs, teammates, player smart tags, tagged targets, supported ability-outlined enemies, and high-priority enemies on a single camera-oriented radar or the temporary centered overview.
 - Supports **Square**, **Circle**, and **Auspex** radar styles. Square and Circle use configurable **outline** and **guide** options, including the Auspex background guide, while **Auspex** adds its dedicated scanner frame treatment.
-- Lets you tune **radar size**, normal radar **range**, centered overview **zoom range**, **background opacity**, **maximum marker count**, **nearby highlight range**, supported vertical filtering behavior, and the dedicated nearby-highlight presentation settings.
+- Lets you tune **radar size**, normal radar **range**, centered overview **zoom range**, **background opacity**, **maximum marker count**, **nearby highlight range**, supported vertical arrow and hiding behavior, and the dedicated nearby-highlight presentation settings.
 - Supports per-category **Icon size (%)** sliders across item, player, enemy, event, and debug marker groups, plus dedicated enemy sub-category scaling.
-- Supports separate display and range controls for **bosses**, **enemy groups**, **teammates**, **player smart tags**, **tagged-only enemy and item filtering**, supported **ability outlines**, and the local **player center dot**, including **Infinite** marker range modes for bosses and teammates.
+- Supports separate display, range, and vertical arrow controls for **bosses**, **enemy groups**, **teammates**, **player smart tags**, **tagged-only enemy and item filtering**, supported **ability outlines**, and the local **player center dot**, including **Infinite** marker range modes for bosses and teammates.
 - Includes mission-ready keybinds for **toggle radar on or off**, **toggle overview mode**, temporary radar zoom, and radar movement, plus per-mode enable toggles for **Regular Missions**, **Havoc**, **Mortis Trials**, and **Expeditions**.
 - Supports anchor-based **radar positioning** with offsets, movement keybinds, configurable movement step size, and an optional unrestricted positioning fallback for ultrawide or advanced layouts.
 - Supports **Artwork**, **Icon**, and **Off** display modes for the supported artwork-based pickup families, with automatic migration from older boolean settings.
 - Adds optional nearby screen-space highlight brackets for supported non-enemy marker groups, with configurable thickness, opacity, color override, and optional distance labels on the screen highlight, the radar marker, or both.
 - Adds dedicated **Expedition POI** support for numbered **Sites of Interest**, **Deadsider Sanctuaries**, **Data Reliquary Harvesters**, **Main Objective**, **Valkyrie Extraction Zone**, and **Valkyrie Arrival Zone**, with per-category **Icon only**, **Icon + Distance m**, and **Off** display modes.
 - Supports tech-remnant loot modes for **Default**, **Scale by value**, and **Merge nearby piles**, plus optional cluster value text and radius tuning.
-- Includes optional distance text for bosses, player tags, nearby marker highlights, and expedition POIs, plus **Infinite** boss and teammate range modes, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
+- Includes optional distance text for bosses, player tags, nearby marker highlights, and expedition POIs, per-enemy-category vertical arrow toggles, **Infinite** boss and teammate range modes, **debug logs**, and an **unknown pickups** toggle for discovery and troubleshooting.
 
 ## In-Game Radar Examples
 
@@ -60,9 +60,11 @@ Nearby highlights add small screen-space brackets for supported non-enemy marker
   <img src="doc/img/highlight_example.png" width="70%" alt="Nearby highlight example" />
 </p>
 
-### Vertical item arrows
+### Vertical item and enemy arrows
 
-The vertical item arrows add a small **up** or **down** overlay to supported item markers when the item is on a different level but still close enough horizontally to matter. You can also tune when these arrows appear and when vertically distant items are hidden entirely.
+Vertical arrows add a small **up** or **down** overlay to supported markers when the target is on a different level but still close enough horizontally to matter. Item markers can use this behavior globally, and enemy markers can now use it per enemy category: **Boss**, **Horde**, **Common**, **Shooter**, **Elite**, **Special**, and **Misc**.
+
+The arrow range and vertical hiding threshold remain global, so enemy arrows reuse the same distance behavior as supported item arrows without adding separate per-category hiding rules.
 
 <p>
   <img src="doc/img/material_expeditions_loot.png" width="50" alt="Same-level item marker example" />
@@ -172,8 +174,8 @@ Also for reference **Show tech-remnant value text** is set to **true**.
 | Show scale legends | Shows overview scale legends next to the radar while centered overview mode is active. |
 | Radar size | Adjustable from **100** to **1200**. |
 | Radar range / filter distance | Adjustable from **10 m** to **200 m** for the normal radar. |
-| Show vertical arrows within range (m) | Adjustable from **25 m** to **100 m**. Supported item markers show a small **up** or **down** arrow when they are on another level and still within this horizontal range. |
-| Hide items above/below (m) | Adjustable from **8 m** to **50 m**. Supported item markers with a larger vertical separation are hidden. |
+| Show vertical arrows within range (m) | Adjustable from **25 m** to **100 m**. Supported item markers and enemy markers with vertical arrows enabled show a small **up** or **down** arrow when they are on another level and still within this horizontal range. |
+| Hide vertical markers above/below (m) | Adjustable from **8 m** to **50 m**. Supported item markers and enemy markers with vertical arrows enabled are hidden when their vertical separation is larger than this value. |
 | Max radar markers | Adjustable from **10** to **200** for the normal radar. |
 | Max overview markers | Adjustable from **100** to **300** for centered overview mode. |
 | Scale icons with radar size | Keeps marker size fixed or scales it with the radar. The final combined icon size is capped at **4.0x**. |
@@ -266,6 +268,22 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 | Special enemies | Per-unit display-style dropdowns for Bombers, Flamers, Mutants, Poxbursters, Hounds, Snipers, and Trappers. |
 | Ritualist | Dedicated toggle under the misc enemy category. |
 
+### Enemy vertical arrow controls
+
+Enemy vertical arrows are controlled per enemy category. These options only control whether the **up** or **down** arrow overlay can be shown for that category. They do not change the core marker visibility, display style, range mode, or tagged-only behavior.
+
+| Option | What it controls |
+| --- | --- |
+| Show boss vertical arrows | Enables vertical arrows for daemonhost, monstrosity, captain, and Karnak Twin markers. |
+| Show horde vertical arrows | Enables vertical arrows for horde enemy markers. |
+| Show common enemy vertical arrows | Enables vertical arrows for common enemy markers. |
+| Show shooter vertical arrows | Enables vertical arrows for shooter enemy markers. |
+| Show elite vertical arrows | Enables vertical arrows for elite enemy markers. |
+| Show special vertical arrows | Enables vertical arrows for special enemy markers. |
+| Show misc enemy vertical arrows | Enables vertical arrows for misc enemy markers, currently Ritualists. |
+
+All enemy vertical arrow options use the shared **Show vertical arrows within range (m)** and **Hide vertical markers above/below (m)** settings.
+
 ### Nearby highlight controls
 
 | Option | What it controls |
@@ -332,14 +350,14 @@ Each major option group now includes an **Icon size (%)** slider. These sliders 
 - **Enemies**, **teammates**, and **player smart tags** each use their own display rules and style settings. Teammates also have a **Player marker range** mode, so they can follow the normal radar range or remain visible at any distance. The local **center dot** has its own toggle and is not affected by teammate range mode.
 - Supported enemies can also be surfaced through active ability-mark or smart-tag outline states when **Ability-marked enemies** is enabled.
 - **Tagged enemies only** and **Tagged items only** restrict visibility to actively tagged targets, and those tagged targets ignore the usual radar range limit while the tag remains active.
-- Supported item markers can show vertical **up** and **down** arrows, be hidden when vertical separation becomes too large, and use nearby highlight brackets plus optional distance text when enabled.
+- Supported item markers and enemy markers from enabled enemy categories can show vertical **up** and **down** arrows. They use the shared vertical arrow range and shared vertical hide threshold, while nearby highlight brackets and optional distance text remain item-focused presentation features.
 - **Expedition POIs**, **environment markers**, and **tech-remnant clusters** follow their own category-specific rules so outdated markers clear correctly and context-sensitive markers only appear when relevant.
 - Expedition POIs can be shown as **Icon only**, **Icon + Distance m**, or **Off** per category. Existing boolean settings migrate to **Icon only** for enabled markers and **Off** for disabled markers.
 - Expedition section filtering also handles **Deadsider Sanctuary** transitions. Store fixtures and sanctuary-only markers are cleared when moving back into open expedition zones, while active player-dropped Tech-Remnants remain eligible for radar display.
 
 ## Target Markers
 
-The legend below follows the option groups exposed by `Radar_data.lua`. Enemy markers are listed in the same gameplay-oriented order used by the enemy settings: bosses, horde, common, shooters, elites, specials, and misc. The preview tiles were generated from the included `doc/img` assets and the ARGB values used by the HUD presentations.
+The legend below follows the option groups exposed by `Radar_data.lua`. Enemy markers are listed in the same gameplay-oriented order used by the enemy settings: bosses, horde, common, shooters, elites, specials, and misc. Each enemy category can also enable vertical **up** and **down** arrows independently. The preview tiles were generated from the included `doc/img` assets and the ARGB values used by the HUD presentations.
 
 ### Ability outline and smart-tag examples
 
@@ -686,8 +704,8 @@ Not every radar marker uses a fixed readme tint:
 - Normal radar range now supports **10 m** to **200 m**, and the zoom keybinds can temporarily control that range while the radar zoom modifier is held.
 - **Auspex** is a full radar style with an optional animated sweep, and the same Auspex scanner background can also be selected as a guide option for Square and Circle radar styles.
 - Teammates, teammate marker range, the local player center dot, and player smart tags now have separate controls, so ally information can be tuned more precisely.
-- Player smart tags support optional distance text, but no longer use player-tag elevation arrows or related elevation hiding behavior.
-- Supported ability-marked and smart-tag outlined enemies can optionally be treated as radar-visible targets, and shared `special_target` outline handling is gated to the local owning context so unrelated outlines do not leak into radar visibility.
+- Player smart tags support optional distance text, but no longer use player-tag elevation arrows or related elevation hiding behavior. Enemy markers can use vertical arrows separately through their own category options.
+- Supported ability-marked and smart-tag outlined enemies can optionally be treated as radar-visible targets, and shared `special_target` outline handling is gated to the local owning context so unrelated outlines do not leak into radar visibility. Enemy vertical arrow toggles only affect arrow display, not whether those enemies are eligible for radar visibility.
 - Nearby highlights now support thickness, opacity, optional custom color override, and optional distance labels, and their placement was adjusted to stay aligned more reliably under scaled HUD layouts.
 - **Tagged enemies only** and **Tagged items only** are filters, not new marker families. They reuse the game's active tag state and let tagged targets ignore the normal radar range limit while tagged.
 - Expedition POIs and section-scoped expedition items are filtered to the active expedition section. POI categories can independently show icon-only markers, include meter distance text, or be hidden. Sanctuary-state transitions trigger cleanup so stale safe-zone markers do not leak into open zones, while active player-dropped Tech-Remnants can still be shown.
