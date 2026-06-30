@@ -119,13 +119,6 @@ local function _quoted_localized_game_names(localization_keys)
     return quoted_names
 end
 
--- ###############################################################################################################
--- zh-tw Localization maintenance note:
--- For zh-tw updates, use the latest translation glossary as the source of truth:
--- https://github.com/SyuanTsai/Warhammer-40-000-DARKTIDE-Mods/blob/main/Referneces/Translation.md
--- Preserve existing context-specific translations when the glossary contains multiple valid terms.
--- ###############################################################################################################
-
 local function _ability_marked_enemies_tooltip()
     local ability_outline_names = _quoted_localized_game_names(_ability_marked_enemy_outline_localization_keys)
 
