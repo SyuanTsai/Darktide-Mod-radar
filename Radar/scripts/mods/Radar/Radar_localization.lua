@@ -1527,7 +1527,7 @@ return {
         ja = "スペシャル",
         ko = "스페셜",
         ["zh-cn"] = "特感",
-        ["zh-tw"] = "特感",
+        ["zh-tw"] = "專家",
     },
     enemy_misc_group = {
         en = "Misc enemies",
@@ -2218,7 +2218,7 @@ return {
         ja = "特殊敵の垂直矢印を表示",
         ko = "특수 적 수직 화살표 표시",
         ["zh-cn"] = "显示特殊敌人垂直箭头",
-        ["zh-tw"] = "顯示特殊敵人垂直箭頭",
+        ["zh-tw"] = "顯示專家敵人垂直箭頭",
     },
     show_enemy_misc_vertical_arrows = {
         en = "Show misc enemy vertical arrows",
@@ -2246,7 +2246,7 @@ return {
         ja = "特殊敵アイコンサイズ",
         ko = "특수 적 아이콘 크기",
         ["zh-cn"] = "特殊敌人图标大小",
-        ["zh-tw"] = "特殊敵人圖示大小",
+        ["zh-tw"] = "專家敵人圖示大小",
     },
     enemy_elite_icon_scale = {
         en = "Elite enemy icon size",
@@ -3456,7 +3456,7 @@ return {
         ja = "抗放射線スティム",
         ko = "항방사능 스팀",
         ["zh-cn"] = "抗辐射兴奋剂",
-        ["zh-tw"] = "抗輻射針劑",
+        ["zh-tw"] = "抗輻射興奮劑",
     },
 
     martyr_s_skull_group = {
@@ -3471,7 +3471,7 @@ return {
         ja = "殉教者の頭蓋骨アイテム",
         ko = "순교자 해골 아이템",
         ["zh-cn"] = "殉道者头骨物品",
-        ["zh-tw"] = "殉道者頭骨物品",
+        ["zh-tw"] = "殉道者之顱物品",
     },
     nearby_highlight_martyr_s_skull = {
         en = "Highlight nearby martyr/skull items",
@@ -3485,7 +3485,7 @@ return {
         ja = "近くの殉教者/頭蓋骨アイテムを強調表示",
         ko = "근처 순교자/해골 아이템 강조 표시",
         ["zh-cn"] = "高亮附近殉道者/头骨物品",
-        ["zh-tw"] = "高亮附近殉道者/頭骨物品",
+        ["zh-tw"] = "高亮附近殉道者之顱物品",
     },
     show_martyr_skull = {
         en = "Martyr's Skull",
@@ -3583,7 +3583,7 @@ return {
         ja = "異端者の偶像",
         ko = "이단자의 우상",
         ["zh-cn"] = "异端者神像",
-        ["zh-tw"] = "異端者神像",
+        ["zh-tw"] = "異端神像",
     },
 
     deployables_group = {
@@ -3669,7 +3669,7 @@ return {
         ja = "隊長",
         ko = "지휘관",
         ["zh-cn"] = "连长",
-        ["zh-tw"] = "指揮官",
+        ["zh-tw"] = "連長",
     },
     show_karnak_twins = {
         en = "Karnak Twins",
@@ -3828,7 +3828,7 @@ return {
         ja = "汚染された頭蓋骨",
         ko = "오염된 해골",
         ["zh-cn"] = "受污染的头骨",
-        ["zh-tw"] = "污染頭骨",
+        ["zh-tw"] = "腐化顱骨",
     },
     show_dark_rites_totem = {
         en = "Dark Rites Totems",
@@ -3856,7 +3856,7 @@ return {
         ja = "暗黒儀式のサーボスカル",
         ko = "어둠의 의식 서보 스컬",
         ["zh-cn"] = "黑暗仪式伺服颅骨",
-        ["zh-tw"] = "黑暗儀式伺服顱骨",
+        ["zh-tw"] = "黑暗儀式伺服頭骨",
     },
     show_pocketable_corrupted_auspex_scanner = {
         en = "Tainted Communications Device",
@@ -3884,7 +3884,7 @@ return {
         ja = "聖遺物",
         ko = "성유물",
         ["zh-cn"] = "圣物",
-        ["zh-tw"] = "聖遺物",
+        ["zh-tw"] = "聖物",
     },
     show_leftover = {
         en = "Heretical Artifacts",
@@ -3982,7 +3982,7 @@ return {
         ja = "怪物/隊長/双子のアイコンサイズ",
         ko = "괴물/지휘관/쌍둥이 아이콘 크기",
         ["zh-cn"] = "怪物/Boss/双子图标大小",
-        ["zh-tw"] = "巨獸/Boss/雙子圖示大小",
+        ["zh-tw"] = "巨獸/連長/雙子圖示大小",
     },
     show_enemy_cultist_melee = _localized_game_text("loc_breed_display_name_cultist_melee"),
     show_enemy_renegade_melee = _localized_game_text("loc_breed_display_name_renegade_melee"),
@@ -4628,7 +4628,7 @@ return {
         ja = "集中スティムをレーダーに表示します。",
         ko = "집중 스팀을 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示专注针剂。",
-        ["zh-tw"] = "在雷達上顯示專注針劑。",
+        ["zh-tw"] = "在雷達上顯示專注興奮劑。",
     },
     show_pocketable_syringe_corruption_tooltip = {
         en = "Show Med Stimm on the radar.",
@@ -4642,7 +4642,7 @@ return {
         ja = "医療スティムをレーダーに表示します。",
         ko = "의료 스팀을 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示医疗针剂。",
-        ["zh-tw"] = "在雷達上顯示醫療針劑。",
+        ["zh-tw"] = "在雷達上顯示醫療興奮劑。",
     },
     show_pocketable_syringe_power_tooltip = {
         en = "Show Combat Stimm on the radar.",
@@ -4656,7 +4656,7 @@ return {
         ja = "戦闘スティムをレーダーに表示します。",
         ko = "전투 스팀을 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示战斗针剂。",
-        ["zh-tw"] = "在雷達上顯示戰鬥針劑。",
+        ["zh-tw"] = "在雷達上顯示戰鬥興奮劑。",
     },
     show_pocketable_syringe_speed_tooltip = {
         en = "Show Celerity Stimm on the radar.",
@@ -4670,7 +4670,7 @@ return {
         ja = "迅速スティムをレーダーに表示します。",
         ko = "속도 스팀을 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示迅捷针剂。",
-        ["zh-tw"] = "在雷達上顯示迅捷針劑。",
+        ["zh-tw"] = "在雷達上顯示敏捷興奮劑。",
     },
     show_crates_tooltip = {
         en = "Choose how Crates is shown on the radar: artwork, simplified icon, or disabled.",
@@ -4726,7 +4726,7 @@ return {
         ja = "ダイアマンティンをレーダーにどう表示するかを選択します: アートワーク、簡易アイコン、または無効。",
         ko = "디아만틴을 레이더에 어떻게 표시할지 선택합니다: 아트워크, 단순 아이콘 또는 비활성화.",
         ["zh-cn"] = "选择精金在雷达上的显示方式：完整图标、简化图标或禁用。",
-        ["zh-tw"] = "選擇精金在雷達上的顯示方式：完整圖示、簡化圖示或停用。",
+        ["zh-tw"] = "選擇金剛晶石在雷達上的顯示方式：完整圖示、簡化圖示或停用。",
     },
     show_plasteel_tooltip = {
         en = "Choose how Plasteel is shown on the radar: artwork, simplified icon, or disabled.",
@@ -4922,7 +4922,7 @@ return {
         ja = "グリモアをレーダーに表示します。",
         ko = "그리모어를 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示魔典。",
-        ["zh-tw"] = "在雷達上顯示魔典。",
+        ["zh-tw"] = "在雷達上顯示法術書。",
     },
     show_pocketable_scripture_tooltip = {
         en = "Show Scripture on the radar.",
@@ -4936,7 +4936,7 @@ return {
         ja = "聖典をレーダーに表示します。",
         ko = "성전을 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示圣典。",
-        ["zh-tw"] = "在雷達上顯示聖典。",
+        ["zh-tw"] = "在雷達上顯示聖書。",
     },
     expeditions_location_icon_scale_tooltip = {
         en = "Adjust the icon size for expedition point-of-interest markers as a percentage.",
@@ -5230,7 +5230,7 @@ return {
         ja = "レーダーに抗放射線スティムを表示します。",
         ko = "레이더에 항방사선 스팀을 표시합니다.",
         ["zh-cn"] = "在雷达上显示抗辐射刺激剂。",
-        ["zh-tw"] = "在雷達上顯示抗輻射刺激劑。",
+        ["zh-tw"] = "在雷達上顯示抗輻射興奮劑。",
     },
     show_pocketable_landmine_explosive_tooltip = {
         en = "Choose how Servo-Triggered Mine is shown on the radar: artwork, simplified icon, or disabled.",
@@ -5356,7 +5356,7 @@ return {
         ja = "殉教者の頭蓋骨マーカーのアイコンサイズを割合で調整します。",
         ko = "순교자의 해골 표식의 아이콘 크기를 백분율로 조정합니다.",
         ["zh-cn"] = "按百分比调整殉道者头骨标记的图标大小。",
-        ["zh-tw"] = "以百分比調整殉道者頭骨標記的圖示大小。",
+        ["zh-tw"] = "以百分比調整殉道者之顱標記的圖示大小。",
     },
     nearby_highlight_martyr_s_skull_tooltip = {
         en = "Also highlight nearby martyr/skull items in the world when they are within the highlight distance.",
@@ -5370,7 +5370,7 @@ return {
         ja = "ハイライト距離内にある近くの殉教者の頭蓋骨アイテムもワールド上で強調表示します。",
         ko = "강조 표시 거리 내에 있는 근처 순교자의 해골 아이템도 월드에서 함께 강조 표시합니다.",
         ["zh-cn"] = "当附近殉道者头骨物品进入高亮距离时，也会在场景中高亮显示它们。",
-        ["zh-tw"] = "當附近殉道者頭骨物品進入高亮距離時，也會在場景中高亮顯示它們。",
+        ["zh-tw"] = "當附近殉道者之顱物品進入高亮距離時，也會在場景中高亮顯示它們。",
     },
     show_martyr_skull_tooltip = {
         en = "Show Martyr's Skull on the radar.",
@@ -5384,7 +5384,7 @@ return {
         ja = "レーダーに殉教者の頭蓋骨を表示します。",
         ko = "레이더에 순교자의 해골을 표시합니다.",
         ["zh-cn"] = "在雷达上显示殉道者头骨。",
-        ["zh-tw"] = "在雷達上顯示殉道者頭骨。",
+        ["zh-tw"] = "在雷達上顯示殉道者之顱。",
     },
     show_power_cell_orange_tooltip = {
         en = "Show Power Cell on the radar.",
@@ -5622,7 +5622,7 @@ return {
         ja = "レーダーにキャプテンを表示します。",
         ko = "레이더에 캡틴을 표시합니다.",
         ["zh-cn"] = "在雷达上显示队长。",
-        ["zh-tw"] = "在雷達上顯示隊長。",
+        ["zh-tw"] = "在雷達上顯示連長。",
     },
     show_karnak_twins_tooltip = {
         en = "Show Karnak Twins on the radar.",
@@ -5650,7 +5650,7 @@ return {
         ja = "大群の敵マーカーのアイコンサイズを割合で調整します。",
         ko = "호드 적 마커의 아이콘 크기를 백분율로 조정합니다.",
         ["zh-cn"] = "以百分比调整尸潮敌人标记的图标大小。",
-        ["zh-tw"] = "以百分比調整屍潮敵人標記的圖示大小。",
+        ["zh-tw"] = "以百分比調整群怪敵人標記的圖示大小。",
     },
     enemy_common_icon_scale_tooltip = {
         en = "Adjust the icon size for common enemy markers as a percentage.",
@@ -5706,7 +5706,7 @@ return {
         ja = "スペシャル敵マーカーのアイコンサイズを割合で調整します。",
         ko = "특수 적 마커의 아이콘 크기를 백분율로 조정합니다.",
         ["zh-cn"] = "以百分比调整特殊敌人标记的图标大小。",
-        ["zh-tw"] = "以百分比調整特殊敵人標記的圖示大小。",
+        ["zh-tw"] = "以百分比調整專家敵人標記的圖示大小。",
     },
     enemy_misc_icon_scale_tooltip = {
         en = "Adjust the icon size for miscellaneous enemy markers as a percentage.",
@@ -5889,7 +5889,7 @@ return {
         ja = "レーダーに汚染された頭蓋骨を表示します。",
         ko = "레이더에 오염된 해골을 표시합니다.",
         ["zh-cn"] = "在雷达上显示腐化头骨。",
-        ["zh-tw"] = "在雷達上顯示腐化頭骨。",
+        ["zh-tw"] = "在雷達上顯示腐化顱骨。",
     },
     show_dark_rites_totem_tooltip = {
         en = "Show Dark Rites ritual totems on the radar.",
@@ -5917,7 +5917,7 @@ return {
         ja = "暗黒儀式のサーボスカルをレーダーに表示します。",
         ko = "어둠의 의식 서보 스컬을 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示黑暗仪式伺服颅骨。",
-        ["zh-tw"] = "在雷達上顯示黑暗儀式伺服顱骨。",
+        ["zh-tw"] = "在雷達上顯示黑暗儀式伺服頭骨。",
     },
     show_pocketable_corrupted_auspex_scanner_tooltip = {
         en = "Show Tainted Communications Device on the radar.",
