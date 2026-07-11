@@ -730,7 +730,7 @@ local _color_label_texts = {
         ja = "ホード敵の色",
         ko = "무리 적 색상",
         ["zh-cn"] = "尸潮敌人颜色",
-        ["zh-tw"] = "屍潮敵人顏色",
+        ["zh-tw"] = "群怪敵人顏色",
     },
 }
 
@@ -1485,7 +1485,7 @@ return {
         ja = "ホード",
         ko = "호드",
         ["zh-cn"] = "尸潮",
-        ["zh-tw"] = "屍潮",
+        ["zh-tw"] = "群怪",
     },
     enemy_common_shooters_group = {
         en = "Common & shooters",
@@ -2964,7 +2964,7 @@ return {
         ja = "モエビアン痘ゼータファイト-13サンプル",
         ko = "모에비안 폭스 제타파이트-13 표본",
         ["zh-cn"] = "莫比亚PZ-13样本",
-        ["zh-tw"] = "莫比亞膿毒澤塔菲特-13樣本",
+        ["zh-tw"] = "莫比亞瘟疫澤塔菲特-13樣本",
     },
     show_vacuum_capsule = {
         en = "Vacuum Capsule",
@@ -4992,7 +4992,7 @@ return {
         ja = "プリズマタ結晶保管庫をレーダーに表示します。",
         ko = "프리즈마타 수정 보관소를 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示棱彩水晶储藏处。",
-        ["zh-tw"] = "在雷達上顯示棱彩水晶儲藏處。",
+        ["zh-tw"] = "在雷達上顯示稜鏡水晶儲存庫。",
     },
     show_mortis_relic_tooltip = {
         en = "Show Mortis Relic on the radar.",
@@ -5132,7 +5132,7 @@ return {
         ja = "レーダーにデッドサイダーの聖域を表示します。",
         ko = "레이더에 데드사이더 성역을 표시합니다.",
         ["zh-cn"] = "在雷达上显示亡域者圣所。",
-        ["zh-tw"] = "在雷達上顯示亡域者聖所。",
+        ["zh-tw"] = "在雷達上顯示亡行者聖所。",
     },
     show_expedition_objective_main_objective_tooltip = {
         en = "Show Main Objective on the radar.",
@@ -5174,7 +5174,7 @@ return {
         ja = "レーダーにヴァルキリー到着地点を表示します。",
         ko = "레이더에 발키리 도착 구역을 표시합니다.",
         ["zh-cn"] = "在雷达上显示女武神到达区。",
-        ["zh-tw"] = "在雷達上顯示女武神到達區。",
+        ["zh-tw"] = "在雷達上顯示女武神抵達區。",
     },
     show_expedition_loot_converter_tooltip = {
         en = "Show Data Reliquary Harvesters on the radar.",
@@ -5188,7 +5188,7 @@ return {
         ja = "レーダーにデータ聖遺物庫ハーベスターを表示します。",
         ko = "레이더에 데이터 성유물 수확기를 표시합니다.",
         ["zh-cn"] = "在雷达上显示数据圣匣采集器。",
-        ["zh-tw"] = "在雷達上顯示資料聖匣採集器。",
+        ["zh-tw"] = "在雷達上顯示資料聖骨匣採集器。",
     },
     expeditions_specific_icon_scale_tooltip = {
         en = "Adjust the icon size for expedition item markers as a percentage.",
@@ -5328,7 +5328,7 @@ return {
         ja = "レーダーにデータ聖遺物庫を表示します。",
         ko = "레이더에 데이터 성유물을 표시합니다.",
         ["zh-cn"] = "在雷达上显示数据圣匣。",
-        ["zh-tw"] = "在雷達上顯示資料聖匣。",
+        ["zh-tw"] = "在雷達上顯示資料聖骨匣。",
     },
     show_promethium_barrel_tooltip = {
         en = "Show Promethium Barrel on the radar.",
@@ -5426,7 +5426,7 @@ return {
         ja = "レーダー上でパージスネアをどう表示するかを選びます, アートワーク、簡易アイコン、または無効。",
         ko = "레이더에 정화 올가미를 표시하는 방식을 선택합니다. 아트워크, 단순 아이콘 또는 비활성화.",
         ["zh-cn"] = "选择在雷达上如何显示净灭陷索：原图、简化图标或禁用。",
-        ["zh-tw"] = "選擇在雷達上如何顯示淨滅陷索：原圖、簡化圖示或停用。",
+        ["zh-tw"] = "選擇在雷達上如何顯示淨化陷阱：原圖、簡化圖示或停用。",
     },
     show_pocketable_landmine_shock_tooltip = {
         en = "Choose how Voltaic Snare is shown on the radar: artwork, simplified icon, or disabled.",
@@ -5440,7 +5440,7 @@ return {
         ja = "レーダー上でボルタイクスネアをどう表示するかを選びます, アートワーク、簡易アイコン、または無効。",
         ko = "레이더에 볼타익 올가미를 표시하는 방식을 선택합니다. 아트워크, 단순 아이콘 또는 비활성화.",
         ["zh-cn"] = "选择在雷达上如何显示电击陷索：原图、简化图标或禁用。",
-        ["zh-tw"] = "選擇在雷達上如何顯示電擊陷索：原圖、簡化圖示或停用。",
+        ["zh-tw"] = "選擇在雷達上如何顯示電能陷阱：原圖、簡化圖示或停用。",
     },
     show_pocketable_void_shield_tooltip = {
         en = "Choose how Void Shell is shown on the radar: artwork, simplified icon, or disabled.",
@@ -5454,7 +5454,7 @@ return {
         ja = "レーダー上でヴォイドシェルをどう表示するかを選びます, アートワーク、簡易アイコン、または無効。",
         ko = "레이더에 보이드 셸을 표시하는 방식을 선택합니다. 아트워크, 단순 아이콘 또는 비활성화.",
         ["zh-cn"] = "选择在雷达上如何显示虚空壳：原图、简化图标或禁用。",
-        ["zh-tw"] = "選擇在雷達上如何顯示虛空殼：原圖、簡化圖示或停用。",
+        ["zh-tw"] = "選擇在雷達上如何顯示虛空盾：原圖、簡化圖示或停用。",
     },
     show_pocketable_airstrike_tooltip = {
         en = "Choose how Bombing Run Signal Marker is shown on the radar: artwork, simplified icon, or disabled.",
@@ -6169,7 +6169,7 @@ return {
         ja = "レーダーに盗まれた配給品を表示します。",
         ko = "레이더에 도난당한 식량을 표시합니다.",
         ["zh-cn"] = "在雷达上显示被盗口粮。",
-        ["zh-tw"] = "在雷達上顯示被盜口糧。",
+        ["zh-tw"] = "在雷達上顯示失竊口糧。",
     },
     debug_icon_scale_tooltip = {
         en = "Adjust the icon size for debug markers as a percentage.",
