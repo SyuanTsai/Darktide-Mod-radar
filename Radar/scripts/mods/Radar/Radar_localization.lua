@@ -1570,7 +1570,7 @@ return {
         ja = "プレイヤーのコンパニオン",
         ko = "플레이어 동료",
         ["zh-cn"] = "玩家伙伴",
-        ["zh-tw"] = "電子獒犬",
+        ["zh-tw"] = "支援單位",
     },
     player_companions_icon_scale_tooltip = {
         en = "Adjust the icon size for player companion markers as a percentage.",
@@ -1584,7 +1584,7 @@ return {
         ja = "プレイヤーのコンパニオンマーカーのアイコンサイズをパーセントで調整します。",
         ko = "플레이어 동료 마커의 아이콘 크기를 백분율로 조정합니다.",
         ["zh-cn"] = "按百分比调整玩家伙伴标记的图标大小。",
-        ["zh-tw"] = "以百分比調整電子獒犬標記的圖示大小。",
+        ["zh-tw"] = "以百分比調整支援單位標記的圖示大小。",
     },
     show_cyber_mastiff = {
         en = "Show Cyber Mastiff",
