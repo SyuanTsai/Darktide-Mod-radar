@@ -1570,7 +1570,7 @@ return {
         ja = "プレイヤーのコンパニオン",
         ko = "플레이어 동료",
         ["zh-cn"] = "玩家伙伴",
-        ["zh-tw"] = "玩家同伴",
+        ["zh-tw"] = "電子獒犬",
     },
     player_companions_icon_scale_tooltip = {
         en = "Adjust the icon size for player companion markers as a percentage.",
@@ -1584,7 +1584,7 @@ return {
         ja = "プレイヤーのコンパニオンマーカーのアイコンサイズをパーセントで調整します。",
         ko = "플레이어 동료 마커의 아이콘 크기를 백분율로 조정합니다.",
         ["zh-cn"] = "按百分比调整玩家伙伴标记的图标大小。",
-        ["zh-tw"] = "以百分比調整玩家同伴標記的圖示大小。",
+        ["zh-tw"] = "以百分比調整電子獒犬標記的圖示大小。",
     },
     show_cyber_mastiff = {
         en = "Show Cyber Mastiff",
@@ -1626,7 +1626,7 @@ return {
         ja = "アービトレーターのサイバー・マスティフのコンパニオンマーカーを表示します。",
         ko = "아비트레이터 사이버 마스티프 동료 마커를 표시합니다.",
         ["zh-cn"] = "显示仲裁者电子獒犬伙伴标记。",
-        ["zh-tw"] = "顯示法務官電子獒犬同伴標記。",
+        ["zh-tw"] = "顯示法務官電子獒犬友軍標記。",
     },
     show_servo_skulls_tooltip = {
         en = "Show Skitarii Servo Skull companion markers.",
@@ -1640,7 +1640,7 @@ return {
         ja = "スキタリのサーボスカルのコンパニオンマーカーを表示します。",
         ko = "스키타리 서보 스컬 동료 마커를 표시합니다.",
         ["zh-cn"] = "显示护教军伺服颅骨伙伴标记。",
-        ["zh-tw"] = "顯示護教軍伺服頭骨同伴標記。",
+        ["zh-tw"] = "顯示護教軍伺服頭骨友軍標記。",
     },
     player_tags_group = {
         en = "Player tags",
@@ -3681,7 +3681,7 @@ return {
         ja = "メディケアステーションのチャージ",
         ko = "메디케어 스테이션 충전 횟수",
         ["zh-cn"] = "医疗站充能次数",
-        ["zh-tw"] = "醫療站充能次數",
+        ["zh-tw"] = "醫療站治療次數",
     },
     show_luggable_socket = {
         en = "Power Socket",
@@ -3752,7 +3752,7 @@ return {
         ja = "弾薬箱のチャージ",
         ko = "탄약 상자 충전 횟수",
         ["zh-cn"] = "弹药箱充能次数",
-        ["zh-tw"] = "彈藥箱充能次數",
+        ["zh-tw"] = "彈藥箱補給次數",
     },
     show_medical_crate_deployable = {
         en = "Medical Crate",
@@ -5356,7 +5356,7 @@ return {
         ja = "固定配置された爆発バレルをレーダーに表示します。",
         ko = "고정된 폭발 배럴 위험 요소를 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示固定的爆炸桶危险物。",
-        ["zh-tw"] = "在雷達上顯示固定的爆炸桶危險物。",
+        ["zh-tw"] = "在雷達上持續標示爆炸桶的位置。",
     },
     show_fire_barrels_tooltip = {
         en = "Show static fire barrel hazards on the radar.",
@@ -5370,7 +5370,7 @@ return {
         ja = "固定配置された炎上バレルをレーダーに表示します。",
         ko = "고정된 화염 배럴 위험 요소를 레이더에 표시합니다.",
         ["zh-cn"] = "在雷达上显示固定的火焰桶危险物。",
-        ["zh-tw"] = "在雷達上顯示固定的火焰桶危險物。",
+        ["zh-tw"] = "在雷達上持續標示火焰桶的位置。",
     },
     show_large_ammunition_crate_tooltip = {
         en = "Show Large Ammunition Crate on the radar.",
@@ -5622,7 +5622,7 @@ return {
         ja = "メディケアステーションの残り治療チャージをレーダーマーカーの横に表示します。",
         ko = "메디케어 스테이션의 남은 치유 충전 횟수를 레이더 표시 옆에 표시합니다.",
         ["zh-cn"] = "在雷达标记旁显示医疗站剩余的治疗充能次数。",
-        ["zh-tw"] = "在雷達標記旁顯示醫療站剩餘的治療充能次數。",
+        ["zh-tw"] = "在雷達標記旁顯示醫療站的剩餘治療次數。",
     },
     show_luggable_socket_tooltip = {
         en = "Show Power Socket on the radar.",
@@ -5692,7 +5692,7 @@ return {
         ja = "配置された弾薬箱の残り補給チャージをレーダーマーカーの横に表示します。",
         ko = "배치된 탄약 상자의 남은 재보급 충전 횟수를 레이더 표시 옆에 표시합니다.",
         ["zh-cn"] = "在雷达标记旁显示已部署弹药箱剩余的补给充能次数。",
-        ["zh-tw"] = "在雷達標記旁顯示已部署彈藥箱剩餘的補給充能次數。",
+        ["zh-tw"] = "在雷達標記旁顯示已部署彈藥箱剩餘補給次數。"
     },
     show_medical_crate_deployable_tooltip = {
         en = "Show Medical Crate on the radar.",
